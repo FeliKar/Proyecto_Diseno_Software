@@ -1,0 +1,34 @@
+{
+    "appName": "Mesa Cerca",
+    "language": "Idioma",
+    "explore": "Explorar",
+    "eyebrow": "Tu próxima comida empieza aquí",
+    "title": "Descubre lugares que dan ganas de volver.",
+    "description": "Encuentra restaurantes cerca de ti y descubre nuevas opciones para tu próxima salida.",
+    "demoNotice": "Versión inicial con restaurantes y precios ficticios.",
+    "restaurantsTitle": "Ideas para tu próxima salida",
+    "restaurantsDescription": "Sección de ejemplo. Pronto con búsqueda y filtros.",
+    "priceLabel": "Nivel de precios",
+    "priceLevels": {
+        "inexpensive": "Económico · $",
+        "moderate": "Precio medio · $$",
+        "expensive": "Precio elevado · $$$"
+    },
+    "restaurants": {
+        "garden": {
+            "name": "Jardín de Mesa",
+            "category": "Vegetariana",
+            "description": "Platos vegetarianos y ensaladas."
+        },
+        "oven": {
+            "name": "Horno de Barrio",
+            "category": "Italiana",
+            "description": "Pizzas y pastas."
+        },
+        "coast": {
+            "name": "Costa y Limón",
+            "category": "Pescados y mariscos",
+            "description": "Pescados y mariscos."
+        }
+    }
+}

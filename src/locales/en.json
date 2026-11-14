@@ -1,0 +1,34 @@
+{
+  "appName": "Mesa Cerca",
+  "language": "Language",
+  "explore": "Explore",
+  "eyebrow": "Your next meal starts here",
+  "title": "Discover places worth coming back to.",
+  "description": "Find restaurants near you and discover new options for your next outing.",
+  "demoNotice": "Early version with fictional restaurants and prices.",
+  "restaurantsTitle": "Ideas for your next outing",
+  "restaurantsDescription": "Sample section. Search and filters coming soon",
+  "priceLabel": "Price level",
+  "priceLevels": {
+    "inexpensive": "Budget-friendly · $",
+    "moderate": "Mid-range · $$",
+    "expensive": "Higher-priced · $$$"
+  },
+  "restaurants": {
+    "garden": {
+      "name": "Jardín de Mesa",
+      "category": "Vegetarian",
+      "description": "Vegetarian dishes and salads"
+    },
+    "oven": {
+      "name": "Horno de Barrio",
+      "category": "Italian",
+      "description": "Pizza and pasta."
+    },
+    "coast": {
+      "name": "Costa y Limón",
+      "category": "Fish and seafood",
+      "description": "Fish and seafood."
+    }
+  }
+}
