@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const restaurants = [
@@ -5,6 +6,16 @@ const restaurants = [
   { id: 'oven', icon: '🍕', priceLevel: 'moderate' },
   { id: 'coast', icon: '🐟', priceLevel: 'expensive' },
 ]
+
+
+function normalizeText(text) {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+}
+
 
 function RestaurantCard({ restaurant }) {
   const { t } = useTranslation()
@@ -35,8 +46,16 @@ function RestaurantCard({ restaurant }) {
 
 export default function App() {
   const { t, i18n } = useTranslation()
+  const [search, setSearch] = useState('')
 
+  const normalizedSearch = normalizeText(search)
 
+  const filteredRestaurants = restaurants.filter((restaurant) => {
+    const name = t(`restaurants.${restaurant.id}.name`)
+
+    return normalizeText(name).includes(normalizedSearch)
+  })
+  
   return (
     <>
       <header className="site-header">
@@ -89,8 +108,26 @@ export default function App() {
             <p>{t('restaurantsDescription')}</p>
           </div>
 
+
+          <div className="search-field">
+            <label htmlFor="restaurant-search">{t('searchLabel')}</label>
+            <input
+              id="restaurant-search"
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={t('searchPlaceholder')}
+            />
+          </div>
+
+
+          <p role="status">
+            {filteredRestaurants.length === 0 ? t('noResults') : ''}
+          </p>
+
+
           <div className="restaurant-grid">
-            {restaurants.map((restaurant) => (
+            {filteredRestaurants.map((restaurant) => (
               <RestaurantCard
                 key={restaurant.id}
                 restaurant={restaurant}

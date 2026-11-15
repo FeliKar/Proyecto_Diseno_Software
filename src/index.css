@@ -238,3 +238,30 @@ h1 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.search-field label {
+  font-weight: 600;
+}
+
+.search-field input {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  border: 1px solid #8a968d;
+  border-radius: 8px;
+  font: inherit;
+  color: #202b24;
+  background: white;
+}
+
+.search-field input:focus-visible {
+  outline: 3px solid #9c4615;
+  outline-offset: 3px;
+}

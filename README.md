@@ -2,14 +2,16 @@
 
 Aplicación web de recomendación de restaurantes.
 
-## Primer commit
+## Funcionalidades actuales
 
 - Pantalla inicial adaptable a móvil, tablet y escritorio.
 - Interfaz en español e inglés.
 - Tarjetas reutilizables con restaurantes y precios ficticios.
 - Niveles de precios de ejemplo con etiquetas en español e inglés.
+- Búsqueda por nombre, sin distinguir mayúsculas ni tildes.
+- Mensaje cuando no hay restaurantes que coincidan.
 
-Próximas implementaciones planeadas: buscador, filtros, mapas, autenticación, listas personales y recomendaciones.
+Próximas implementaciones planeadas: filtros por comida y presupuesto, detalles de restaurantes, mapas, autenticación, listas personales y recomendaciones.
 
 ## Tecnologías
 
