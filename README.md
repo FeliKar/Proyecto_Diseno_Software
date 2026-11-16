@@ -10,8 +10,10 @@ Aplicación web de recomendación de restaurantes.
 - Niveles de precios de ejemplo con etiquetas en español e inglés.
 - Búsqueda por nombre, sin distinguir mayúsculas ni tildes.
 - Mensaje cuando no hay restaurantes que coincidan.
+- Filtros por tipo de comida y nivel de precios combinados con la búsqueda.
+- Botón para limpiar la búsqueda y los filtros.
 
-Próximas implementaciones planeadas: filtros por comida y presupuesto, detalles de restaurantes, mapas, autenticación, listas personales y recomendaciones.
+Próximas implementaciones planeadas: detalles de restaurantes, mapas, autenticación, listas personales y recomendaciones.
 
 ## Tecnologías
 

@@ -4,13 +4,22 @@
     "explore": "Explorar",
     "searchLabel": "Buscar por nombre",
     "searchPlaceholder": "Ejemplo: Horno",
-    "noResults": "No encontramos restaurantes con ese nombre.",
+    "categoryLabel": "Tipo de comida",
+    "allCategories": "Todos los tipos",
+    "allPrices": "Todos los niveles",
+    "clearFilters": "Limpiar búsqueda y filtros",
+    "categories": {
+        "vegetarian": "Vegetariana",
+        "italian": "Italiana",
+        "seafood": "Pescados y mariscos"
+    },
+    "noResults": "No encontramos restaurantes con esa búsqueda y filtros.",
     "eyebrow": "Tu próxima comida empieza aquí",
     "title": "Descubre lugares que dan ganas de volver.",
     "description": "Encuentra restaurantes cerca de ti y descubre nuevas opciones para tu próxima salida.",
     "demoNotice": "Versión inicial con restaurantes y precios ficticios.",
     "restaurantsTitle": "Ideas para tu próxima salida",
-    "restaurantsDescription": "Busca por nombre entre los restaurantes de ejemplo.",
+    "restaurantsDescription": "Busca por nombre y filtra por tipo de comida o nivel de precios.",
     "priceLabel": "Nivel de precios",
     "priceLevels": {
         "inexpensive": "Económico · $",
@@ -20,17 +29,14 @@
     "restaurants": {
         "garden": {
             "name": "Jardín de Mesa",
-            "category": "Vegetariana",
             "description": "Platos vegetarianos y ensaladas."
         },
         "oven": {
             "name": "Horno de Barrio",
-            "category": "Italiana",
             "description": "Pizzas y pastas."
         },
         "coast": {
             "name": "Costa y Limón",
-            "category": "Pescados y mariscos",
             "description": "Pescados y mariscos."
         }
     }

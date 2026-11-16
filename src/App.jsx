@@ -2,9 +2,24 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 const restaurants = [
-  { id: 'garden', icon: '🥗', priceLevel: 'inexpensive' },
-  { id: 'oven', icon: '🍕', priceLevel: 'moderate' },
-  { id: 'coast', icon: '🐟', priceLevel: 'expensive' },
+  {
+    id: 'garden',
+    icon: '🥗',
+    category: 'vegetarian',
+    priceLevel: 'inexpensive',
+  },
+  {
+    id: 'oven',
+    icon: '🍕',
+    category: 'italian',
+    priceLevel: 'moderate',
+  },
+  {
+    id: 'coast',
+    icon: '🐟',
+    category: 'seafood',
+    priceLevel: 'expensive',
+  },
 ]
 
 
@@ -29,7 +44,7 @@ function RestaurantCard({ restaurant }) {
 
       <div className="restaurant-content">
         <span className="category">
-          {t(`${translationKey}.category`)}
+          {t(`categories.${restaurant.category}`)}
         </span>
 
         <h3>{t(`${translationKey}.name`)}</h3>
@@ -47,14 +62,26 @@ function RestaurantCard({ restaurant }) {
 export default function App() {
   const { t, i18n } = useTranslation()
   const [search, setSearch] = useState('')
+  const [category, setCategory] = useState('')
+  const [priceLevel, setPriceLevel] = useState('')
 
   const normalizedSearch = normalizeText(search)
 
   const filteredRestaurants = restaurants.filter((restaurant) => {
     const name = t(`restaurants.${restaurant.id}.name`)
 
-    return normalizeText(name).includes(normalizedSearch)
+    const matchesSearch = normalizeText(name).includes(normalizedSearch)
+    const matchesCategory = category === '' || restaurant.category === category
+    const matchesPrice = priceLevel === '' || restaurant.priceLevel === priceLevel
+
+    return matchesSearch && matchesCategory && matchesPrice
   })
+
+  function clearFilters() {
+    setSearch('')
+    setCategory('')
+    setPriceLevel('')
+  }
   
   return (
     <>
@@ -118,6 +145,45 @@ export default function App() {
               onChange={(event) => setSearch(event.target.value)}
               placeholder={t('searchPlaceholder')}
             />
+          </div>
+
+
+          <div className="filters">
+            <div className="filter-field">
+              <label htmlFor="category-filter">{t('categoryLabel')}</label>
+              <select
+                id="category-filter"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                <option value="">{t('allCategories')}</option>
+                <option value="vegetarian">{t('categories.vegetarian')}</option>
+                <option value="italian">{t('categories.italian')}</option>
+                <option value="seafood">{t('categories.seafood')}</option>
+              </select>
+            </div>
+
+            <div className="filter-field">
+              <label htmlFor="price-filter">{t('priceLabel')}</label>
+              <select
+                id="price-filter"
+                value={priceLevel}
+                onChange={(event) => setPriceLevel(event.target.value)}
+              >
+                <option value="">{t('allPrices')}</option>
+                <option value="inexpensive">{t('priceLevels.inexpensive')}</option>
+                <option value="moderate">{t('priceLevels.moderate')}</option>
+                <option value="expensive">{t('priceLevels.expensive')}</option>
+              </select>
+            </div>
+
+            <button
+              type="button"
+              className="clear-filters"
+              onClick={clearFilters}
+            >
+              {t('clearFilters')}
+            </button>
           </div>
 
 

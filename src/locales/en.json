@@ -4,13 +4,22 @@
   "explore": "Explore",
   "searchLabel": "Search by name",
   "searchPlaceholder": "Example: Horno",
-  "noResults": "No restaurants match that name.",
+  "categoryLabel": "Cuisine",
+  "allCategories": "All cuisines",
+  "allPrices": "All price levels",
+  "clearFilters": "Clear search and filters",
+  "categories": {
+    "vegetarian": "Vegetarian",
+    "italian": "Italian",
+    "seafood": "Fish and seafood"
+  },
+  "noResults": "No restaurants match your search and filters.",
   "eyebrow": "Your next meal starts here",
   "title": "Discover places worth coming back to.",
   "description": "Find restaurants near you and discover new options for your next outing.",
   "demoNotice": "Early version with fictional restaurants and prices.",
   "restaurantsTitle": "Ideas for your next outing",
-  "restaurantsDescription": "Search the sample restaurants by name.",
+  "restaurantsDescription": "Search by name and filter by cuisine or price level.",
   "priceLabel": "Price level",
   "priceLevels": {
     "inexpensive": "Budget-friendly · $",
@@ -20,17 +29,14 @@
   "restaurants": {
     "garden": {
       "name": "Jardín de Mesa",
-      "category": "Vegetarian",
       "description": "Vegetarian dishes and salads"
     },
     "oven": {
       "name": "Horno de Barrio",
-      "category": "Italian",
       "description": "Pizza and pasta."
     },
     "coast": {
       "name": "Costa y Limón",
-      "category": "Fish and seafood",
       "description": "Fish and seafood."
     }
   }

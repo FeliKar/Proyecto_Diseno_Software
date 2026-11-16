@@ -265,3 +265,53 @@ h1 {
   outline: 3px solid #9c4615;
   outline-offset: 3px;
 }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 220px;
+  min-width: 0;
+  gap: 8px;
+}
+
+.filter-field label {
+  font-weight: 600;
+}
+
+.filter-field select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid #8a968d;
+  border-radius: 8px;
+  font: inherit;
+  color: #202b24;
+  background: white;
+}
+
+.clear-filters {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #28533a;
+  border-radius: 8px;
+  color: #28533a;
+  background: white;
+  cursor: pointer;
+}
+
+.clear-filters:hover {
+  background: #eef2e9;
+}
+
+.clear-filters:focus-visible {
+  outline: 3px solid #9c4615;
+  outline-offset: 3px;
+}
