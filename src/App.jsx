@@ -54,6 +54,18 @@ function RestaurantCard({ restaurant }) {
           <span>{t('priceLabel')}</span>
           <strong>{t(`priceLevels.${restaurant.priceLevel}`)}</strong>
         </div>
+
+        <details className="restaurant-details">
+          <summary>{t('detailsLabel')}</summary>
+
+          <dl>
+            <dt>{t('addressLabel')}</dt>
+            <dd>{t(`${translationKey}.address`)}</dd>
+
+            <dt>{t('hoursLabel')}</dt>
+            <dd>{t(`${translationKey}.hours`)}</dd>
+          </dl>
+        </details>
       </div>
     </article>
   )

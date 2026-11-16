@@ -8,6 +8,9 @@
   "allCategories": "All cuisines",
   "allPrices": "All price levels",
   "clearFilters": "Clear search and filters",
+  "detailsLabel": "Restaurant details",
+  "addressLabel": "Sample address",
+  "hoursLabel": "Sample opening hours",
   "categories": {
     "vegetarian": "Vegetarian",
     "italian": "Italian",
@@ -17,7 +20,7 @@
   "eyebrow": "Your next meal starts here",
   "title": "Discover places worth coming back to.",
   "description": "Find restaurants near you and discover new options for your next outing.",
-  "demoNotice": "Early version with fictional restaurants and prices.",
+  "demoNotice": "Demo version: all restaurants and their information are fictional.",
   "restaurantsTitle": "Ideas for your next outing",
   "restaurantsDescription": "Search by name and filter by cuisine or price level.",
   "priceLabel": "Price level",
@@ -29,15 +32,21 @@
   "restaurants": {
     "garden": {
       "name": "Jardín de Mesa",
-      "description": "Vegetarian dishes and salads"
+      "description": "Vegetarian dishes and salads.",
+      "address": "Calle de Ejemplo 101",
+      "hours": "Monday to Saturday, 12:00–20:00."
     },
     "oven": {
       "name": "Horno de Barrio",
-      "description": "Pizza and pasta."
+      "description": "Pizza and pasta.",
+      "address": "Calle de Ejemplo 202",
+      "hours": "Tuesday to Sunday, 13:00–23:00."
     },
     "coast": {
       "name": "Costa y Limón",
-      "description": "Fish and seafood."
+      "description": "Fish and seafood.",
+      "address": "Calle de Ejemplo 303",
+      "hours": "Wednesday to Sunday, 12:00–18:00."
     }
   }
 }

@@ -8,6 +8,9 @@
     "allCategories": "Todos los tipos",
     "allPrices": "Todos los niveles",
     "clearFilters": "Limpiar búsqueda y filtros",
+    "detailsLabel": "Detalles del restaurante",
+    "addressLabel": "Dirección de ejemplo",
+    "hoursLabel": "Horario de ejemplo",
     "categories": {
         "vegetarian": "Vegetariana",
         "italian": "Italiana",
@@ -17,7 +20,7 @@
     "eyebrow": "Tu próxima comida empieza aquí",
     "title": "Descubre lugares que dan ganas de volver.",
     "description": "Encuentra restaurantes cerca de ti y descubre nuevas opciones para tu próxima salida.",
-    "demoNotice": "Versión inicial con restaurantes y precios ficticios.",
+    "demoNotice": "Versión de demostración: todos los restaurantes y sus datos son ficticios.",
     "restaurantsTitle": "Ideas para tu próxima salida",
     "restaurantsDescription": "Busca por nombre y filtra por tipo de comida o nivel de precios.",
     "priceLabel": "Nivel de precios",
@@ -29,15 +32,21 @@
     "restaurants": {
         "garden": {
             "name": "Jardín de Mesa",
-            "description": "Platos vegetarianos y ensaladas."
+            "description": "Platos vegetarianos y ensaladas.",
+            "address": "Calle de Ejemplo 101",
+            "hours": "Lunes a sábado, de 12:00 a 20:00."
         },
         "oven": {
             "name": "Horno de Barrio",
-            "description": "Pizzas y pastas."
+            "description": "Pizzas y pastas.",
+            "address": "Calle de Ejemplo 202",
+            "hours": "Martes a domingo, de 13:00 a 23:00."
         },
         "coast": {
             "name": "Costa y Limón",
-            "description": "Pescados y mariscos."
+            "description": "Pescados y mariscos.",
+            "address": "Calle de Ejemplo 303",
+            "hours": "Miércoles a domingo, de 12:00 a 18:00."
         }
     }
 }

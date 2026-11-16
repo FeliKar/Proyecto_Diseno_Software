@@ -12,8 +12,9 @@ Aplicación web de recomendación de restaurantes.
 - Mensaje cuando no hay restaurantes que coincidan.
 - Filtros por tipo de comida y nivel de precios combinados con la búsqueda.
 - Botón para limpiar la búsqueda y los filtros.
+- Detalles desplegables con dirección y horario ficticios en ambos idiomas.
 
-Próximas implementaciones planeadas: detalles de restaurantes, mapas, autenticación, listas personales y recomendaciones.
+Próximas implementaciones planeadas: datos reales de restaurantes, mapas, autenticación, listas personales y recomendaciones.
 
 ## Tecnologías
 

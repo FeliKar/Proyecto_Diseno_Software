@@ -166,6 +166,7 @@ h1 {
 .restaurant-grid {
   display: grid;
   grid-template-columns: 1fr;
+  align-items: start;
   gap: 24px;
 }
 
@@ -314,4 +315,36 @@ h1 {
 .clear-filters:focus-visible {
   outline: 3px solid #9c4615;
   outline-offset: 3px;
+}
+
+.restaurant-details {
+  margin-top: 20px;
+  border-top: 1px solid #e7eae4;
+}
+
+.restaurant-details summary {
+  padding-block: 12px;
+  color: #28533a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.restaurant-details summary:focus-visible {
+  outline: 3px solid #9c4615;
+  outline-offset: 3px;
+}
+
+.restaurant-details dl {
+  margin-block: 4px 0;
+}
+
+.restaurant-details dt {
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.restaurant-details dd {
+  margin: 4px 0 0;
+  color: #536157;
+  overflow-wrap: anywhere;
 }
