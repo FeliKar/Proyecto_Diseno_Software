@@ -48,5 +48,40 @@
       "address": "Calle de Ejemplo 303",
       "hours": "Wednesday to Sunday, 12:00–18:00."
     }
+  },
+  "auth": {
+    "title": "My account",
+    "account": "your account",
+    "signin": "Sign in",
+    "signup": "Create account",
+    "recover": "Send recovery link",
+    "update": "Save new password",
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Repeat password",
+    "passwordHint": "Use at least 8 characters.",
+    "google": "Continue with Google",
+    "signout": "Sign out",
+    "backToLogin": "Back to sign in",
+    "forgotPassword": "Forgot password",
+    "loading": "Checking session…",
+    "working": "Processing…",
+    "signedIn": "Signed in as {{email}}.",
+    "notConfigured": "User access is not configured yet. You can explore the sample restaurants.",
+    "confirmEmail": "Check your email to confirm registration. If you already have an account, sign in or reset your password.",
+    "recoverySent": "If this email belongs to an account, you will receive a password recovery link.",
+    "passwordUpdated": "Password updated.",
+    "errors": {
+      "invalidCredentials": "Unable to sign in. Check your email and password.",
+      "emailNotConfirmed": "Confirm your email before signing in.",
+      "weakPassword": "The password does not meet security requirements. Use at least 8 characters.",
+      "samePassword": "Choose a password different from your current one.",
+      "rateLimit": "Too many attempts. Wait a few minutes before trying again.",
+      "expiredLink": "This link is invalid or has expired. Request a new one.",
+      "cancelled": "Sign-in was cancelled. You can try again.",
+      "network": "Unable to connect. Check your connection and try again.",
+      "generic": "Unable to complete the request. Try again; if the problem persists, check the service configuration.",
+      "passwordMismatch": "Passwords do not match."
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import AuthPanel from './components/AuthPanel'
 
 const restaurants = [
   {
@@ -105,6 +106,10 @@ export default function App() {
           </a>
 
           <div className="header-actions">
+            <a className="navigation-link" href="#account">
+              {t('auth.title')}
+            </a>
+
             <a className="navigation-link" href="#restaurants">
               {t('explore')}
             </a>
@@ -134,6 +139,10 @@ export default function App() {
             {t('explore')} <span aria-hidden="true">↗</span>
           </a>
         </section>
+
+
+
+        <AuthPanel />
 
         <p className="demo-notice">{t('demoNotice')}</p>
 
