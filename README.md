@@ -2,6 +2,8 @@
 
 Aplicación web de recomendación de restaurantes.
 
+Versión publicada: [Mesa Cerca](https://proyectodisenosoftware.vercel.app).
+
 
 
 ## Funcionalidades actuales
@@ -18,7 +20,11 @@ Aplicación web de recomendación de restaurantes.
 - Formularios de acceso con Supabase: correo y contraseña, Google y recuperación.
 - Estados de carga y mensajes de autenticación en español e inglés.
 
-La autenticación usa Supabase Auth. Se probaron localmente el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google. Quedan pendientes la recuperación de contraseña, los demás casos de prueba y la validación en producción.
+La autenticación usa Supabase Auth. Se probaron localmente el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google. 
+
+En la versión publicada se comprobó el acceso con Google, la persistencia de la sesión al recargar y el cierre de sesión.
+
+Quedan pendientes la recuperación de contraseña, los demás casos de prueba y la validación del registro e inicio con contraseña en producción.
 
 Los restaurantes y sus datos siguen siendo ficticios.
 

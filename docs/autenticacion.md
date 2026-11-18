@@ -37,13 +37,13 @@ En Authentication:
 
 - Habilitar el proveedor Email y el registro de usuarios.
 - Mantener la confirmación de correo habilitada.
-- Establecer una longitud mínima de contraseña de 8 caracteres
-  en el servidor, para que coincida con el formulario.
-- En URL Configuration, usar `http://localhost:5173` como Site URL
-  durante el desarrollo.
-- Añadir a Redirect URLs:
+- Establecer una longitud mínima de contraseña de 8 caracteres en el servidor, para que coincida con el formulario.
+- En URL Configuration, usar como Site URL: `https://proyectodisenosoftware.vercel.app`..
+- Mantener estas direcciones en Redirect URLs:
   - `http://localhost:5173`
   - `http://localhost:5173/?auth=recovery`
+  - `https://proyectodisenosoftware.vercel.app`
+  - `https://proyectodisenosoftware.vercel.app/?auth=recovery`
 
 Ejecutar:
 
@@ -83,9 +83,11 @@ y variables originales del proveedor.
    Si la aplicación está en pruebas, agregar las cuentas
    que participarán como usuarios de prueba.
 3. Crear un cliente OAuth de tipo Web application.
-   Añadir `http://localhost:5173` a los orígenes autorizados
-   y la URL de callback copiada de Supabase a las URI
-   de redirección autorizadas.
+   Añadir estos orígenes autorizados:
+   - `http://localhost:5173`
+   - `https://proyectodisenosoftware.vercel.app`
+
+   En las URI de redirección autorizadas, usar la URL de callback copiada de Supabase. Es la misma para el acceso local y publicado.
 4. Copiar Client ID y Client Secret al proveedor Google
    de Supabase, habilitarlo y guardar.
 5. Usar el botón «Continuar con Google» de Mesa Cerca
@@ -106,17 +108,22 @@ npm run dev -- --port 5173 --strictPort
 ```
 
 Completar la lista de pruebas de `docs/pruebas-autenticacion.md`.
-No considerar la integración terminada únicamente porque
-la compilación pase.
+No considerar la integración terminada únicamente porque la compilación pase.
 
-Al desplegar:
+## 5. Configuración en Vercel
 
-- Establecer las dos variables públicas en el alojamiento.
-- Cambiar Site URL a la dirección pública.
-- Añadir las URLs de retorno de producción en Supabase:
-  la raíz y `/?auth=recovery`.
-- Agregar el origen público en Google.
-- Conservar localhost solo mientras se necesite para desarrollar.
+La aplicación está publicada en:
+https://proyectodisenosoftware.vercel.app
+
+En Settings → Environment Variables se configuraron para Production:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+Después de guardar las variables se realizó un Redeploy para
+incorporarlas a la compilación.
+
+Las URLs autorizadas en Supabase y Google permiten utilizar tanto la versión publicada como localhost durante el desarrollo. Los valores de las credenciales no se incluyen en esta documentación.
 
 ## Fuentes técnicas
 

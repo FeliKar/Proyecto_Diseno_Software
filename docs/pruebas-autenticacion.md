@@ -45,4 +45,14 @@ ni tokens aquí.
 Las comprobaciones automáticas de lint, pruebas y compilación pasaron.
 
 Se comprobó el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google en localhost:5173. También se verificó la persistencia de la sesión al recargar y el cierre de sesión.
-Quedan pendientes la recuperación de contraseña, los demás casos sin marcar y las pruebas en la versión publicada.
+
+
+### Pruebas en producción — 18/11/2026
+
+Dirección: https://proyectodisenosoftware.vercel.app
+
+- [x] Iniciar sesión con Google y regresar a la aplicación.
+- [x] Recargar la página y conservar la sesión.
+- [x] Cerrar sesión y permanecer desconectado después de recargar.
+
+Quedan pendientes la recuperación de contraseña, los demás casos sin marcar y la validación del registro e inicio con correo y contraseña en producción.
