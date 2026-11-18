@@ -19,16 +19,16 @@ Usar cuentas propias de prueba y nunca guardar contraseñas
 ni tokens aquí.
 
 - [ ] Sin `.env.local`: la página muestra el aviso y permite buscar/filtrar restaurantes.
-- [ ] Con configuración válida: aparece el formulario y termina el estado de carga.
+- [x] Con configuración válida: aparece el formulario y termina el estado de carga.
 - [ ] Correo inválido o contraseña nueva menor a 8 caracteres: el formulario impide el envío.
 - [ ] Contraseñas diferentes: aparece un mensaje y no se registra el usuario.
-- [ ] Registro: llega el correo; el enlace confirma la cuenta y regresa a la web.
+- [x] Registro: llega el correo; el enlace confirma la cuenta y regresa a la web.
 - [ ] Registro duplicado: la interfaz no promete crear una segunda cuenta.
 - [ ] Correo sin confirmar: no permite entrar y muestra el mensaje correspondiente.
 - [ ] Contraseña incorrecta: aparece un error y permite volver a intentar.
-- [ ] Inicio correcto: muestra el correo del usuario; recargar conserva la sesión.
-- [ ] Cerrar sesión: vuelve al formulario; recargar no restaura la sesión cerrada.
-- [ ] Google: autentica con una cuenta de prueba y regresa a la aplicación.
+- [x] Inicio correcto: muestra el correo del usuario; recargar conserva la sesión.
+- [x] Cerrar sesión: vuelve al formulario; recargar no restaura la sesión cerrada.
+- [x] Google: autentica con una cuenta de prueba y regresa a la aplicación.
 - [ ] Cancelar Google: al regresar muestra un error comprensible y permite reintentar.
 - [ ] Recuperación: el enlace abre el formulario de nueva contraseña; guardarla funciona y permite entrar con ella tras cerrar sesión.
 - [ ] Enlace de recuperación vencido/usado: no permite actualizar y ofrece solicitar otro.
@@ -39,9 +39,10 @@ ni tokens aquí.
 - [ ] Pantalla de 320 px: formularios sin desbordamiento horizontal.
 - [ ] Buscar, combinar filtros, limpiar y desplegar detalles siguen funcionando.
 
-## Resultado de la preparación
 
-En la copia de preparación pasaron lint, las dos pruebas automáticas
-y build. Los casos manuales de esta lista quedan pendientes
-de configurar Supabase, Google y correo.
-No se han probado cuentas reales.
+## Resultados de las pruebas
+
+Las comprobaciones automáticas de lint, pruebas y compilación pasaron.
+
+Se comprobó el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google en localhost:5173. También se verificó la persistencia de la sesión al recargar y el cierre de sesión.
+Quedan pendientes la recuperación de contraseña, los demás casos sin marcar y las pruebas en la versión publicada.

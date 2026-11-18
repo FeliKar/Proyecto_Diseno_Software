@@ -18,9 +18,7 @@ Aplicación web de recomendación de restaurantes.
 - Formularios de acceso con Supabase: correo y contraseña, Google y recuperación.
 - Estados de carga y mensajes de autenticación en español e inglés.
 
-La autenticación usa Supabase Auth y requiere configurar el acceso
-con correo y el proveedor Google. Los formularios están implementados,
-pero todavía falta comprobar los flujos completos con cuentas reales.
+La autenticación usa Supabase Auth. Se probaron localmente el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google. Quedan pendientes la recuperación de contraseña, los demás casos de prueba y la validación en producción.
 
 Los restaurantes y sus datos siguen siendo ficticios.
 
