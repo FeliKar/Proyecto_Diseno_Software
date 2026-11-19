@@ -38,7 +38,7 @@ En Authentication:
 - Habilitar el proveedor Email y el registro de usuarios.
 - Mantener la confirmación de correo habilitada.
 - Establecer una longitud mínima de contraseña de 8 caracteres en el servidor, para que coincida con el formulario.
-- En URL Configuration, usar como Site URL: `https://proyectodisenosoftware.vercel.app`..
+- En URL Configuration, usar como Site URL: `https://proyectodisenosoftware.vercel.app`.
 - Mantener estas direcciones en Redirect URLs:
   - `http://localhost:5173`
   - `http://localhost:5173/?auth=recovery`
