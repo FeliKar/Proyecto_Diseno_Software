@@ -19,6 +19,9 @@ Versión publicada: [Mesa Cerca](https://proyectodisenosoftware.vercel.app).
 - Detalles desplegables con dirección y horario ficticios en ambos idiomas.
 - Formularios de acceso con Supabase: correo y contraseña, Google y recuperación.
 - Estados de carga y mensajes de autenticación en español e inglés.
+- Búsqueda local de restaurantes reales con filtros enviados al backend.
+- Selección del punto de búsqueda en un mapa.
+- Manejo de ubicación imprecisa, permisos denegados y errores de conexión.
 
 La autenticación usa Supabase Auth. Se probaron localmente el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google.
 
@@ -26,9 +29,9 @@ En la versión publicada se comprobó el acceso con Google, la persistencia de l
 
 Quedan pendientes la recuperación de contraseña, los demás casos de prueba y la validación del registro e inicio con contraseña en producción.
 
-Los restaurantes mostrados en la interfaz siguen siendo ficticios. El backend local ya permite consultar restaurantes reales mediante Google Places.
+La interfaz local permite buscar restaurantes reales. La versión publicada mantiene los datos de demostración hasta desplegar el backend.
 
-Próximas implementaciones planeadas: datos reales de restaurantes, mapas, completar la configuración y validación de autenticación, listas personales y recomendaciones.
+Próximas implementaciones planeadas: publicación de la búsqueda real y visualización de restaurantes en el mapa, completar la configuración y validación de autenticación, listas personales y recomendaciones.
 
 
 
@@ -40,6 +43,7 @@ Próximas implementaciones planeadas: datos reales de restaurantes, mapas, compl
 - CSS para los estilos y la adaptación a distintos tamaños de pantalla.
 - Supabase Auth para la autenticación.
 - Deno y Google Places API (New) para el backend de búsqueda.
+- Google Maps JavaScript API para seleccionar el punto de búsqueda.
 
 
 
@@ -105,8 +109,25 @@ El archivo `.env.local` está excluido de Git. La clave se utiliza
 - Consulta real con coordenadas de Santiago: respuesta HTTP 200
   y cinco restaurantes con direcciones y enlaces a Google Maps.
 
-La conexión con la interfaz y el despliegue del backend están pendientes.
-La web todavía muestra restaurantes de demostración.
+La conexión entre la interfaz y el backend está implementada para el entorno
+local. El despliegue del backend sigue pendiente.
+
+Para activar la búsqueda real, configurar `VITE_REAL_SEARCH=true` en el
+archivo `.env.local` de la raíz y ejecutar ambos servidores:
+
+- `npm run backend`
+- `npm run dev -- --port 5173 --strictPort`
+
+El mapa requiere `VITE_GOOGLE_MAPS_API_KEY`, con una clave restringida a
+Maps JavaScript API y a los sitios web autorizados. Esta clave de navegador
+es distinta de la clave privada de Places utilizada por el backend.
+
+El punto de búsqueda se conserva al cambiar los filtros mientras la página permanece abierta. Las ubicaciones automáticas con una incertidumbre superior a 1 km se rechazan y se ofrece seleccionar un punto en el mapa.
+
+Se probó la selección de ubicación en el mapa y la conservación de las
+coordenadas al cambiar los filtros. También se comprobaron el cambio del
+punto de búsqueda, el rechazo de ubicaciones automáticas imprecisas,
+los mensajes en ambos idiomas y el manejo del backend desconectado.
 
 
 ## Comprobaciones
@@ -130,3 +151,5 @@ Se utilizó ChatGPT para proponer código de autenticación, explicar la integra
 La configuración del proyecto de Supabase y la incorporación del código se realizaron manualmente. La revisión y las pruebas de los flujos completos de autenticación siguen en proceso.
 
 Se utilizó ChatGPT como apoyo en la implementación del backend con Deno y Google Places, incluyendo propuestas de código, validaciones, manejo de errores y pruebas automatizadas. La integración y configuración se realizaron manualmente, y se comprobó el funcionamiento mediante pruebas y una consulta real a la API.
+
+También se utilizó ChatGPT como apoyo para conectar la interfaz con el backend, incorporar la selección de ubicación en el mapa y preparar el manejo de errores y las pruebas automatizadas de búsqueda.

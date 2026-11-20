@@ -83,5 +83,40 @@
       "generic": "Unable to complete the request. Try again; if the problem persists, check the service configuration.",
       "passwordMismatch": "Passwords do not match."
     }
+  },
+  "nearby": {
+    "title": "Restaurants near you",
+    "description": "Find up to five options within three kilometres. Filters apply when you press Search.",
+    "submit": "Search near me",
+    "loading": "Getting your location and searching for restaurants…",
+    "initial": "Search using your browser location or choose a point on the map.",
+    "empty": "No matches among the restaurants checked. Try different filters.",
+    "priceUnknown": "Price unavailable",
+    "addressUnknown": "Address unavailable",
+    "maps": "View on Google Maps",
+    "source": "Data from Google Maps",
+    "limit": "The search filters up to twenty nearby candidates and displays at most five. It may not include every restaurant in the area.",
+    "errors": {
+      "unsupported": "Your browser does not support location access.",
+      "denied": "Allow location access in your browser and search again.",
+      "location": "We could not get your location. Check your device location settings and try again.",
+      "timeout": "The search took too long. Please try again.",
+      "service": "We could not retrieve restaurants. Please try again later.",
+      "imprecise": "Your browser location is too imprecise. Choose where to search on the map."
+    }
+  },
+  "locationPicker": {
+    "open": "Choose location on map",
+    "close": "Close map",
+    "device": "Search near me again",
+    "selected": "Search point: {{latitude}}, {{longitude}}.",
+    "search": "Search this location",
+    "ready": "The search will use your chosen point. You can adjust the filters.",
+    "help": "Zoom and move the map to the area you want. You can also click a point. The cross marks the centre you will select; it is not your detected location.",
+    "confirm": "Use map centre",
+    "loading": "Loading map…",
+    "unavailable": "We could not load the map. Check your connection and Maps JavaScript API configuration, then reload the page.",
+    "missing": "Map selection is not configured yet.",
+    "label": "Map to choose the search location"
   }
 }

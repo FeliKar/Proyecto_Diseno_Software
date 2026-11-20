@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from './components/AuthPanel'
+import RestaurantSearch from './components/RestaurantSearch'
+
+const realSearchEnabled = import.meta.env.VITE_REAL_SEARCH === 'true'
 
 const restaurants = [
   {
@@ -95,7 +98,7 @@ export default function App() {
     setCategory('')
     setPriceLevel('')
   }
-  
+
   return (
     <>
       <header className="site-header">
@@ -144,87 +147,89 @@ export default function App() {
 
         <AuthPanel />
 
-        <p className="demo-notice">{t('demoNotice')}</p>
+        {!realSearchEnabled && <p className="demo-notice">{t('demoNotice')}</p>}
 
-        <section
-          id="restaurants"
-          className="restaurants-section"
-          aria-labelledby="restaurants-title"
-        >
-          <div className="section-heading">
-            <h2 id="restaurants-title">{t('restaurantsTitle')}</h2>
-            <p>{t('restaurantsDescription')}</p>
-          </div>
-
-
-          <div className="search-field">
-            <label htmlFor="restaurant-search">{t('searchLabel')}</label>
-            <input
-              id="restaurant-search"
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={t('searchPlaceholder')}
-            />
-          </div>
-
-
-          <div className="filters">
-            <div className="filter-field">
-              <label htmlFor="category-filter">{t('categoryLabel')}</label>
-              <select
-                id="category-filter"
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              >
-                <option value="">{t('allCategories')}</option>
-                <option value="vegetarian">{t('categories.vegetarian')}</option>
-                <option value="italian">{t('categories.italian')}</option>
-                <option value="seafood">{t('categories.seafood')}</option>
-              </select>
+        {realSearchEnabled ? <RestaurantSearch /> : (
+          <section
+            id="restaurants"
+            className="restaurants-section"
+            aria-labelledby="restaurants-title"
+          >
+            <div className="section-heading">
+              <h2 id="restaurants-title">{t('restaurantsTitle')}</h2>
+              <p>{t('restaurantsDescription')}</p>
             </div>
 
-            <div className="filter-field">
-              <label htmlFor="price-filter">{t('priceLabel')}</label>
-              <select
-                id="price-filter"
-                value={priceLevel}
-                onChange={(event) => setPriceLevel(event.target.value)}
-              >
-                <option value="">{t('allPrices')}</option>
-                <option value="inexpensive">{t('priceLevels.inexpensive')}</option>
-                <option value="moderate">{t('priceLevels.moderate')}</option>
-                <option value="expensive">{t('priceLevels.expensive')}</option>
-              </select>
-            </div>
 
-            <button
-              type="button"
-              className="clear-filters"
-              onClick={clearFilters}
-            >
-              {t('clearFilters')}
-            </button>
-          </div>
-
-
-          <p role="status">
-            {filteredRestaurants.length === 0 ? t('noResults') : ''}
-          </p>
-
-
-          <div className="restaurant-grid">
-            {filteredRestaurants.map((restaurant) => (
-              <RestaurantCard
-                key={restaurant.id}
-                restaurant={restaurant}
+            <div className="search-field">
+              <label htmlFor="restaurant-search">{t('searchLabel')}</label>
+              <input
+                id="restaurant-search"
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder={t('searchPlaceholder')}
               />
-            ))}
-          </div>
-        </section>
+            </div>
+
+
+            <div className="filters">
+              <div className="filter-field">
+                <label htmlFor="category-filter">{t('categoryLabel')}</label>
+                <select
+                  id="category-filter"
+                  value={category}
+                  onChange={(event) => setCategory(event.target.value)}
+                >
+                  <option value="">{t('allCategories')}</option>
+                  <option value="vegetarian">{t('categories.vegetarian')}</option>
+                  <option value="italian">{t('categories.italian')}</option>
+                  <option value="seafood">{t('categories.seafood')}</option>
+                </select>
+              </div>
+
+              <div className="filter-field">
+                <label htmlFor="price-filter">{t('priceLabel')}</label>
+                <select
+                  id="price-filter"
+                  value={priceLevel}
+                  onChange={(event) => setPriceLevel(event.target.value)}
+                >
+                  <option value="">{t('allPrices')}</option>
+                  <option value="inexpensive">{t('priceLevels.inexpensive')}</option>
+                  <option value="moderate">{t('priceLevels.moderate')}</option>
+                  <option value="expensive">{t('priceLevels.expensive')}</option>
+                </select>
+              </div>
+
+              <button
+                type="button"
+                className="clear-filters"
+                onClick={clearFilters}
+              >
+                {t('clearFilters')}
+              </button>
+            </div>
+
+
+            <p role="status">
+              {filteredRestaurants.length === 0 ? t('noResults') : ''}
+            </p>
+
+
+            <div className="restaurant-grid">
+              {filteredRestaurants.map((restaurant) => (
+                <RestaurantCard
+                  key={restaurant.id}
+                  restaurant={restaurant}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
-      
+
     </>
   )
 }

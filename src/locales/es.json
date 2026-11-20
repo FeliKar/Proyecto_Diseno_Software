@@ -83,5 +83,40 @@
             "generic": "No se pudo completar la operación. Intenta nuevamente; si el problema continúa, revisa la configuración del servicio.",
             "passwordMismatch": "Las contraseñas no coinciden."
         }
+    },
+    "nearby": {
+        "title": "Restaurantes cerca de ti",
+        "description": "Busca hasta cinco opciones en un radio de tres kilómetros. Los filtros se aplican al pulsar Buscar.",
+        "submit": "Buscar cerca de mí",
+        "loading": "Obteniendo ubicación y buscando restaurantes…",
+        "initial": "Busca con la ubicación del navegador o elige un punto en el mapa.",
+        "empty": "No encontramos coincidencias entre los restaurantes consultados. Prueba con otros filtros.",
+        "priceUnknown": "Precio no disponible",
+        "addressUnknown": "Dirección no disponible",
+        "maps": "Ver en Google Maps",
+        "source": "Datos de Google Maps",
+        "limit": "La búsqueda filtra hasta veinte candidatos cercanos y muestra un máximo de cinco. No incluye necesariamente todos los locales de la zona.",
+        "errors": {
+            "unsupported": "Tu navegador no permite obtener la ubicación.",
+            "denied": "Permite el acceso a la ubicación en tu navegador y vuelve a buscar.",
+            "location": "No pudimos obtener tu ubicación. Comprueba la ubicación del dispositivo e intenta nuevamente.",
+            "timeout": "La búsqueda tardó demasiado. Intenta nuevamente.",
+            "service": "No pudimos consultar los restaurantes. Intenta nuevamente más tarde.",
+            "imprecise": "La ubicación del navegador es demasiado imprecisa. Elige dónde buscar en el mapa."
+        }
+    },
+    "locationPicker": {
+        "open": "Elegir ubicación en el mapa",
+        "close": "Cerrar mapa",
+        "device": "Volver a buscar cerca de mí",
+        "selected": "Punto de búsqueda: {{latitude}}, {{longitude}}.",
+        "search": "Buscar en esta ubicación",
+        "ready": "La búsqueda usará el punto elegido. Puedes ajustar los filtros.",
+        "help": "Acerca y mueve el mapa hasta la zona que buscas. También puedes hacer clic en un punto. La cruz indica el centro que vas a seleccionar; no es tu ubicación detectada.",
+        "confirm": "Usar el centro del mapa",
+        "loading": "Cargando mapa…",
+        "unavailable": "No pudimos cargar el mapa. Revisa la conexión y la configuración de Maps JavaScript API, y recarga la página.",
+        "missing": "La selección en el mapa todavía no está configurada.",
+        "label": "Mapa para elegir el punto de búsqueda"
     }
 }

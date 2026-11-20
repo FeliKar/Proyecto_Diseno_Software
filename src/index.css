@@ -412,3 +412,58 @@ h1 {
   color: #a12424;
   margin-top: 16px;
 }
+
+.restaurant-search fieldset {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.restaurant-search button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.restaurant-search button:focus-visible {
+  outline: 3px solid #9c4615;
+  outline-offset: 3px;
+}
+
+.restaurant-content h3,
+.restaurant-content p {
+  overflow-wrap: anywhere;
+}
+
+.restaurant-map-link {
+  margin-top: 16px;
+}
+
+.location-picker {
+  margin-bottom: 24px;
+}
+
+.location-map-frame {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.location-map {
+  height: 360px;
+  width: 100%;
+  border: 1px solid #8a968d;
+  border-radius: 8px;
+}
+
+.location-map-cross {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: #a12424;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 0 3px white, 0 0 3px white;
+}

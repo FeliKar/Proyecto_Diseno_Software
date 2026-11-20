@@ -1,0 +1,160 @@
+import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import LocationPicker from './LocationPicker'
+import { getLocation, safeLink, searchRestaurants } from '../lib/restaurant-search.mjs'
+
+export default function RestaurantSearch() {
+    const { t, i18n } = useTranslation()
+    const [search, setSearch] = useState('')
+    const [category, setCategory] = useState('')
+    const [priceLevel, setPriceLevel] = useState('')
+    const [restaurants, setRestaurants] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState('')
+    const [location, setLocation] = useState(null)
+    const [showMap, setShowMap] = useState(false)
+    const busy = useRef(false)
+
+    function resetResults() {
+        setRestaurants(null)
+        setError('')
+    }
+
+    function clearFilters() {
+        setSearch('')
+        setCategory('')
+        setPriceLevel('')
+        resetResults()
+    }
+
+    async function handleSearch(event, useDevice = false) {
+        event.preventDefault()
+        if (busy.current) return
+        busy.current = true
+        setLoading(true)
+        resetResults()
+        try {
+            // Keep the chosen point when changing filters.
+            const point = useDevice || !location ? await getLocation() : location
+            setLocation(point)
+            const results = await searchRestaurants({
+                ...point, search, category, priceLevel,
+                language: i18n.resolvedLanguage?.startsWith('en') ? 'en' : 'es',
+            })
+            setRestaurants(results)
+        } catch (failure) {
+            const knownErrors = ['unsupported', 'denied', 'location', 'timeout', 'imprecise']
+            setError(knownErrors.includes(failure.message) ? failure.message : 'service')
+        } finally {
+            busy.current = false
+            setLoading(false)
+        }
+    }
+
+    return (
+        <section id="restaurants" className="restaurants-section" aria-labelledby="restaurants-title">
+            <div className="section-heading">
+                <h2 id="restaurants-title">{t('nearby.title')}</h2>
+                <p>{t('nearby.description')}</p>
+            </div>
+
+            <form onSubmit={(event) => handleSearch(event)} className="restaurant-search">
+                <fieldset disabled={loading}>
+                    <div className="filters">
+                        <button type="button" className="clear-filters"
+                            onClick={() => setShowMap(!showMap)}>
+                            {t(showMap ? 'locationPicker.close' : 'locationPicker.open')}
+                        </button>
+                        {location && <button type="button" className="clear-filters"
+                            onClick={(event) => handleSearch(event, true)}>
+                            {t('locationPicker.device')}
+                        </button>}
+                    </div>
+                    {location && <p role="status">
+                        {t('locationPicker.selected', {
+                            latitude: location.latitude.toFixed(5),
+                            longitude: location.longitude.toFixed(5),
+                        })}
+                    </p>}
+                    {showMap && <LocationPicker initialLocation={location}
+                        onSelect={(point) => {
+                            setLocation(point)
+                            setShowMap(false)
+                            resetResults()
+                        }} />}
+
+                    <div className="search-field">
+                        <label htmlFor="restaurant-search">{t('searchLabel')}</label>
+                        <input id="restaurant-search" type="search" maxLength={80} value={search}
+                            onChange={(event) => { setSearch(event.target.value); resetResults() }} />
+                    </div>
+                    <div className="filters">
+                        <div className="filter-field">
+                            <label htmlFor="category-filter">{t('categoryLabel')}</label>
+                            <select id="category-filter" value={category}
+                                onChange={(event) => { setCategory(event.target.value); resetResults() }}>
+                                <option value="">{t('allCategories')}</option>
+                                {['vegetarian', 'italian', 'seafood'].map((value) => (
+                                    <option key={value} value={value}>{t(`categories.${value}`)}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="filter-field">
+                            <label htmlFor="price-filter">{t('priceLabel')}</label>
+                            <select id="price-filter" value={priceLevel}
+                                onChange={(event) => { setPriceLevel(event.target.value); resetResults() }}>
+                                <option value="">{t('allPrices')}</option>
+                                {['inexpensive', 'moderate', 'expensive'].map((value) => (
+                                    <option key={value} value={value}>{t(`priceLevels.${value}`)}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <button type="button" className="clear-filters" onClick={clearFilters}>{t('clearFilters')}</button>
+                        <button type="submit" className="auth-submit">{t(location ? 'locationPicker.search' : 'nearby.submit')}</button>
+                    </div>
+                </fieldset>
+            </form>
+
+            <p role="status">
+                {loading ? t('nearby.loading') : !error && (
+                    restaurants === null ? t(location ? 'locationPicker.ready' : 'nearby.initial') : restaurants.length === 0 ? t('nearby.empty') : ''
+                )}
+            </p>
+            {error && <p role="alert" className="auth-error">{t(`nearby.errors.${error}`)}</p>}
+            <p>{t('nearby.limit')}</p>
+
+            {restaurants !== null && <p>{t('nearby.source')}</p>}
+            <div className="restaurant-grid" aria-busy={loading}>
+                {restaurants?.map((restaurant) => (
+                    <article className="restaurant-card" key={restaurant.id}>
+                        <div className="restaurant-content">
+                            <h3>{restaurant.name}</h3>
+                            <p>{restaurant.address || t('nearby.addressUnknown')}</p>
+                            <div className="price">
+                                <span>{t('priceLabel')}</span>
+                                <strong>{restaurant.priceLevel
+                                    ? t(`priceLevels.${restaurant.priceLevel}`) : t('nearby.priceUnknown')}</strong>
+                            </div>
+                            {safeLink(restaurant.googleMapsUrl) && (
+                                <p className="restaurant-map-link">
+                                    <a href={safeLink(restaurant.googleMapsUrl)} target="_blank" rel="noopener noreferrer">
+                                        {t('nearby.maps')}
+                                    </a>
+                                </p>
+                            )}
+                            {restaurant.attributions?.map((attribution, index) => (
+                                <p key={index}>
+                                    {safeLink(attribution.providerUri)
+                                        ? <a href={safeLink(attribution.providerUri)} target="_blank" rel="noopener noreferrer">
+                                            {attribution.provider || attribution.providerUri}
+                                        </a>
+                                        : attribution.provider}
+                                </p>
+                            ))}
+                        </div>
+                    </article>
+                ))}
+            </div>
+        </section>
+    )
+}
