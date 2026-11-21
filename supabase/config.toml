@@ -1,0 +1,6 @@
+project_id = "mesa-cerca"
+
+[functions.restaurants]
+# La sesión se verifica dentro de la función con Supabase Auth.
+verify_jwt = false
+entrypoint = "./functions/restaurants/index.ts"

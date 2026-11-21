@@ -102,7 +102,9 @@
       "location": "We could not get your location. Check your device location settings and try again.",
       "timeout": "The search took too long. Please try again.",
       "service": "We could not retrieve restaurants. Please try again later.",
-      "imprecise": "Your browser location is too imprecise. Choose where to search on the map."
+      "imprecise": "Your browser location is too imprecise. Choose where to search on the map.",
+      "signin": "Sign in under My account to search for restaurants.",
+      "rateLimit": "Search limit reached: 10 per minute and 100 per day (UTC). Please wait before trying again."
     }
   },
   "locationPicker": {

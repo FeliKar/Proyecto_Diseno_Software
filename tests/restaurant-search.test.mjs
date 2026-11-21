@@ -46,3 +46,38 @@ test('rejects imprecise positions before a restaurant search', async () => {
         getCurrentPosition: (ok) => ok({ coords: { latitude: 10, longitude: 20, accuracy: 1000 } }),
     }), { latitude: 10, longitude: 20 })
 })
+
+
+test('hosted search sends the session and handles access errors', async () => {
+    const options = {
+        url: 'https://example.supabase.co/functions/v1/restaurants',
+        token: 'test-token',
+        publishableKey: 'test-public-key',
+    }
+
+    await searchRestaurants({}, async (url, request) => {
+        assert.equal(url, options.url)
+        assert.equal(request.headers.Authorization, 'Bearer test-token')
+        assert.equal(request.headers.apikey, 'test-public-key')
+
+        return Response.json({ restaurants: [] })
+    }, options)
+
+    await assert.rejects(
+        searchRestaurants(
+            {},
+            async () => new Response('', { status: 401 }),
+            options,
+        ),
+        /signin/,
+    )
+
+    await assert.rejects(
+        searchRestaurants(
+            {},
+            async () => new Response('', { status: 429 }),
+            options,
+        ),
+        /rateLimit/,
+    )
+})

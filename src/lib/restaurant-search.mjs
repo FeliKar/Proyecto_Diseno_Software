@@ -20,21 +20,61 @@ export function getLocation(geolocation = globalThis.navigator?.geolocation) {
     })
 }
 
-export async function searchRestaurants(filters, fetcher = fetch) {
+export async function searchRestaurants(
+    filters,
+    fetcher = fetch,
+    options = {},
+) {
     try {
-        const response = await fetcher('/api/restaurants', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(filters),
-            signal: AbortSignal.timeout(15000),
-        })
-        if (response.status === 504) throw new Error('timeout')
-        if (!response.ok) throw new Error('service')
+        const response = await fetcher(
+            options.url || '/api/restaurants',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(options.token
+                        ? {
+                            Authorization: `Bearer ${options.token}`,
+                            apikey: options.publishableKey,
+                        }
+                        : {}),
+                },
+                body: JSON.stringify(filters),
+                signal: AbortSignal.timeout(25000),
+            },
+        )
+
+        if (response.status === 401) {
+            throw new Error('signin')
+        }
+
+        if (response.status === 429) {
+            throw new Error('rateLimit')
+        }
+
+        if (response.status === 504) {
+            throw new Error('timeout')
+        }
+
+        if (!response.ok) {
+            throw new Error('service')
+        }
+
         const data = await response.json()
-        if (!Array.isArray(data.restaurants)) throw new Error('service')
+
+        if (!Array.isArray(data.restaurants)) {
+            throw new Error('service')
+        }
+
         return data.restaurants
     } catch (error) {
-        throw new Error(error.name === 'TimeoutError' || error.message === 'timeout' ? 'timeout' : 'service')
+        if (['signin', 'rateLimit', 'timeout'].includes(error.message)) {
+            throw error
+        }
+
+        throw new Error(
+            error.name === 'TimeoutError' ? 'timeout' : 'service',
+        )
     }
 }
 

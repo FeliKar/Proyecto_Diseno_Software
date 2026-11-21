@@ -102,7 +102,9 @@
             "location": "No pudimos obtener tu ubicación. Comprueba la ubicación del dispositivo e intenta nuevamente.",
             "timeout": "La búsqueda tardó demasiado. Intenta nuevamente.",
             "service": "No pudimos consultar los restaurantes. Intenta nuevamente más tarde.",
-            "imprecise": "La ubicación del navegador es demasiado imprecisa. Elige dónde buscar en el mapa."
+            "imprecise": "La ubicación del navegador es demasiado imprecisa. Elige dónde buscar en el mapa.",
+            "signin": "Inicia sesión en Mi cuenta para buscar restaurantes.",
+            "rateLimit": "Llegaste al límite de búsquedas: 10 por minuto y 100 al día (UTC). Espera antes de volver a intentar."
         }
     },
     "locationPicker": {

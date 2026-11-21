@@ -10,8 +10,8 @@
     "preview": "vite preview",
     "test": "node --test tests/*.test.mjs",
     "backend": "deno run --env-file=backend/.env.local --allow-env=GOOGLE_PLACES_API_KEY --allow-net=127.0.0.1:8000,places.googleapis.com backend/server.mjs",
-    "test:backend": "deno test backend/places.test.mjs",
-    "lint:backend": "deno lint backend/"
+    "test:backend": "deno test backend/*.test.mjs",
+    "lint:backend": "deno lint backend/ supabase/functions/"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

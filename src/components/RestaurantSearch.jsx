@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LocationPicker from './LocationPicker'
 import { getLocation, safeLink, searchRestaurants } from '../lib/restaurant-search.mjs'
+import { getSearchOptions } from '../lib/search-session'
 
 export default function RestaurantSearch() {
     const { t, i18n } = useTranslation()
@@ -34,16 +35,30 @@ export default function RestaurantSearch() {
         setLoading(true)
         resetResults()
         try {
-            // Keep the chosen point when changing filters.
-            const point = useDevice || !location ? await getLocation() : location
+            const options = await getSearchOptions()
+
+            // Conserva el punto elegido al cambiar los filtros.
+            const point = useDevice || !location
+                ? await getLocation()
+                : location
+
             setLocation(point)
-            const results = await searchRestaurants({
-                ...point, search, category, priceLevel,
-                language: i18n.resolvedLanguage?.startsWith('en') ? 'en' : 'es',
-            })
+
+            const results = await searchRestaurants(
+                {
+                    ...point,
+                    search,
+                    category,
+                    priceLevel,
+                    language: i18n.resolvedLanguage?.startsWith('en') ? 'en' : 'es',
+                },
+                fetch,
+                options,
+            )
+
             setRestaurants(results)
         } catch (failure) {
-            const knownErrors = ['unsupported', 'denied', 'location', 'timeout', 'imprecise']
+            const knownErrors = ['unsupported', 'denied', 'location', 'timeout', 'imprecise', 'signin', 'rateLimit']
             setError(knownErrors.includes(failure.message) ? failure.message : 'service')
         } finally {
             busy.current = false

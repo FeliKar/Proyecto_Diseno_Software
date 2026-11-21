@@ -29,7 +29,7 @@ En la versión publicada se comprobó el acceso con Google, la persistencia de l
 
 Quedan pendientes la recuperación de contraseña, los demás casos de prueba y la validación del registro e inicio con contraseña en producción.
 
-La interfaz local permite buscar restaurantes reales. La versión publicada mantiene los datos de demostración hasta desplegar el backend.
+El backend de búsqueda está desplegado en Supabase Edge Functions. Se comprobó su funcionamiento desde la interfaz local, con el servidor local del backend apagado. La activación y comprobación de la búsqueda real en la versión publicada quedan pendientes del próximo despliegue de la interfaz.
 
 Próximas implementaciones planeadas: publicación de la búsqueda real y visualización de restaurantes en el mapa, completar la configuración y validación de autenticación, listas personales y recomendaciones.
 
@@ -44,6 +44,7 @@ Próximas implementaciones planeadas: publicación de la búsqueda real y visual
 - Supabase Auth para la autenticación.
 - Deno y Google Places API (New) para el backend de búsqueda.
 - Google Maps JavaScript API para seleccionar el punto de búsqueda.
+- Supabase Edge Functions para alojar el backend y PostgreSQL para controlar los límites de búsqueda por usuario.
 
 
 
@@ -103,20 +104,30 @@ El archivo `.env.local` está excluido de Git. La clave se utiliza
 #### Comprobaciones del backend
 
 - Revisión estática sin errores.
-- Cinco pruebas automatizadas aprobadas, que cubren validaciones,
-  filtros, límite de resultados, construcción de la consulta,
-  manejo de errores y rechazo de orígenes no permitidos.
+- Nueve pruebas automatizadas aprobadas, que cubren validaciones, filtros, límite de resultados, consultas al proveedor, autenticación, límites de uso y manejo de errores.
 - Consulta real con coordenadas de Santiago: respuesta HTTP 200
   y cinco restaurantes con direcciones y enlaces a Google Maps.
 
-La conexión entre la interfaz y el backend está implementada para el entorno
-local. El despliegue del backend sigue pendiente.
+#### Uso del backend desplegado
 
-Para activar la búsqueda real, configurar `VITE_REAL_SEARCH=true` en el
-archivo `.env.local` de la raíz y ejecutar ambos servidores:
+Para utilizar la búsqueda real con Supabase Edge Functions, configurar en el archivo `.env.local` de la raíz:
 
-- `npm run backend`
-- `npm run dev -- --port 5173 --strictPort`
+```dotenv
+VITE_REAL_SEARCH=true
+VITE_USE_HOSTED_BACKEND=true
+```
+
+También deben estar configuradas la URL y la clave pública de Supabase.
+
+En este modo solo se necesita ejecutar el servidor de la interfaz. La búsqueda requiere iniciar sesión y el backend valida al usuario antes de consultar Google Places.
+
+Se permiten hasta diez búsquedas por minuto y cien por día por usuario. El límite diario se reinicia según la fecha UTC. Una búsqueda válida que llega a consultar al proveedor consume cuota aunque este falle.
+
+La clave privada de Google Places se configura como secreto en Supabase y no se envía al navegador.
+
+Para trabajar con el servidor local de Deno, utilizar `VITE_USE_HOSTED_BACKEND=false` y ejecutar tanto `npm run backend` como el servidor de la interfaz.
+
+Se comprobó que una petición sin sesión recibe HTTP 401 y que una búsqueda desde la interfaz con sesión iniciada devuelve restaurantes mediante el backend desplegado.
 
 El mapa requiere `VITE_GOOGLE_MAPS_API_KEY`, con una clave restringida a
 Maps JavaScript API y a los sitios web autorizados. Esta clave de navegador
@@ -153,3 +164,5 @@ La configuración del proyecto de Supabase y la incorporación del código se re
 Se utilizó ChatGPT como apoyo en la implementación del backend con Deno y Google Places, incluyendo propuestas de código, validaciones, manejo de errores y pruebas automatizadas. La integración y configuración se realizaron manualmente, y se comprobó el funcionamiento mediante pruebas y una consulta real a la API.
 
 También se utilizó ChatGPT como apoyo para conectar la interfaz con el backend, incorporar la selección de ubicación en el mapa y preparar el manejo de errores y las pruebas automatizadas de búsqueda.
+
+Se utilizó ChatGPT como apoyo para adaptar el backend a Supabase Edge Functions, implementar la validación de sesión y los límites de búsqueda, y preparar las pruebas correspondientes. La configuración de los servicios, el despliegue y las comprobaciones manuales se realizaron durante el desarrollo.

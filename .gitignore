@@ -27,3 +27,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Archivos locales de la herramienta de Supabase
+supabase/.temp/
+supabase/.branches/
