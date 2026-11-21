@@ -54,8 +54,6 @@
         "account": "tu cuenta",
         "signin": "Iniciar sesión",
         "signup": "Crear cuenta",
-        "recover": "Enviar enlace de recuperación",
-        "update": "Guardar nueva contraseña",
         "email": "Correo electrónico",
         "password": "Contraseña",
         "confirmPassword": "Repetir contraseña",
@@ -63,25 +61,20 @@
         "google": "Continuar con Google",
         "signout": "Cerrar sesión",
         "backToLogin": "Volver al inicio de sesión",
-        "forgotPassword": "Olvidé mi contraseña",
         "loading": "Comprobando sesión…",
         "working": "Procesando…",
         "signedIn": "Sesión iniciada con {{email}}.",
         "notConfigured": "El acceso de usuarios todavía no está configurado. Puedes explorar los restaurantes de ejemplo.",
-        "confirmEmail": "Revisa tu correo para confirmar el registro. Si ya tienes una cuenta, inicia sesión o recupera tu contraseña.",
-        "recoverySent": "Si el correo corresponde a una cuenta, recibirás un enlace para cambiar tu contraseña.",
-        "passwordUpdated": "Contraseña actualizada.",
         "errors": {
             "invalidCredentials": "No pudimos iniciar sesión. Revisa el correo y la contraseña.",
-            "emailNotConfirmed": "Confirma tu correo antes de iniciar sesión.",
+            "emailNotConfirmed": "Esta cuenta tiene una confirmación pendiente. Revisa su estado con quien administra el proyecto.",
             "weakPassword": "La contraseña no cumple los requisitos de seguridad. Usa al menos 8 caracteres.",
-            "samePassword": "Elige una contraseña diferente a la actual.",
             "rateLimit": "Se hicieron demasiados intentos. Espera unos minutos antes de volver a intentar.",
-            "expiredLink": "El enlace no es válido o ya venció. Solicita uno nuevo.",
             "cancelled": "Se canceló el inicio de sesión. Puedes volver a intentarlo.",
             "network": "No pudimos conectar. Revisa tu conexión e intenta nuevamente.",
             "generic": "No se pudo completar la operación. Intenta nuevamente; si el problema continúa, revisa la configuración del servicio.",
-            "passwordMismatch": "Las contraseñas no coinciden."
+            "passwordMismatch": "Las contraseñas no coinciden.",
+            "accountExists": "Ya existe una cuenta con ese correo. Intenta iniciar sesión."
         }
     },
     "nearby": {

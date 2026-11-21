@@ -7,10 +7,6 @@ const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 const callback = new URLSearchParams(window.location.hash.slice(1))
 const query = new URLSearchParams(window.location.search)
 
-export const isRecovery =
-    callback.get('type') === 'recovery' ||
-    query.get('auth') === 'recovery'
-
 export const callbackError =
     callback.get('error_code') ||
     callback.get('error') ||

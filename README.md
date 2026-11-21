@@ -8,6 +8,10 @@ Versión publicada: [Mesa Cerca](https://proyectodisenosoftware.vercel.app).
 
 ## Funcionalidades actuales
 
+Las tarjetas con datos ficticios y sus detalles corresponden al modo
+demostración. La búsqueda real utiliza Google Places y muestra los
+datos disponibles del proveedor.
+
 - Pantalla inicial adaptable a móvil, tablet y escritorio.
 - Interfaz en español e inglés.
 - Tarjetas reutilizables con restaurantes y precios ficticios.
@@ -17,21 +21,24 @@ Versión publicada: [Mesa Cerca](https://proyectodisenosoftware.vercel.app).
 - Filtros por tipo de comida y nivel de precios combinados con la búsqueda.
 - Botón para limpiar la búsqueda y los filtros.
 - Detalles desplegables con dirección y horario ficticios en ambos idiomas.
-- Formularios de acceso con Supabase: correo y contraseña, Google y recuperación.
+- Formularios de acceso con Supabase: correo y contraseña, y Google.
 - Estados de carga y mensajes de autenticación en español e inglés.
 - Búsqueda local de restaurantes reales con filtros enviados al backend.
 - Selección del punto de búsqueda en un mapa.
 - Manejo de ubicación imprecisa, permisos denegados y errores de conexión.
 
-La autenticación usa Supabase Auth. Se probaron localmente el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google.
+La autenticación usa Supabase Auth. Para esta entrega se desactivó la confirmación de correo y se retiró la recuperación de contraseña. El registro no verifica la propiedad del correo y no requiere configurar SMTP. Las cuentas nuevas deben poder iniciar sesión inmediatamente después del registro.
 
 En la versión publicada se comprobó el acceso con Google, la persistencia de la sesión al recargar y el cierre de sesión.
 
-Quedan pendientes la recuperación de contraseña, los demás casos de prueba y la validación del registro e inicio con contraseña en producción.
+Se comprobó localmente el registro sin confirmación de correo, la persistencia
+de sesión, el acceso con contraseña, el rechazo del registro duplicado y el
+inicio con Google. Quedan pendientes la validación del nuevo registro en
+producción y los demás casos sin marcar de la lista de pruebas.
 
-El backend de búsqueda está desplegado en Supabase Edge Functions. Se comprobó su funcionamiento desde la interfaz local, con el servidor local del backend apagado. La activación y comprobación de la búsqueda real en la versión publicada quedan pendientes del próximo despliegue de la interfaz.
+El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: publicación de la búsqueda real y visualización de restaurantes en el mapa, completar la configuración y validación de autenticación, listas personales y recomendaciones.
+Próximas implementaciones planeadas: visualización de restaurantes en el mapa, completar la configuración y validación de autenticación, listas personales y recomendaciones.
 
 
 
@@ -151,7 +158,7 @@ Para pruebas y compilar:
 
 Las pruebas automáticas comprueban que ambos idiomas tengan las mismas claves de traducción y que los errores de autenticación se conviertan en los mensajes correspondientes.
 
-El registro, el inicio con Google y la recuperación de contraseña también requieren pruebas manuales con el servicio configurado. Los casos están en [la lista de pruebas](docs/pruebas-autenticacion.md).
+El registro y el inicio de sesión con contraseña o Google también requieren pruebas manuales con el servicio configurado. Los casos están en [la lista de pruebas](docs/pruebas-autenticacion.md).
 
 
 

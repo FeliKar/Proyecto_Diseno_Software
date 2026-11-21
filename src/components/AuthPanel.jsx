@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
     supabase,
-    isRecovery,
     callbackError,
 } from '../lib/supabase'
 import { authErrorKey } from '../lib/auth-errors.mjs'
@@ -12,11 +11,8 @@ export default function AuthPanel() {
 
     const [session, setSession] = useState(null)
     const [loading, setLoading] = useState(Boolean(supabase))
-    const [mode, setMode] = useState(
-        isRecovery ? 'update' : 'signin'
-    )
+    const [mode, setMode] = useState('signin')
     const [busy, setBusy] = useState(false)
-    const [notice, setNotice] = useState('')
     const [error, setError] = useState(
         callbackError ? authErrorKey({ code: callbackError }) : ''
     )
@@ -35,10 +31,6 @@ export default function AuthPanel() {
             receivedEvent = true
             setSession(nextSession)
             setLoading(false)
-
-            if (event === 'PASSWORD_RECOVERY') {
-                setMode('update')
-            }
 
             if (event === 'SIGNED_OUT') {
                 setMode('signin')
@@ -71,7 +63,6 @@ export default function AuthPanel() {
 
     function changeMode(nextMode) {
         setMode(nextMode)
-        setNotice('')
         setError('')
     }
 
@@ -86,7 +77,7 @@ export default function AuthPanel() {
         const password = String(fields.get('password') || '')
 
         if (
-            (mode === 'signup' || mode === 'update') &&
+            mode === 'signup' &&
             password !== fields.get('confirmation')
         ) {
             setError('auth.errors.passwordMismatch')
@@ -94,57 +85,17 @@ export default function AuthPanel() {
         }
 
         setBusy(true)
-        setNotice('')
         setError('')
 
         try {
-            let result
-
-            if (mode === 'signup') {
-                result = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        emailRedirectTo: window.location.origin,
-                    },
-                })
-            } else if (mode === 'recover') {
-                result = await supabase.auth.resetPasswordForEmail(
-                    email,
-                    {
-                        redirectTo: `${window.location.origin}/?auth=recovery`,
-                    },
-                )
-            } else if (mode === 'update') {
-                result = await supabase.auth.updateUser({ password })
-            } else {
-                result = await supabase.auth.signInWithPassword({
-                    email,
-                    password,
-                })
-            }
+            const result = mode === 'signup'
+                ? await supabase.auth.signUp({ email, password })
+                : await supabase.auth.signInWithPassword({ email, password })
 
             if (result.error) throw result.error
+            if (!result.data.session) throw new Error('session_missing')
 
             form.reset()
-
-            if (mode === 'signup' && !result.data.session) {
-                setNotice('auth.confirmEmail')
-            }
-
-            if (mode === 'recover') {
-                setNotice('auth.recoverySent')
-            }
-
-            if (mode === 'update') {
-                window.history.replaceState(
-                    null,
-                    '',
-                    window.location.pathname,
-                )
-                setMode('signin')
-                setNotice('auth.passwordUpdated')
-            }
         } catch (requestError) {
             setError(authErrorKey(requestError))
         } finally {
@@ -155,7 +106,6 @@ export default function AuthPanel() {
     async function googleLogin() {
         setBusy(true)
         setError('')
-        setNotice('')
 
         try {
             const { error } = await supabase.auth.signInWithOAuth({
@@ -176,7 +126,6 @@ export default function AuthPanel() {
     async function logout() {
         setBusy(true)
         setError('')
-        setNotice('')
 
         try {
             const { error } = await supabase.auth.signOut({
@@ -197,7 +146,7 @@ export default function AuthPanel() {
         }
     }
 
-    const signedIn = session && mode !== 'update'
+    const signedIn = Boolean(session)
 
     return (
         <section
@@ -231,73 +180,57 @@ export default function AuthPanel() {
                                 {t('auth.signout')}
                             </button>
                         </div>
-                    ) : mode === 'update' && !session ? (
-                        <>
-                            <p>{t('auth.errors.expiredLink')}</p>
-
-                            <button
-                                className="clear-filters"
-                                type="button"
-                                onClick={() => changeMode('recover')}
-                            >
-                                {t('auth.recover')}
-                            </button>
-                        </>
                     ) : (
                         <>
                             <h3>{t(`auth.${mode}`)}</h3>
 
                             <form key={mode} onSubmit={submit}>
                                 <fieldset disabled={busy}>
-                                    {mode !== 'update' && (
-                                        <div className="search-field">
-                                            <label htmlFor="auth-email">
-                                                {t('auth.email')}
-                                            </label>
+                                    <div className="search-field">
+                                        <label htmlFor="auth-email">
+                                            {t('auth.email')}
+                                        </label>
 
-                                            <input
-                                                id="auth-email"
-                                                name="email"
-                                                type="email"
-                                                autoComplete="email"
-                                                required
-                                            />
-                                        </div>
-                                    )}
+                                        <input
+                                            id="auth-email"
+                                            name="email"
+                                            type="email"
+                                            autoComplete="email"
+                                            required
+                                        />
+                                    </div>
 
-                                    {mode !== 'recover' && (
-                                        <div className="search-field">
-                                            <label htmlFor="auth-password">
-                                                {t('auth.password')}
-                                            </label>
+                                    <div className="search-field">
+                                        <label htmlFor="auth-password">
+                                            {t('auth.password')}
+                                        </label>
 
-                                            <input
-                                                id="auth-password"
-                                                name="password"
-                                                type="password"
-                                                autoComplete={
-                                                    mode === 'signin'
-                                                        ? 'current-password'
-                                                        : 'new-password'
-                                                }
-                                                minLength={mode === 'signin' ? 1 : 8}
-                                                required
-                                                aria-describedby={
-                                                    mode === 'signin'
-                                                        ? undefined
-                                                        : 'password-hint'
-                                                }
-                                            />
+                                        <input
+                                            id="auth-password"
+                                            name="password"
+                                            type="password"
+                                            autoComplete={
+                                                mode === 'signin'
+                                                    ? 'current-password'
+                                                    : 'new-password'
+                                            }
+                                            minLength={mode === 'signin' ? 1 : 8}
+                                            required
+                                            aria-describedby={
+                                                mode === 'signin'
+                                                    ? undefined
+                                                    : 'password-hint'
+                                            }
+                                        />
 
-                                            {mode !== 'signin' && (
-                                                <small id="password-hint">
-                                                    {t('auth.passwordHint')}
-                                                </small>
-                                            )}
-                                        </div>
-                                    )}
+                                        {mode !== 'signin' && (
+                                            <small id="password-hint">
+                                                {t('auth.passwordHint')}
+                                            </small>
+                                        )}
+                                    </div>
 
-                                    {(mode === 'signup' || mode === 'update') && (
+                                    {mode === 'signup' && (
                                         <div className="search-field">
                                             <label htmlFor="auth-confirmation">
                                                 {t('auth.confirmPassword')}
@@ -327,55 +260,21 @@ export default function AuthPanel() {
                                 </fieldset>
                             </form>
 
-                            {mode !== 'update' && (
-                                <div className="auth-actions">
-                                    {(mode === 'signin' || mode === 'signup') && (
-                                        <button
-                                            className="clear-filters"
-                                            type="button"
-                                            disabled={busy}
-                                            onClick={googleLogin}
-                                        >
-                                            {t('auth.google')}
-                                        </button>
-                                    )}
-
-                                    <button
-                                        className="auth-link"
-                                        type="button"
-                                        disabled={busy}
-                                        onClick={() => changeMode(
-                                            mode === 'signin' ? 'signup' : 'signin',
-                                        )}
-                                    >
-                                        {t(
-                                            mode === 'signin'
-                                                ? 'auth.signup'
-                                                : 'auth.backToLogin',
-                                        )}
-                                    </button>
-
-                                    {mode === 'signin' && (
-                                        <button
-                                            className="auth-link"
-                                            type="button"
-                                            disabled={busy}
-                                            onClick={() => changeMode('recover')}
-                                        >
-                                            {t('auth.forgotPassword')}
-                                        </button>
-                                    )}
-                                </div>
-                            )}
+                            <div className="auth-actions">
+                                <button className="clear-filters" type="button"
+                                    disabled={busy} onClick={googleLogin}>
+                                    {t('auth.google')}
+                                </button>
+                                <button className="auth-link" type="button" disabled={busy}
+                                    onClick={() => changeMode(mode === 'signin' ? 'signup' : 'signin')}>
+                                    {t(mode === 'signin' ? 'auth.signup' : 'auth.backToLogin')}
+                                </button>
+                            </div>
                         </>
                     )}
 
                     <p className="auth-error" role="alert">
                         {error ? t(error) : ''}
-                    </p>
-
-                    <p role="status">
-                        {notice ? t(notice) : ''}
                     </p>
                 </>
             )}

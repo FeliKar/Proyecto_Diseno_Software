@@ -34,12 +34,11 @@ test(
     () => {
         const codes = {
             invalid_credentials: 'invalidCredentials',
+            user_already_exists: 'accountExists',
+            email_exists: 'accountExists',
             email_not_confirmed: 'emailNotConfirmed',
             weak_password: 'weakPassword',
-            same_password: 'samePassword',
-            over_email_send_rate_limit: 'rateLimit',
             over_request_rate_limit: 'rateLimit',
-            otp_expired: 'expiredLink',
             access_denied: 'cancelled',
             unknown: 'generic',
         }

@@ -22,18 +22,14 @@ ni tokens aquí.
 - [x] Con configuración válida: aparece el formulario y termina el estado de carga.
 - [ ] Correo inválido o contraseña nueva menor a 8 caracteres: el formulario impide el envío.
 - [ ] Contraseñas diferentes: aparece un mensaje y no se registra el usuario.
-- [x] Registro: llega el correo; el enlace confirma la cuenta y regresa a la web.
+- [ ] Registro nuevo sin verificación: crea la cuenta e inicia sesión sin enviar un correo.
 - [ ] Registro duplicado: la interfaz no promete crear una segunda cuenta.
-- [ ] Correo sin confirmar: no permite entrar y muestra el mensaje correspondiente.
 - [ ] Contraseña incorrecta: aparece un error y permite volver a intentar.
 - [x] Inicio correcto: muestra el correo del usuario; recargar conserva la sesión.
 - [x] Cerrar sesión: vuelve al formulario; recargar no restaura la sesión cerrada.
 - [x] Google: autentica con una cuenta de prueba y regresa a la aplicación.
 - [ ] Cancelar Google: al regresar muestra un error comprensible y permite reintentar.
-- [ ] Recuperación: el enlace abre el formulario de nueva contraseña; guardarla funciona y permite entrar con ella tras cerrar sesión.
-- [ ] Enlace de recuperación vencido/usado: no permite actualizar y ofrece solicitar otro.
 - [ ] Fallo de red: termina el estado de espera con un mensaje y permite reintentar.
-- [ ] Cuota de correos agotada: se informa del problema y no se afirma que el correo fue enviado.
 - [ ] Todos los formularios, estados y errores cambian entre español e inglés.
 - [ ] Teclado: etiquetas, foco visible y botones utilizables sin ratón.
 - [ ] Pantalla de 320 px: formularios sin desbordamiento horizontal.
@@ -44,7 +40,7 @@ ni tokens aquí.
 
 Las comprobaciones automáticas de lint, pruebas y compilación pasaron.
 
-Se comprobó el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google en localhost:5173. También se verificó la persistencia de la sesión al recargar y el cierre de sesión.
+En la versión anterior se comprobó el registro con confirmación de correo, el inicio con correo y contraseña y el acceso con Google en localhost:5173. También se verificó la persistencia de la sesión al recargar y el cierre de sesión.
 
 
 ### Pruebas en producción — 18/11/2026
@@ -55,4 +51,22 @@ Dirección: https://proyectodisenosoftware.vercel.app
 - [x] Recargar la página y conservar la sesión.
 - [x] Cerrar sesión y permanecer desconectado después de recargar.
 
-Quedan pendientes la recuperación de contraseña, los demás casos sin marcar y la validación del registro e inicio con correo y contraseña en producción.
+Quedan pendientes los casos sin marcar y la validación del registro sin confirmación e inicio con contraseña en producción. Las pruebas históricas no validan el nuevo registro.
+
+### Búsqueda real en producción — 21/11/2026
+
+- [x] Sin sesión: la búsqueda solicita autenticación.
+- [x] Con Google: buscar en un punto del mapa devuelve hasta cinco restaurantes o informa que no hay resultados.
+- [x] Los filtros de comida y precio conservan las coordenadas.
+- [x] Los textos y mensajes de búsqueda cambian a inglés.
+- [x] Tras cerrar sesión, una nueva búsqueda solicita autenticación.
+
+### Alcance simplificado — validado en localhost
+
+No se ofrece recuperación de contraseña ni se verifica la propiedad del correo.
+
+- [x] Registrar una cuenta nueva con un correo propio externo al equipo de Supabase.
+- [x] Recargar y conservar la sesión de esa cuenta.
+- [x] Cerrar sesión y volver a entrar con su contraseña.
+- [x] Intentar registrar el mismo correo y comprobar que se informa del error.
+- [x] Comprobar que no aparece recuperación de contraseña en español ni inglés.

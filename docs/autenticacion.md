@@ -4,8 +4,9 @@ Mesa Cerca usa Supabase Auth para correo/contraseña y Google.
 React muestra los formularios; Supabase valida credenciales,
 emite sesiones y gestiona contraseñas.
 
-El futuro backend Deno deberá validar el token en cada operación
-privada. La sesión del navegador no sustituye esa validación.
+El backend desplegado en Supabase Edge Functions valida el token con
+Supabase Auth antes de procesar cada búsqueda. La sesión del navegador
+no sustituye esa validación.
 
 ## 1. Crear el proyecto de Supabase
 
@@ -36,14 +37,12 @@ Reiniciar Vite después de modificar las variables.
 En Authentication:
 
 - Habilitar el proveedor Email y el registro de usuarios.
-- Mantener la confirmación de correo habilitada.
+- Desactivar Confirm email para permitir el registro sin verificación de correo.
 - Establecer una longitud mínima de contraseña de 8 caracteres en el servidor, para que coincida con el formulario.
 - En URL Configuration, usar como Site URL: `https://proyectodisenosoftware.vercel.app`.
 - Mantener estas direcciones en Redirect URLs:
   - `http://localhost:5173`
-  - `http://localhost:5173/?auth=recovery`
   - `https://proyectodisenosoftware.vercel.app`
-  - `https://proyectodisenosoftware.vercel.app/?auth=recovery`
 
 Ejecutar:
 
@@ -54,22 +53,12 @@ npm run dev -- --port 5173 --strictPort
 Esto evita que Vite cambie silenciosamente a otro puerto
 y fallen las redirecciones.
 
-El servicio de correo incluido solo envía a direcciones de miembros
-del equipo de Supabase, con una cuota de prueba muy reducida
-(la documentación consultada indica 2 mensajes/hora).
+Esta entrega no verifica la propiedad del correo ni ofrece recuperación de
+contraseña. No requiere configurar SMTP. Las contraseñas y las sesiones
+siguen gestionadas por Supabase Auth.
 
-Para las primeras comprobaciones puede usarse tu propio correo
-de la organización. Para usuarios externos, configurar Custom SMTP
-en Supabase con un proveedor de correo y un remitente autorizado.
-
-Guardar sus credenciales únicamente en Supabase.
-No invitar usuarios finales al equipo administrativo para evitar
-esta limitación.
-
-Los correos automáticos usan las plantillas de Supabase.
-El selector ES/EN traduce la interfaz web, no esas plantillas.
-Se puede usar una plantilla bilingüe conservando los enlaces
-y variables originales del proveedor.
+Las cuentas antiguas con confirmación pendiente deben revisarse por separado;
+no se debe asumir que el cambio de configuración las haya confirmado.
 
 ## 3. Configurar Google
 
@@ -94,8 +83,7 @@ y variables originales del proveedor.
    y comprobar el retorno a la página.
 
 El secreto OAuth se configura en Supabase, no en `.env.local`.
-Este cliente OAuth es independiente de las futuras API keys
-de Maps/Places.
+Este cliente OAuth es independiente de las claves de API de Maps/Places.
 
 ## 4. Ejecutar y comprobar
 
