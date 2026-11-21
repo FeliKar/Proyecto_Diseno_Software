@@ -12,7 +12,7 @@ test('handles location success, unavailable browsers and denied permission', asy
 })
 
 test('sends filters to the backend and accepts empty results', async () => {
-    const filters = { latitude: 10, longitude: 20, search: 'cafe', language: 'en' }
+    const filters = { latitude: 10, longitude: 20, category: 'italian', priceLevel: 'moderate', language: 'en' }
     const results = await searchRestaurants(filters, async (url, options) => {
         assert.equal(url, '/api/restaurants')
         assert.equal(options.method, 'POST')

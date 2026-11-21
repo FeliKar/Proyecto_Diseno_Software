@@ -16,10 +16,9 @@ datos disponibles del proveedor.
 - Interfaz en español e inglés.
 - Tarjetas reutilizables con restaurantes y precios ficticios.
 - Niveles de precios de ejemplo con etiquetas en español e inglés.
-- Búsqueda por nombre, sin distinguir mayúsculas ni tildes.
 - Mensaje cuando no hay restaurantes que coincidan.
-- Filtros por tipo de comida y nivel de precios combinados con la búsqueda.
-- Botón para limpiar la búsqueda y los filtros.
+- Búsqueda por ubicación con filtros por tipo de comida y nivel de precios.
+- Botón para limpiar los filtros.
 - Detalles desplegables con dirección y horario ficticios en ambos idiomas.
 - Formularios de acceso con Supabase: correo y contraseña, y Google.
 - Estados de carga y mensajes de autenticación en español e inglés.
@@ -81,7 +80,7 @@ Los pasos para configurar Supabase y Google están en [la guía de autenticació
 
 Se incorpora un servidor local con Deno para consultar restaurantes mediante Google Places API (New).
 
-El backend valida las coordenadas y los filtros. Solicita hasta veinte restaurantes dentro de un radio de tres kilómetros, ordenados por distancia, y devuelve un máximo de cinco después de aplicar los filtros de nombre y nivel de precio. También permite seleccionar el tipo de cocina.
+El backend valida las coordenadas y los filtros. Solicita hasta veinte restaurantes dentro de un radio de tres kilómetros, ordenados por distancia, y devuelve un máximo de cinco después de aplicar el filtro de nivel de precio. También permite seleccionar el tipo de cocina.
 
 Los filtros se aplican sobre los candidatos recibidos, por lo que la búsqueda no necesariamente incluye todas las coincidencias de la zona. Cuando Google no entrega el nivel de precio, se devuelve `null`. Esos restaurantes se excluyen si se selecciona un filtro de precio.
 
@@ -147,6 +146,9 @@ coordenadas al cambiar los filtros. También se comprobaron el cambio del
 punto de búsqueda, el rechazo de ubicaciones automáticas imprecisas,
 los mensajes en ambos idiomas y el manejo del backend desconectado.
 
+Se comprobó la búsqueda sin filtro de nombre, la combinación de tipo de
+comida y precio, la limpieza de filtros conservando la ubicación y los
+textos en ambos idiomas, desde localhost con el backend desplegado en Supabase.
 
 ## Comprobaciones
 

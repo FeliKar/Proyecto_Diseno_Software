@@ -6,7 +6,6 @@ import { getSearchOptions } from '../lib/search-session'
 
 export default function RestaurantSearch() {
     const { t, i18n } = useTranslation()
-    const [search, setSearch] = useState('')
     const [category, setCategory] = useState('')
     const [priceLevel, setPriceLevel] = useState('')
     const [restaurants, setRestaurants] = useState(null)
@@ -22,7 +21,6 @@ export default function RestaurantSearch() {
     }
 
     function clearFilters() {
-        setSearch('')
         setCategory('')
         setPriceLevel('')
         resetResults()
@@ -47,7 +45,7 @@ export default function RestaurantSearch() {
             const results = await searchRestaurants(
                 {
                     ...point,
-                    search,
+
                     category,
                     priceLevel,
                     language: i18n.resolvedLanguage?.startsWith('en') ? 'en' : 'es',
@@ -97,12 +95,6 @@ export default function RestaurantSearch() {
                             setShowMap(false)
                             resetResults()
                         }} />}
-
-                    <div className="search-field">
-                        <label htmlFor="restaurant-search">{t('searchLabel')}</label>
-                        <input id="restaurant-search" type="search" maxLength={80} value={search}
-                            onChange={(event) => { setSearch(event.target.value); resetResults() }} />
-                    </div>
                     <div className="filters">
                         <div className="filter-field">
                             <label htmlFor="category-filter">{t('categoryLabel')}</label>

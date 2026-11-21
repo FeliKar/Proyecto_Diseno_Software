@@ -27,13 +27,6 @@ const restaurants = [
 ]
 
 
-function normalizeText(text) {
-  return text
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim()
-}
 
 
 function RestaurantCard({ restaurant }) {
@@ -77,24 +70,19 @@ function RestaurantCard({ restaurant }) {
 
 export default function App() {
   const { t, i18n } = useTranslation()
-  const [search, setSearch] = useState('')
   const [category, setCategory] = useState('')
   const [priceLevel, setPriceLevel] = useState('')
 
-  const normalizedSearch = normalizeText(search)
 
   const filteredRestaurants = restaurants.filter((restaurant) => {
-    const name = t(`restaurants.${restaurant.id}.name`)
 
-    const matchesSearch = normalizeText(name).includes(normalizedSearch)
     const matchesCategory = category === '' || restaurant.category === category
     const matchesPrice = priceLevel === '' || restaurant.priceLevel === priceLevel
 
-    return matchesSearch && matchesCategory && matchesPrice
+    return matchesCategory && matchesPrice
   })
 
   function clearFilters() {
-    setSearch('')
     setCategory('')
     setPriceLevel('')
   }
@@ -158,18 +146,6 @@ export default function App() {
             <div className="section-heading">
               <h2 id="restaurants-title">{t('restaurantsTitle')}</h2>
               <p>{t('restaurantsDescription')}</p>
-            </div>
-
-
-            <div className="search-field">
-              <label htmlFor="restaurant-search">{t('searchLabel')}</label>
-              <input
-                id="restaurant-search"
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={t('searchPlaceholder')}
-              />
             </div>
 
 

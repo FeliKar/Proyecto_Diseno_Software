@@ -12,39 +12,33 @@ const priceGroups = {
     PRICE_LEVEL_VERY_EXPENSIVE: 'expensive',
 }
 
-function normalize(text) {
-    return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
-}
 
 export function validateSearch(input) {
     if (!input || typeof input !== 'object' || Array.isArray(input)) {
         throw new Error('invalid_search')
     }
     const {
-        latitude, longitude, search = '', category = '',
+        latitude, longitude, category = '',
         priceLevel = '', language = 'es',
     } = input
     if (
         !Number.isFinite(latitude) || Math.abs(latitude) > 90 ||
         !Number.isFinite(longitude) || Math.abs(longitude) > 180 ||
-        typeof search !== 'string' || search.length > 80 ||
         !['', ...Object.keys(cuisineTypes)].includes(category) ||
         !['', 'inexpensive', 'moderate', 'expensive'].includes(priceLevel) ||
         !['es', 'en'].includes(language)
     ) {
         throw new Error('invalid_search')
     }
-    return { latitude, longitude, search, category, priceLevel, language }
+    return { latitude, longitude, category, priceLevel, language }
 }
 
 export function selectRestaurants(places, filters) {
-    const search = normalize(filters.search)
     return places
         .filter((place) => {
             const name = place.displayName?.text || ''
             return place.id && name &&
                 place.businessStatus !== 'CLOSED_PERMANENTLY' &&
-                normalize(name).includes(search) &&
                 (!filters.priceLevel || priceGroups[place.priceLevel] === filters.priceLevel)
         })
         .slice(0, 5)

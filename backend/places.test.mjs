@@ -18,7 +18,7 @@ Deno.test('invalid searches do not reach Google', async () => {
         }
     })
     for (const body of [null, {}, { ...input, latitude: 91 },
-        { ...input, longitude: '0' }, { ...input, search: 'x'.repeat(81) },
+        { ...input, longitude: '0' }, { ...input, priceLevel: 'unknown' },
         { ...input, language: 'fr' }, { ...input, category: 'unknown' }]) {
         assert.equal((await handler(request(body))).status, 400)
     }
@@ -26,10 +26,10 @@ Deno.test('invalid searches do not reach Google', async () => {
 
 Deno.test('filters before limiting to five and preserves distance order', () => {
     const places = Array.from({ length: 9 }, (_, index) => ({
-        id: String(index), displayName: { text: 'Café Jardín' },
+        id: String(index), displayName: { text: `Restaurant ${index}` },
         priceLevel: index === 0 ? 'PRICE_LEVEL_EXPENSIVE' : 'PRICE_LEVEL_MODERATE',
     }))
-    const filters = validateSearch({ ...input, search: ' CAFE ', priceLevel: 'moderate' })
+    const filters = validateSearch({ ...input, priceLevel: 'moderate' })
     const selected = selectRestaurants(places, filters)
     assert.deepEqual(selected.map((place) => place.id), ['1', '2', '3', '4', '5'])
     assert.equal(selected[0].address, null)
