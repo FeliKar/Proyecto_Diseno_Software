@@ -107,3 +107,59 @@ Deno.test('public wrapper validates list requests and forwards verified context'
     assert.equal((await handler(limited)).status, 429)
     assert.equal(reached, false)
 })
+
+
+Deno.test('personal rating validation rejects invalid scores and ignores supplied ownership', () => {
+    for (const rating of [undefined, 0, 6, 2.5, '5']) {
+        assert.throws(() => validateSavedRequest({ action: 'rate', placeId: 'id1', rating }))
+    }
+    assert.throws(() => validateSavedRequest({ action: 'rate', placeId: 'id1', rating: 5, category: 'invalid' }))
+    assert.throws(() => validateSavedRequest({ action: 'rate', placeId: 'id1', rating: 5, priceLevel: 'invalid' }))
+    assert.deepEqual(validateSavedRequest({
+        action: 'rate', placeId: 'id1', rating: 5,
+        category: 'italian', priceLevel: 'moderate', user_id: 'victim'
+    }), {
+        action: 'rate', placeId: 'id1', rating: 5, category: 'italian', priceLevel: 'moderate',
+    })
+    assert.deepEqual(validateSavedRequest({
+        action: 'rate', placeId: 'id1', rating: null,
+        category: 'italian', priceLevel: 'moderate'
+    }), {
+        action: 'rate', placeId: 'id1', rating: null, category: '', priceLevel: '',
+    })
+})
+
+Deno.test('rating updates target only own visited row and reject absent or inaccessible entries', async () => {
+    let updated = [{ place_id: 'id1' }]
+    const handler = createSavedHandler({
+        ...config, fetcher: (url, options) => {
+            assert.equal(url.hostname, 'example.supabase.co')
+            assert.equal(options.method, 'PATCH')
+            assert.equal(options.headers.Authorization, context.authorization)
+            assert.equal(url.searchParams.get('user_id'), 'eq.user-a')
+            assert.equal(url.searchParams.get('place_id'), 'eq.id1')
+            assert.equal(url.searchParams.get('status'), 'eq.visited')
+            assert.equal(options.headers.Prefer, 'return=representation')
+            assert.deepEqual(JSON.parse(options.body), {
+                user_rating: 5, user_category: 'italian', user_price_level: 'moderate',
+            })
+            return Promise.resolve(Response.json(updated))
+        }
+    })
+    const body = { action: 'rate', placeId: 'id1', rating: 5, category: 'italian', priceLevel: 'moderate' }
+    assert.deepEqual(await (await handler(request(body), context)).json(), { ok: true })
+    updated = []
+    assert.equal((await handler(request(body), context)).status, 404)
+})
+
+Deno.test('personal scores remain visible if Google details are unavailable', async () => {
+    const handler = createSavedHandler({
+        ...config, apiKey: '', fetcher: () => Promise.resolve(Response.json([
+            { place_id: 'id1', status: 'visited', user_rating: 4, user_category: 'seafood', user_price_level: 'moderate' },
+        ]))
+    })
+    const data = await (await handler(request({ action: 'list', status: 'visited' }), context)).json()
+    assert.equal(data.restaurants[0].name, null)
+    assert.equal(data.restaurants[0].userRating, 4)
+    assert.equal(data.restaurants[0].userCategory, 'seafood')
+})

@@ -27,3 +27,15 @@ test('saved requests distinguish expired sessions, quota and network failures', 
     await assert.rejects(savedRequest({ action: 'save' }, options,
         async () => { throw new TypeError('network') }), /service/)
 })
+
+
+test('personal rating payload reaches the backend and failed writes do not report success', async () => {
+    const input = { action: 'rate', placeId: 'id1', rating: 4, category: 'italian', priceLevel: '' }
+    const options = { url: 'https://example.test/saved', token: 'session', publishableKey: 'public' }
+    assert.deepEqual(await savedRequest(input, options, (_url, req) => {
+        assert.deepEqual(JSON.parse(req.body), input)
+        return Promise.resolve(Response.json({ ok: true }))
+    }), { ok: true })
+    await assert.rejects(savedRequest(input, options,
+        () => Promise.resolve(new Response(null, { status: 404 }))), /service/)
+})

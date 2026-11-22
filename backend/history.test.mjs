@@ -12,15 +12,15 @@ const request = (body) => new Request('http://internal/api/restaurants', {
 })
 
 Deno.test('preferences handle empty history, no filters, frequencies and recent ties', () => {
-    assert.deepEqual(preferredFilters([]), { category: '', priceLevel: '', hasHistory: false })
+    assert.deepEqual(preferredFilters([]), { category: '', priceLevel: '', hasHistory: false, hasRatings: false })
     assert.deepEqual(preferredFilters([{ category: '', price_level: '' }]), {
-        category: '', priceLevel: '', hasHistory: true,
+        category: '', priceLevel: '', hasHistory: true, hasRatings: false,
     })
     assert.deepEqual(preferredFilters([
         { category: 'seafood', price_level: 'moderate' },
         { category: 'italian', price_level: 'inexpensive' },
         { category: 'italian', price_level: '' },
-    ]), { category: 'italian', priceLevel: 'moderate', hasHistory: true })
+    ]), { category: 'italian', priceLevel: 'moderate', hasHistory: true, hasRatings: false })
 })
 
 Deno.test('validation rejects invalid modes and does not accept user identity from the body', () => {
@@ -99,6 +99,7 @@ Deno.test('recommendations use history but preserve location and language, witho
     const handler = createPersonalSearchHandler({
         store: {
             list: () => [{ category: 'italian', price_level: 'moderate' }],
+            ratings: () => [],
             save: () => { throw new Error('recommendations must not change preferences') },
         },
         placesHandler: async (req) => {
@@ -111,7 +112,7 @@ Deno.test('recommendations use history but preserve location and language, witho
     assert.equal(result.recommendation.hasHistory, true)
     assert.equal(result.historySaved, null)
     const empty = createPersonalSearchHandler({
-        store: { list: () => [] },
+        store: { list: () => [], ratings: () => [] },
         placesHandler: async (req) => {
             const input = await req.json()
             assert.equal(input.category, '')
@@ -122,7 +123,7 @@ Deno.test('recommendations use history but preserve location and language, witho
     const data = await (await empty(request({ ...filters, mode: 'recommend' }), context)).json()
     assert.equal(data.recommendation.hasHistory, false)
     const failed = createPersonalSearchHandler({
-        store: { list: () => { throw new Error('database') } },
+        store: { list: () => { throw new Error('database') }, ratings: () => [] },
         placesHandler: () => { throw new Error('Google must not run') },
     })
     await assert.rejects(failed(request({ ...filters, mode: 'recommend' }), context), /database/)
@@ -142,4 +143,61 @@ Deno.test('history endpoint enforces authentication and only clears verified use
     authorized.headers.set('Authorization', context.authorization)
     assert.deepEqual(await (await handler(authorized)).json(), { ok: true })
     assert.equal(cleared, 'user-a')
+})
+
+
+Deno.test('personal ratings reinforce, reduce and neutralize preferences without requiring history', () => {
+    const rating = (category, score, price = '') => ({
+        user_category: category, user_rating: score, user_price_level: price,
+    })
+    const history = [{ category: 'italian', price_level: 'moderate' }]
+    assert.equal(preferredFilters(history, [rating('seafood', 5)]).category, 'seafood')
+    assert.equal(preferredFilters(history, [rating('italian', 1)]).category, '')
+    assert.equal(preferredFilters(history, [rating('seafood', 3)]).category, 'italian')
+    assert.deepEqual(preferredFilters([], [rating('vegetarian', 5, 'inexpensive')]), {
+        category: 'vegetarian', priceLevel: 'inexpensive', hasHistory: false, hasRatings: true,
+    })
+    assert.equal(preferredFilters([], [rating('seafood', 2)]).category, '')
+    assert.equal(preferredFilters([], [rating('', 5)]).category, '')
+})
+
+Deno.test('ratings are fetched with caller ownership and only for visited rated entries', async () => {
+    const store = createHistoryStore({
+        supabaseUrl: 'https://example.supabase.co', publicKey: 'public',
+        fetcher: (url, options) => {
+            assert.equal(url.pathname, '/rest/v1/saved_restaurants')
+            assert.equal(url.searchParams.get('user_id'), 'eq.user-a')
+            assert.equal(url.searchParams.get('status'), 'eq.visited')
+            assert.equal(url.searchParams.get('user_rating'), 'not.is.null')
+            assert.equal(url.searchParams.get('limit'), '20')
+            assert.equal(options.headers.Authorization, context.authorization)
+            return Promise.resolve(Response.json([]))
+        },
+    })
+    assert.deepEqual(await store.ratings(context), [])
+})
+
+Deno.test('recommendations combine ratings and history and stop if ratings cannot be read', async () => {
+    let calls = 0
+    const store = {
+        list: () => [{ category: 'italian', price_level: '' }],
+        ratings: () => [{ user_category: 'seafood', user_rating: 5, user_price_level: '' }],
+    }
+    const handler = createPersonalSearchHandler({
+        store,
+        placesHandler: async (req) => {
+            calls++
+            assert.equal((await req.json()).category, 'seafood')
+            return Response.json({ restaurants: [] })
+        },
+    })
+    const result = await (await handler(request({ ...filters, mode: 'recommend' }), context)).json()
+    assert.equal(result.recommendation.hasRatings, true)
+    assert.equal(calls, 1)
+    const failing = createPersonalSearchHandler({
+        store: { ...store, ratings: () => { throw new Error('ratings_unavailable') } },
+        placesHandler: () => { calls++; return Response.json({ restaurants: [] }) },
+    })
+    await assert.rejects(failing(request({ ...filters, mode: 'recommend' }), context), /ratings_unavailable/)
+    assert.equal(calls, 1)
 })

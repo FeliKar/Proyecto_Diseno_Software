@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getHostedOptions } from '../lib/search-session'
 import { savedRequest } from '../lib/saved-restaurants.mjs'
+import RatingForm from './RatingForm'
 import { safeLink } from '../lib/restaurant-search.mjs'
 
 export default function SavedRestaurants({ userId }) {
@@ -58,6 +59,22 @@ export default function SavedRestaurants({ userId }) {
         })
     }
 
+    function rate(restaurant, values) {
+        return run(async (options) => {
+            await savedRequest({ action: 'rate', placeId: restaurant.id, ...values }, options)
+            setPage((current) => ({
+                ...current,
+                restaurants: current.restaurants.map((item) => item.id === restaurant.id
+                    ? {
+                        ...item, userRating: values.rating,
+                        userCategory: values.category, userPriceLevel: values.priceLevel
+                    }
+                    : item),
+            }))
+            setNotice('ratingSaved')
+        })
+    }
+
     return <>
         <p>{t('lists.help')}</p>
         <div className="filters">
@@ -85,6 +102,10 @@ export default function SavedRestaurants({ userId }) {
                                 {t('nearby.maps')}
                             </a>
                         </p>}
+                        {status === 'visited' && <RatingForm
+                            key={`${restaurant.id}:${restaurant.userRating}:${restaurant.userCategory}:${restaurant.userPriceLevel}`}
+                            restaurant={restaurant} disabled={loading}
+                            onSave={(values) => rate(restaurant, values)} />}
                         <div className="filters">
                             <button type="button" className="clear-filters" disabled={loading}
                                 onClick={() => change(restaurant, 'save')}>

@@ -149,7 +149,7 @@ export default function RestaurantSearch({ userId, onSaved }) {
             {error && <p role="alert" className="auth-error">{t(`nearby.errors.${error}`)}</p>}
             {historyWarning && <p role="status">{t('history.saveFailed')}</p>}
             {recommendation && <p role="status">
-                {!recommendation.hasHistory
+                {!recommendation.hasHistory && !recommendation.hasRatings
                     ? t('recommendations.noHistory')
                     : !recommendation.category && !recommendation.priceLevel
                         ? t('recommendations.noPreference')

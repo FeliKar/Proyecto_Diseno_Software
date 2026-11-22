@@ -144,25 +144,37 @@
     "removed": "Restaurant removed from the list.",
     "refresh": "Refresh",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "ratingSaved": "Rating updated. Request new recommendations to apply the change."
   },
   "history": {
     "title": "Recommendation preferences",
-    "description": "We use filters from your previous searches to recommend restaurants. You can clear this history to start again.",
-    "clear": "Clear search preferences",
-    "confirm": "Your search history will be deleted. This cannot be undone. Your restaurant lists will be kept.",
+    "description": "We use your searches and ratings to recommend restaurants. Here you can clear your search history; your ratings are kept.",
+    "clear": "Clear search history",
+    "confirm": "Your search history will be deleted. This cannot be undone. Your lists and ratings will be kept.",
     "cancel": "Cancel",
     "loading": "Clearing preferences…",
     "signin": "Sign in to clear your preferences.",
     "service": "We could not clear your preferences. Please try again.",
     "saveFailed": "We found results, but could not save this search to your history.",
-    "cleared": "Your search preferences were cleared. Request new recommendations to see options without personalization."
+    "cleared": "Your search history was cleared. New recommendations will still consider your ratings."
   },
   "recommendations": {
-    "submit": "Recommend using my history",
-    "help": "Uses your selected location and preferences from your history instead of the form filters.",
-    "noHistory": "You have no history yet. Showing nearby options without personalization.",
-    "noPreference": "Your recent searches have no specific filters. Showing nearby options.",
-    "basedOn": "Based on your last 20 searches: {{category}} · {{price}}. Results are ordered by distance."
+    "submit": "Recommend for me",
+    "help": "Uses your selected location, searches and ratings instead of the form filters.",
+    "noHistory": "You have no searches or ratings yet. Showing nearby options without personalization.",
+    "noPreference": "There are not enough preferences to apply personalized filters. Showing nearby options.",
+    "basedOn": "Based on your searches and ratings: {{category}} · {{price}}. Results are ordered by distance."
+  },
+  "ratings": {
+    "title": "My rating",
+    "score": "Score from 1 to 5",
+    "choose": "Choose a score",
+    "unspecified": "Not specified",
+    "current": "Your score: {{value}} out of 5",
+    "unrated": "You have not rated this restaurant yet.",
+    "help": "Cuisine and budget are optional and reflect your experience. We use them with your score to recommend restaurants.",
+    "save": "Save rating",
+    "remove": "Remove rating"
   }
 }

@@ -8,7 +8,7 @@ Marcar solo después de comprobar cada caso con el backend desplegado.
 - [x] Cambiar los filtros del formulario y pedir recomendaciones: usa el historial, conserva el punto elegido y muestra los filtros realmente utilizados.
 - [x] Comprobar que pedir recomendaciones no agrega entradas al historial, que se muestran como máximo cinco locales y que un resultado vacío se informa correctamente.
 - [x] Recargar y comprobar persistencia; con otra cuenta, verificar recomendaciones independientes.
-- [ ] En «Preferencias de recomendaciones», cancelar un borrado y comprobar que las preferencias se conservan. Después confirmar el borrado y solicitar nuevas recomendaciones: deben volver al estado sin historial. Las listas personales se conservan.
+- [x] En «Preferencias de recomendaciones», cancelar un borrado y comprobar que las preferencias se conservan. Después confirmar el borrado y solicitar nuevas recomendaciones: deben dejar de utilizar las búsquedas borradas. Las listas y valoraciones personales se conservan.
 - [x] Sin conexión, intentar borrar las preferencias: informa el error sin mostrar un borrado exitoso.
 - [x] Comprobar los nuevos textos en español e inglés y uso en pantalla pequeña.
 - [x] Ejecutar la prueba SQL de permisos sin errores.

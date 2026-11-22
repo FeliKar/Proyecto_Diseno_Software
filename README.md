@@ -37,7 +37,7 @@ Se comprobó el registro sin confirmación y el acceso con contraseña o Google 
 
 El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: fotos y reseñas, listas compartidas y recomendaciones que incorporen valoraciones personales.
+Próximas implementaciones planeadas: fotos y reseñas, y listas compartidas.
 
 
 
@@ -195,6 +195,10 @@ Se utilizó ChatGPT como apoyo para adaptar el backend a Supabase Edge Functions
 Se utilizó ChatGPT como apoyo para implementar las listas, sus permisos,
 la consulta de datos actuales y las pruebas correspondientes.
 
+Se utilizó ChatGPT como apoyo para los controles de valoración, la integración
+con la base de datos, las reglas de recomendación y las pruebas.
+
+
 
 
 ## Listas personales
@@ -243,14 +247,16 @@ se conservan. Las entradas anteriores a las últimas 20 permanecen almacenadas
 hasta borrar el historial, aunque no intervienen en el cálculo.
 
 El botón de recomendaciones toma las últimas 20 búsquedas y calcula en el
-backend el tipo de comida y presupuesto más frecuentes, por separado. Los
+backend preferencias de comida y presupuesto, por separado, combinándolas
+con las valoraciones personales. Los
 filtros vacíos no cuentan como preferencia. En caso de empate se usa el valor
 más reciente. Se conserva la ubicación elegida, el radio de tres kilómetros
 y el máximo de cinco restaurantes ordenados por cercanía. El formulario
 mantiene sus filtros para búsquedas manuales; las recomendaciones indican
 cuáles se utilizaron realmente.
 
-Sin historial o sin preferencias específicas se muestran opciones cercanas y
+Sin búsquedas ni valoraciones, o sin preferencias con puntuación positiva,
+se muestran opciones cercanas y
 se explica la falta de personalización. Un resultado vacío no amplía el radio
 ni cambia de ciudad. Pedir recomendaciones no agrega búsquedas al historial,
 para evitar que el algoritmo refuerce sus propias elecciones.
@@ -260,8 +266,8 @@ un aviso. Si falla su lectura, la recomendación informa un error. Las búsqueda
 y recomendaciones comparten la cuota existente; consultar o borrar historial
 no llama a Google.
 
-Esta etapa utiliza el historial de búsquedas. Falta incorporar las valoraciones
-personales al algoritmo para completar ese requisito de la pauta.
+Las recomendaciones combinan este historial con las valoraciones personales
+descritas a continuación.
 
 Configuración:
 
@@ -279,7 +285,49 @@ local sigue ofreciendo búsquedas básicas sin persistencia de historial.
 
 Las pruebas con respuestas simuladas cubren preferencias, autenticación,
 identidad al acceder a la base de datos y fallos del proveedor o del historial.
-Se ejecutó la prueba SQL de permisos y se comprobaron las recomendaciones
-y el historial con el proyecto real. Tras simplificar la interfaz, falta
-revalidar el borrado de preferencias, sus errores y los textos en ambos idiomas
+Se ejecutó la prueba SQL de permisos y se completaron las pruebas manuales de recomendaciones, incluyendo persistencia, separación entre cuentas, borrado de preferencias, manejo de errores y textos en ambos idiomas.
 según `docs/pruebas-historial.md`.
+
+
+## Valoraciones personales
+
+En «Ya visité» se puede guardar, modificar o quitar una nota de 1 a 5. El tipo
+de comida y presupuesto son opcionales y los indica el usuario según su
+experiencia; no son datos copiados de Google. Una nota sin categoría ni
+presupuesto no modifica esos filtros de recomendación.
+
+Los valores se guardan en `saved_restaurants`, en `user_rating`,
+`user_category` y `user_price_level`, con los permisos por usuario existentes.
+El backend solo permite calificar una entrada propia de «Ya visité». Una
+entrada inexistente o inaccesible no se presenta como guardada correctamente.
+Guardar valoraciones no consulta Google ni consume cuota de búsquedas.
+
+Para recomendar se consideran las últimas 20 búsquedas y hasta 20 locales
+calificados de «Ya visité», ordenados por fecha de creación de la entrada.
+Cada búsqueda aporta un punto a cada filtro específico. Cada valoración
+aporta `nota - 3`: 5 suma dos puntos, 4 suma uno, 3 es neutral, 2 resta uno y
+1 resta dos. Se elige por separado la categoría y el presupuesto con mayor
+puntuación positiva. Los empates favorecen la búsqueda más reciente; si no
+hay búsquedas empatadas, se conserva el orden de las entradas calificadas.
+
+Ejemplo: una búsqueda italiana suma un punto a italiana. Una valoración de
+5 en mariscos suma dos a mariscos, por lo que se elige mariscos. El resultado
+es una preferencia de filtros, no una predicción de la calidad del local.
+Se mantienen el punto elegido, el radio y el orden por cercanía.
+
+Quitar una valoración elimina su aporte. Mover un local a «Quiero visitar»
+conserva la nota, pero la excluye del cálculo mientras permanezca allí.
+Borrar el historial de búsquedas conserva listas y valoraciones. Para ver
+cambios en los resultados hay que solicitar nuevas recomendaciones.
+Si no se pueden leer las valoraciones se informa un error, sin asumir que
+el usuario no tiene datos.
+
+Configuración: ejecutar `supabase/migrations/202611220002_personal_ratings.sql`
+y desplegar de nuevo las funciones `restaurants` y `saved-restaurants`.
+No se agregan claves, variables ni dependencias.
+
+Las pruebas automáticas cubren validaciones, identidad de usuario,
+actualización de notas, combinación de preferencias y fallos de acceso.
+Queda ejecutar `supabase/personal-ratings.test.sql` y completar
+`docs/pruebas-valoraciones.md` con el proyecto real.
+

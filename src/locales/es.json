@@ -144,25 +144,37 @@
         "removed": "Restaurante quitado de la lista.",
         "refresh": "Actualizar",
         "previous": "Anterior",
-        "next": "Siguiente"
+        "next": "Siguiente",
+        "ratingSaved": "Valoración actualizada. Solicita nuevas recomendaciones para aplicar el cambio."
     },
     "history": {
         "title": "Preferencias de recomendaciones",
-        "description": "Usamos los filtros de tus búsquedas anteriores para recomendarte restaurantes. Puedes borrar ese historial para empezar de nuevo.",
-        "clear": "Borrar preferencias de búsqueda",
-        "confirm": "Se borrará tu historial de búsquedas. No se puede deshacer. Tus listas de restaurantes se conservarán.",
+        "description": "Usamos tus búsquedas y valoraciones para recomendarte restaurantes. Aquí puedes borrar el historial de búsquedas; tus valoraciones se conservan.",
+        "clear": "Borrar historial de búsquedas",
+        "confirm": "Se borrará tu historial de búsquedas. No se puede deshacer. Tus listas y valoraciones se conservarán.",
         "cancel": "Cancelar",
         "loading": "Borrando preferencias…",
         "signin": "Inicia sesión para borrar tus preferencias.",
         "service": "No pudimos borrar tus preferencias. Inténtalo nuevamente.",
         "saveFailed": "Encontramos resultados, pero no pudimos guardar esta búsqueda en tu historial.",
-        "cleared": "Se borraron tus preferencias de búsqueda. Solicita nuevas recomendaciones para ver opciones sin personalización."
+        "cleared": "Se borró el historial de búsquedas. Las próximas recomendaciones seguirán considerando tus valoraciones."
     },
     "recommendations": {
-        "submit": "Recomendar según mi historial",
-        "help": "Usa tu ubicación seleccionada y tus preferencias del historial, en lugar de los filtros del formulario.",
-        "noHistory": "Aún no tienes historial. Mostramos opciones cercanas sin personalización.",
-        "noPreference": "Tus búsquedas recientes no tienen filtros específicos. Mostramos opciones cercanas.",
-        "basedOn": "Según tus últimas 20 búsquedas: {{category}} · {{price}}. Los resultados se ordenan por cercanía."
+        "submit": "Recomendar para mí",
+        "help": "Usa tu ubicación seleccionada y tus búsquedas y valoraciones, en lugar de los filtros del formulario.",
+        "noHistory": "Aún no tienes búsquedas ni valoraciones. Mostramos opciones cercanas sin personalización.",
+        "noPreference": "No hay preferencias suficientes para aplicar filtros personalizados. Mostramos opciones cercanas.",
+        "basedOn": "Según tus búsquedas y valoraciones: {{category}} · {{price}}. Los resultados se ordenan por cercanía."
+    },
+    "ratings": {
+        "title": "Mi valoración",
+        "score": "Nota de 1 a 5",
+        "choose": "Selecciona una nota",
+        "unspecified": "Sin especificar",
+        "current": "Tu nota: {{value}} de 5",
+        "unrated": "Todavía no has calificado este local.",
+        "help": "El tipo de comida y presupuesto son opcionales y reflejan tu experiencia. Los usamos junto con tu nota para recomendarte.",
+        "save": "Guardar valoración",
+        "remove": "Quitar valoración"
     }
 }

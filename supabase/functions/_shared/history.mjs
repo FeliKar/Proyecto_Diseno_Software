@@ -12,20 +12,23 @@ export function validateHistory(input) {
     return { action: input.action }
 }
 
-// Rows arrive newest first. A tie therefore favors the most recently used value.
-export function preferredFilters(rows) {
-    function mostFrequent(field) {
-        const counts = new Map()
-        for (const row of rows) {
-            const value = row[field]
-            if (value) counts.set(value, (counts.get(value) || 0) + 1)
+// Positive scores identify preferences. Recent searches win ties, then saved-list order.
+export function preferredFilters(rows, ratings = []) {
+    function preferred(searchField, ratingField) {
+        const scores = new Map()
+        function add(value, weight) {
+            if (value) scores.set(value, (scores.get(value) || 0) + weight)
         }
-        return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0] || ''
+        for (const row of rows) add(row[searchField], 1)
+        for (const row of ratings) add(row[ratingField], row.user_rating - 3)
+        return [...scores].filter(([, score]) => score > 0)
+            .sort((a, b) => b[1] - a[1])[0]?.[0] || ''
     }
     return {
-        category: mostFrequent('category'),
-        priceLevel: mostFrequent('price_level'),
+        category: preferred('category', 'user_category'),
+        priceLevel: preferred('price_level', 'user_price_level'),
         hasHistory: rows.length > 0,
+        hasRatings: ratings.length > 0,
     }
 }
 
@@ -61,7 +64,25 @@ export function createHistoryStore({ supabaseUrl, publicKey, fetcher = fetch }) 
         if (!Array.isArray(rows)) throw new Error('invalid_history')
         return rows
     }
+    async function ratings(context) {
+        const url = new URL(`${supabaseUrl}/rest/v1/saved_restaurants`)
+        url.searchParams.set('user_id', `eq.${context.user.id}`)
+        url.searchParams.set('status', 'eq.visited')
+        url.searchParams.set('user_rating', 'not.is.null')
+        url.searchParams.set('select', 'user_rating,user_category,user_price_level')
+        url.searchParams.set('order', 'created_at.desc,place_id.asc')
+        url.searchParams.set('limit', '20')
+        const response = await fetcher(url, {
+            headers: { apikey: publicKey, Authorization: context.authorization },
+            signal: AbortSignal.timeout(5000),
+        })
+        if (!response.ok) throw new Error('ratings_unavailable')
+        const rows = await response.json()
+        if (!Array.isArray(rows)) throw new Error('invalid_ratings')
+        return rows
+    }
     return {
+        ratings,
         list: (context) => query(context, 'GET'),
         save: (context, filters) => query(context, 'POST', filters),
         clear: (context) => query(context, 'DELETE'),
@@ -85,7 +106,10 @@ export function createPersonalSearchHandler({ placesHandler, store }) {
         let recommendation = null
         if (mode === 'recommend') {
             // A database failure must not be mistaken for an empty history.
-            recommendation = preferredFilters(await store.list(context))
+            const [history, ratings] = await Promise.all([
+                store.list(context), store.ratings(context),
+            ])
+            recommendation = preferredFilters(history, ratings)
             filters.category = recommendation.category
             filters.priceLevel = recommendation.priceLevel
         }
