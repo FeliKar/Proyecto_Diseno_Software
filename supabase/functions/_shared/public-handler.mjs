@@ -1,10 +1,9 @@
-import { validateSearch } from './places.mjs'
-
 export function createPublicHandler({
     verifyUser,
     consumeQuota,
     placesHandler,
     allowedOrigins,
+    validateInput,
 }) {
     return async (request) => {
         const origin = request.headers.get('Origin')
@@ -67,12 +66,12 @@ export function createPublicHandler({
             let filters
 
             try {
-                filters = validateSearch(JSON.parse(raw))
+                filters = validateInput(JSON.parse(raw))
             } catch {
                 return json('invalid_search', 400)
             }
 
-            if (!await consumeQuota(user.id)) {
+            if (!await consumeQuota(user.id, filters)) {
                 return json('rate_limit', 429)
             }
 
@@ -83,6 +82,7 @@ export function createPublicHandler({
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(filters),
                 }),
+                { user, authorization },
             )
 
             return new Response(response.body, {

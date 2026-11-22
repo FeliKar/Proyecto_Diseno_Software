@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { validateSearch } from '../supabase/functions/_shared/places.mjs'
 import { createPublicHandler } from '../supabase/functions/_shared/public-handler.mjs'
 
 const input = { latitude: -32.922, longitude: -71.5162 }
@@ -17,6 +18,7 @@ function setup(overrides = {}) {
     let calls = 0
     const handler = createPublicHandler({
         allowedOrigins: [origin],
+        validateInput: validateSearch,
         verifyUser: () => ({ id: 'user-1' }),
         consumeQuota: () => true,
         placesHandler: () => { calls++; return Response.json({ restaurants: [] }) },

@@ -95,7 +95,7 @@
             "service": "No pudimos consultar los restaurantes. Intenta nuevamente más tarde.",
             "imprecise": "La ubicación del navegador es demasiado imprecisa. Elige dónde buscar en el mapa.",
             "signin": "Inicia sesión en Mi cuenta para buscar restaurantes.",
-            "rateLimit": "Llegaste al límite de búsquedas: 10 por minuto y 100 al día (UTC). Espera antes de volver a intentar."
+            "rateLimit": "Llegaste al límite de consultas: 10 por minuto y 100 al día (UTC), compartido entre búsquedas y listas. Espera antes de volver a intentar."
         },
         "rating": "Calificación de Google: {{value}} / 5",
         "ratingUnknown": "Calificación no disponible",
@@ -124,5 +124,26 @@
         "missing": "El mapa de resultados todavía no está configurado.",
         "noLocations": "No hay coordenadas disponibles para estos resultados.",
         "partial": "Algunos restaurantes no tienen coordenadas disponibles y solo aparecen en las tarjetas."
+    },
+    "lists": {
+        "title": "Mis listas",
+        "wishlist": "Quiero visitar",
+        "visited": "Ya visité",
+        "help": "Elige una lista para consultarla. Puedes guardar restaurantes desde los resultados de búsqueda.",
+        "signin": "Inicia sesión para guardar restaurantes y consultar tus listas.",
+        "working": "Procesando…",
+        "saved": "Guardado en «{{list}}».",
+        "service": "No pudimos completar la operación. Intenta nuevamente.",
+        "rateLimit": "Llegaste al límite de consultas. Espera antes de volver a abrir la lista.",
+        "empty": "No hay restaurantes en esta página de la lista.",
+        "unknown": "Restaurante guardado {{number}}",
+        "detailsUnavailable": "No pudimos obtener sus datos actuales. Puedes reintentar, moverlo o quitarlo de la lista.",
+        "move": "Mover a «{{list}}»",
+        "remove": "Quitar",
+        "moved": "Restaurante movido a la otra lista.",
+        "removed": "Restaurante quitado de la lista.",
+        "refresh": "Actualizar",
+        "previous": "Anterior",
+        "next": "Siguiente"
     }
 }

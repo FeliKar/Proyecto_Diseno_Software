@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from './components/AuthPanel'
-import RestaurantSearch from './components/RestaurantSearch'
+import RestaurantWorkspace from './components/RestaurantWorkspace'
 
 const realSearchEnabled = import.meta.env.VITE_REAL_SEARCH === 'true'
 
@@ -105,6 +105,10 @@ export default function App() {
               {t('explore')}
             </a>
 
+            {realSearchEnabled && <a className="navigation-link" href="#saved-restaurants">
+              {t('lists.title')}
+            </a>}
+
             <label className="language-control">
               <span>{t('language')}</span>
               <select
@@ -137,7 +141,7 @@ export default function App() {
 
         {!realSearchEnabled && <p className="demo-notice">{t('demoNotice')}</p>}
 
-        {realSearchEnabled ? <RestaurantSearch /> : (
+        {realSearchEnabled ? <RestaurantWorkspace /> : (
           <section
             id="restaurants"
             className="restaurants-section"

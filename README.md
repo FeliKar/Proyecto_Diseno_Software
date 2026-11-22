@@ -24,6 +24,7 @@ datos disponibles del proveedor.
 - Estados de carga y mensajes de autenticación en español e inglés.
 - Búsqueda local de restaurantes reales con filtros enviados al backend.
 - Selección del punto de búsqueda en un mapa.
+- Listas personales «Quiero visitar» y «Ya visité», con opciones para mover o quitar restaurantes.
 - Calificación y cantidad de valoraciones de Google, cuando están disponibles.
 - Mapa de resultados con marcadores numerados que corresponden a las tarjetas.
 - Manejo de ubicación imprecisa, permisos denegados y errores de conexión.
@@ -36,7 +37,7 @@ Se comprobó el registro sin confirmación y el acceso con contraseña o Google 
 
 El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: fotos y reseñas, listas personales, historial y recomendaciones.
+Próximas implementaciones planeadas: fotos y reseñas, listas compartidas, historial y recomendaciones.
 
 
 
@@ -109,7 +110,7 @@ El archivo `.env.local` está excluido de Git. La clave se utiliza
 #### Comprobaciones del backend
 
 - Revisión estática sin errores.
-- Diez pruebas automatizadas aprobadas, que cubren validaciones, filtros, límite de resultados, consultas al proveedor, autenticación, límites de uso y manejo de errores.
+- Pruebas automatizadas aprobadas, que cubren validaciones, filtros, límite de resultados, consultas al proveedor, autenticación, límites de uso y manejo de errores.
 - Consulta real con coordenadas de Santiago: respuesta HTTP 200
   y cinco restaurantes con direcciones y enlaces a Google Maps.
 
@@ -126,7 +127,7 @@ También deben estar configuradas la URL y la clave pública de Supabase.
 
 En este modo solo se necesita ejecutar el servidor de la interfaz. La búsqueda requiere iniciar sesión y el backend valida al usuario antes de consultar Google Places.
 
-Se permiten hasta diez búsquedas por minuto y cien por día por usuario. El límite diario se reinicia según la fecha UTC. Una búsqueda válida que llega a consultar al proveedor consume cuota aunque este falle.
+Se permiten hasta diez consultas por minuto y cien por día por usuario, compartidas entre búsquedas y apertura de páginas de listas. El límite diario se reinicia según la fecha UTC. Una búsqueda válida que llega a consultar al proveedor consume cuota aunque este falle.
 
 La clave privada de Google Places se configura como secreto en Supabase y no se envía al navegador.
 
@@ -190,3 +191,40 @@ Se utilizó ChatGPT como apoyo en la implementación del backend con Deno y Goog
 También se utilizó ChatGPT como apoyo para conectar la interfaz con el backend, incorporar la selección de ubicación en el mapa y preparar el manejo de errores y las pruebas automatizadas de búsqueda.
 
 Se utilizó ChatGPT como apoyo para adaptar el backend a Supabase Edge Functions, implementar la validación de sesión y los límites de búsqueda, y preparar las pruebas correspondientes. La configuración de los servicios, el despliegue y las comprobaciones manuales se realizaron durante el desarrollo.
+
+Se utilizó ChatGPT como apoyo para implementar las listas, sus permisos,
+la consulta de datos actuales y las pruebas correspondientes.
+
+
+## Listas personales
+
+La tabla `saved_restaurants` guarda el identificador de Google, el usuario,
+el estado (`wishlist` o `visited`) y la fecha de creación. Su clave primaria
+evita duplicar un restaurante para el mismo usuario. Las reglas RLS impiden
+leer o modificar filas de otras cuentas.
+
+El backend `saved-restaurants` valida la sesión y usa el token del usuario
+para consultar la base de datos, manteniendo activas sus reglas RLS.
+Los nombres y direcciones se obtienen de Google Places al abrir la lista;
+no se guardan en la tabla. Cada página muestra hasta cinco restaurantes y
+puede realizar hasta cinco consultas de Place Details. No se consulta Google
+al guardar, mover o quitar una entrada. Estas modificaciones no consumen
+la cuota de consultas a Google de la aplicación.
+
+Para configurar las listas:
+
+1. Ejecutar `supabase/migrations/202611210001_saved_restaurants.sql` en SQL Editor.
+2. Desplegar las funciones `restaurants` y `saved-restaurants`.
+3. Mantener las claves ya configuradas en Supabase y en la interfaz.
+
+```bash
+npx supabase functions deploy restaurants --project-ref TU_PROJECT_REF --use-api
+npx supabase functions deploy saved-restaurants --project-ref TU_PROJECT_REF --use-api
+```
+
+Las listas funcionan contra Supabase incluso al ejecutar la interfaz en
+localhost. No se necesitan nuevas claves ni variables de entorno.
+Si falla Google, se conserva la entrada para poder moverla o quitarla.
+Cerrar sesión o cambiar de cuenta descarta las listas mostradas en pantalla.
+
+Las pruebas automáticas usan respuestas simuladas. También se ejecutó la prueba SQL de permisos y se completaron las pruebas manuales de listas con el proyecto real, incluyendo la separación de datos entre usuarios

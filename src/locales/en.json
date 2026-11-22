@@ -95,7 +95,7 @@
       "service": "We could not retrieve restaurants. Please try again later.",
       "imprecise": "Your browser location is too imprecise. Choose where to search on the map.",
       "signin": "Sign in under My account to search for restaurants.",
-      "rateLimit": "Search limit reached: 10 per minute and 100 per day (UTC). Please wait before trying again."
+      "rateLimit": "Query limit reached: 10 per minute and 100 per day (UTC), shared by searches and lists. Please wait before trying again."
     },
     "rating": "Google rating: {{value}} / 5",
     "ratingUnknown": "Rating unavailable",
@@ -124,5 +124,26 @@
     "missing": "The results map is not configured yet.",
     "noLocations": "Coordinates are unavailable for these results.",
     "partial": "Some restaurants have no coordinates and only appear in the cards."
+  },
+  "lists": {
+    "title": "My lists",
+    "wishlist": "Want to visit",
+    "visited": "Visited",
+    "help": "Choose a list to view it. You can save restaurants from the search results.",
+    "signin": "Sign in to save restaurants and view your lists.",
+    "working": "Working…",
+    "saved": "Saved to “{{list}}”.",
+    "service": "We could not complete the request. Please try again.",
+    "rateLimit": "Query limit reached. Wait before opening the list again.",
+    "empty": "There are no restaurants on this list page.",
+    "unknown": "Saved restaurant {{number}}",
+    "detailsUnavailable": "We could not retrieve its current details. You can retry, move it or remove it from the list.",
+    "move": "Move to “{{list}}”",
+    "remove": "Remove",
+    "moved": "Restaurant moved to the other list.",
+    "removed": "Restaurant removed from the list.",
+    "refresh": "Refresh",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

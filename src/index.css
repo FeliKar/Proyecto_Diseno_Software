@@ -484,3 +484,14 @@ h1 {
   font: bold 16px system-ui, sans-serif;
   box-shadow: 0 1px 5px #0006;
 }
+
+.saved-actions,
+.saved-pagination {
+  margin-top: 20px;
+}
+
+.saved-actions button:disabled,
+#saved-restaurants button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
