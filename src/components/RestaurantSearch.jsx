@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LocationPicker from './LocationPicker'
+import RestaurantMap from './RestaurantMap'
 import { getLocation, safeLink, searchRestaurants } from '../lib/restaurant-search.mjs'
 import { getSearchOptions } from '../lib/search-session'
 
@@ -131,11 +132,25 @@ export default function RestaurantSearch() {
             <p>{t('nearby.limit')}</p>
 
             {restaurants !== null && <p>{t('nearby.source')}</p>}
+            {restaurants?.length > 0 && <RestaurantMap restaurants={restaurants} />}
             <div className="restaurant-grid" aria-busy={loading}>
-                {restaurants?.map((restaurant) => (
+                {restaurants?.map((restaurant, index) => (
                     <article className="restaurant-card" key={restaurant.id}>
                         <div className="restaurant-content">
-                            <h3>{restaurant.name}</h3>
+                            <h3>{index + 1}. {restaurant.name}</h3>
+                            <p>{restaurant.rating != null
+                                ? t('nearby.rating', {
+                                    value: new Intl.NumberFormat(i18n.resolvedLanguage, {
+                                        minimumFractionDigits: 1, maximumFractionDigits: 1,
+                                    }).format(restaurant.rating)
+                                })
+                                : t('nearby.ratingUnknown')}</p>
+                            <p>{restaurant.ratingCount != null
+                                ? t('nearby.ratingCount', {
+                                    total: new Intl.NumberFormat(i18n.resolvedLanguage)
+                                        .format(restaurant.ratingCount)
+                                })
+                                : t('nearby.ratingCountUnknown')}</p>
                             <p>{restaurant.address || t('nearby.addressUnknown')}</p>
                             <div className="price">
                                 <span>{t('priceLabel')}</span>

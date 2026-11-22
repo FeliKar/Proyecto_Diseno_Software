@@ -24,20 +24,19 @@ datos disponibles del proveedor.
 - Estados de carga y mensajes de autenticación en español e inglés.
 - Búsqueda local de restaurantes reales con filtros enviados al backend.
 - Selección del punto de búsqueda en un mapa.
+- Calificación y cantidad de valoraciones de Google, cuando están disponibles.
+- Mapa de resultados con marcadores numerados que corresponden a las tarjetas.
 - Manejo de ubicación imprecisa, permisos denegados y errores de conexión.
 
 La autenticación usa Supabase Auth. Para esta entrega se desactivó la confirmación de correo y se retiró la recuperación de contraseña. El registro no verifica la propiedad del correo y no requiere configurar SMTP. Las cuentas nuevas deben poder iniciar sesión inmediatamente después del registro.
 
 En la versión publicada se comprobó el acceso con Google, la persistencia de la sesión al recargar y el cierre de sesión.
 
-Se comprobó localmente el registro sin confirmación de correo, la persistencia
-de sesión, el acceso con contraseña, el rechazo del registro duplicado y el
-inicio con Google. Quedan pendientes la validación del nuevo registro en
-producción y los demás casos sin marcar de la lista de pruebas.
+Se comprobó el registro sin confirmación y el acceso con contraseña o Google en localhost y en producción. También se probaron las validaciones, los errores de conexión, ambos idiomas y la usabilidad de los formularios.
 
 El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: visualización de restaurantes en el mapa, completar la configuración y validación de autenticación, listas personales y recomendaciones.
+Próximas implementaciones planeadas: fotos y reseñas, listas personales, historial y recomendaciones.
 
 
 
@@ -110,7 +109,7 @@ El archivo `.env.local` está excluido de Git. La clave se utiliza
 #### Comprobaciones del backend
 
 - Revisión estática sin errores.
-- Nueve pruebas automatizadas aprobadas, que cubren validaciones, filtros, límite de resultados, consultas al proveedor, autenticación, límites de uso y manejo de errores.
+- Diez pruebas automatizadas aprobadas, que cubren validaciones, filtros, límite de resultados, consultas al proveedor, autenticación, límites de uso y manejo de errores.
 - Consulta real con coordenadas de Santiago: respuesta HTTP 200
   y cinco restaurantes con direcciones y enlaces a Google Maps.
 
@@ -138,6 +137,22 @@ Se comprobó que una petición sin sesión recibe HTTP 401 y que una búsqueda d
 El mapa requiere `VITE_GOOGLE_MAPS_API_KEY`, con una clave restringida a
 Maps JavaScript API y a los sitios web autorizados. Esta clave de navegador
 es distinta de la clave privada de Places utilizada por el backend.
+
+El mapa de resultados requiere también `VITE_GOOGLE_MAPS_MAP_ID` en la raíz
+local y en Vercel. Se obtiene creando un Map ID de tipo JavaScript en Google
+Cloud. Es un identificador público, no una clave secreta. Reiniciar Vite o
+volver a compilar en Vercel después de configurarlo.
+
+Los marcadores muestran el número de la tarjeta; al pulsarlos aparece el
+nombre del restaurante. Mover el mapa de resultados no modifica la ubicación
+de búsqueda. Si faltan coordenadas, el restaurante permanece en la lista.
+Las calificaciones son las de Google, no notas propias de los usuarios.
+
+Se comprobaron desde localhost las calificaciones, la cantidad de valoraciones
+y los marcadores numerados con el backend desplegado. Los marcadores coinciden
+con las tarjetas y muestran el nombre del restaurante al pulsarlos. También
+se verificaron los filtros, ambos idiomas y que mover el mapa de resultados
+no modifica el punto de búsqueda.
 
 El punto de búsqueda se conserva al cambiar los filtros mientras la página permanece abierta. Las ubicaciones automáticas con una incertidumbre superior a 1 km se rechazan y se ofrece seleccionar un punto en el mapa.
 

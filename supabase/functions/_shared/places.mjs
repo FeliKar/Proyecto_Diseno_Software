@@ -49,6 +49,16 @@ export function selectRestaurants(places, filters) {
             priceLevel: priceGroups[place.priceLevel] || null,
             googleMapsUrl: place.googleMapsUri || null,
             attributions: place.attributions || [],
+            rating: Number.isFinite(place.rating) && place.rating >= 1 && place.rating <= 5
+                ? place.rating : null,
+            ratingCount: Number.isInteger(place.userRatingCount) && place.userRatingCount >= 0
+                ? place.userRatingCount : null,
+            location: Number.isFinite(place.location?.latitude) &&
+                Math.abs(place.location.latitude) <= 90 &&
+                Number.isFinite(place.location?.longitude) &&
+                Math.abs(place.location.longitude) <= 180
+                ? { latitude: place.location.latitude, longitude: place.location.longitude }
+                : null,
         }))
 }
 
@@ -92,6 +102,7 @@ export function createHandler({ apiKey, fetcher = fetch }) {
                         'places.id', 'places.displayName', 'places.formattedAddress',
                         'places.priceLevel', 'places.googleMapsUri',
                         'places.businessStatus', 'places.attributions',
+                        'places.rating', 'places.userRatingCount', 'places.location',
                     ].join(','),
                 },
                 body: JSON.stringify({

@@ -467,3 +467,20 @@ h1 {
   line-height: 1;
   text-shadow: 0 0 3px white, 0 0 3px white;
 }
+
+.restaurant-results-map {
+  margin-bottom: 24px;
+}
+
+.restaurant-map-marker {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #28533a;
+  color: white;
+  font: bold 16px system-ui, sans-serif;
+  box-shadow: 0 1px 5px #0006;
+}

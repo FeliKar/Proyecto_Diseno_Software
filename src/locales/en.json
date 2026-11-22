@@ -96,7 +96,11 @@
       "imprecise": "Your browser location is too imprecise. Choose where to search on the map.",
       "signin": "Sign in under My account to search for restaurants.",
       "rateLimit": "Search limit reached: 10 per minute and 100 per day (UTC). Please wait before trying again."
-    }
+    },
+    "rating": "Google rating: {{value}} / 5",
+    "ratingUnknown": "Rating unavailable",
+    "ratingCount": "Google ratings: {{total}}",
+    "ratingCountUnknown": "Rating count unavailable"
   },
   "locationPicker": {
     "open": "Choose location on map",
@@ -111,5 +115,14 @@
     "unavailable": "We could not load the map. Check your connection and Maps JavaScript API configuration, then reload the page.",
     "missing": "Map selection is not configured yet.",
     "label": "Map to choose the search location"
+  },
+  "restaurantMap": {
+    "title": "Restaurants on the map",
+    "help": "Numbers match the cards. Moving this map does not change the search location.",
+    "loading": "Loading map results…",
+    "unavailable": "We could not display the map. You can use the cards and their Google Maps links.",
+    "missing": "The results map is not configured yet.",
+    "noLocations": "Coordinates are unavailable for these results.",
+    "partial": "Some restaurants have no coordinates and only appear in the cards."
   }
 }

@@ -47,6 +47,10 @@ Deno.test('sends the filters and keeps the key out of the response', async () =>
             assert.equal(body.rankPreference, 'DISTANCE')
             assert.deepEqual(body.includedTypes, ['italian_restaurant'])
             assert.equal(body.languageCode, 'en')
+            const fields = options.headers['X-Goog-FieldMask'].split(',')
+            for (const field of ['places.rating', 'places.userRatingCount', 'places.location']) {
+                assert.ok(fields.includes(field))
+            }
             assert.equal(options.headers['X-Goog-Api-Key'], 'test-secret')
             return Promise.resolve(Response.json({ places: [] }))
         }
@@ -78,4 +82,23 @@ Deno.test('rejects requests from other websites', async () => {
     const req = request()
     req.headers.set('Origin', 'https://another-site.example')
     assert.equal((await createHandler({})(req)).status, 403)
+})
+
+
+Deno.test('keeps valid ratings and coordinates and handles missing or invalid data', () => {
+    const base = { id: 'one', displayName: { text: 'Restaurant' } }
+    const filters = validateSearch(input)
+    const [valid] = selectRestaurants([{
+        ...base, rating: 4.5, userRatingCount: 0, location: { latitude: 0, longitude: 0 },
+    }], filters)
+    assert.equal(valid.rating, 4.5)
+    assert.equal(valid.ratingCount, 0)
+    assert.deepEqual(valid.location, { latitude: 0, longitude: 0 })
+    for (const fields of [{}, { rating: 7, userRatingCount: -1, location: { latitude: 91, longitude: 0 } },
+    { rating: '4.5', userRatingCount: 2.5, location: { latitude: 0 } }]) {
+        const [result] = selectRestaurants([{ ...base, ...fields }], filters)
+        assert.equal(result.rating, null)
+        assert.equal(result.ratingCount, null)
+        assert.equal(result.location, null)
+    }
 })

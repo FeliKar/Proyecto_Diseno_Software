@@ -96,7 +96,11 @@
             "imprecise": "La ubicación del navegador es demasiado imprecisa. Elige dónde buscar en el mapa.",
             "signin": "Inicia sesión en Mi cuenta para buscar restaurantes.",
             "rateLimit": "Llegaste al límite de búsquedas: 10 por minuto y 100 al día (UTC). Espera antes de volver a intentar."
-        }
+        },
+        "rating": "Calificación de Google: {{value}} / 5",
+        "ratingUnknown": "Calificación no disponible",
+        "ratingCount": "Valoraciones en Google: {{total}}",
+        "ratingCountUnknown": "Cantidad de valoraciones no disponible"
     },
     "locationPicker": {
         "open": "Elegir ubicación en el mapa",
@@ -111,5 +115,14 @@
         "unavailable": "No pudimos cargar el mapa. Revisa la conexión y la configuración de Maps JavaScript API, y recarga la página.",
         "missing": "La selección en el mapa todavía no está configurada.",
         "label": "Mapa para elegir el punto de búsqueda"
+    },
+    "restaurantMap": {
+        "title": "Restaurantes en el mapa",
+        "help": "Los números corresponden a las tarjetas. Mover este mapa no cambia el punto de búsqueda.",
+        "loading": "Cargando resultados en el mapa…",
+        "unavailable": "No pudimos mostrar el mapa. Puedes consultar las tarjetas y sus enlaces a Google Maps.",
+        "missing": "El mapa de resultados todavía no está configurado.",
+        "noLocations": "No hay coordenadas disponibles para estos resultados.",
+        "partial": "Algunos restaurantes no tienen coordenadas disponibles y solo aparecen en las tarjetas."
     }
 }
