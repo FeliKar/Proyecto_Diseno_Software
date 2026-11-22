@@ -11,7 +11,7 @@ const secretKeys = JSON.parse(
 export const publicKey =
     publishableKeys.default || Deno.env.get('SUPABASE_ANON_KEY')
 
-const serverKey =
+export const serverKey =
     secretKeys.default || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
 export async function verifyUser(authorization: string) {

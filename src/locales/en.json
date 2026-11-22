@@ -176,5 +176,23 @@
     "help": "Cuisine and budget are optional and reflect your experience. We use them with your score to recommend restaurants.",
     "save": "Save rating",
     "remove": "Remove rating"
+  },
+  "sharing": {
+    "help": "Anyone with the link can view this list, without your personal ratings. You can stop sharing at any time.",
+    "create": "Create or view link",
+    "revoke": "Stop sharing",
+    "link": "List link",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "manualCopy": "Select the link and copy it manually.",
+    "revoked": "The list is no longer shared. The previous link no longer provides access.",
+    "loading": "Loading…",
+    "service": "We could not complete the request. Please try again.",
+    "signin": "Sign in to manage your links.",
+    "notFound": "The link is invalid or the list is no longer shared.",
+    "rateLimit": "The query limit for this list was reached. Please try again later.",
+    "title": "Shared list",
+    "readOnly": "You can view the restaurants. This page is read-only.",
+    "open": "View list"
   }
 }

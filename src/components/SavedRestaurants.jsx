@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { getHostedOptions } from '../lib/search-session'
 import { savedRequest } from '../lib/saved-restaurants.mjs'
 import RatingForm from './RatingForm'
+import ShareListControls from './ShareListControls'
 import { safeLink } from '../lib/restaurant-search.mjs'
 
 export default function SavedRestaurants({ userId }) {
@@ -89,6 +90,7 @@ export default function SavedRestaurants({ userId }) {
         {notice && <p role="status">{t(`lists.${notice}`)}</p>}
         {page && <>
             <h3>{t(`lists.${status}`)}</h3>
+            <ShareListControls key={`${userId}:${status}`} userId={userId} status={status} />
             {!page.restaurants.length && <p role="status">{t('lists.empty')}</p>}
             {page.restaurants.length > 0 && <p>{t('nearby.source')}</p>}
             <div className="restaurant-grid" aria-busy={loading}>

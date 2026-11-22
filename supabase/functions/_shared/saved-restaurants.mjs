@@ -1,3 +1,37 @@
+export async function loadRestaurantDetails(row, language, { apiKey, fetcher = fetch }) {
+    const fallback = {
+        id: row.place_id, status: row.status, name: null,
+        address: null, googleMapsUrl: null, attributions: [],
+        userRating: row.user_rating ?? null,
+        userCategory: row.user_category || '',
+        userPriceLevel: row.user_price_level || ''
+    }
+    if (!apiKey) return fallback
+    try {
+        const url = new URL(`https://places.googleapis.com/v1/places/${encodeURIComponent(row.place_id)}`)
+        url.searchParams.set('languageCode', language)
+        const response = await fetcher(url, {
+            headers: {
+                'X-Goog-Api-Key': apiKey,
+                'X-Goog-FieldMask': 'id,displayName,formattedAddress,googleMapsUri,attributions',
+            },
+            signal: AbortSignal.timeout(8000),
+        })
+        if (!response.ok) return fallback
+        const place = await response.json()
+        if (typeof place.displayName?.text !== 'string' || !place.displayName.text) return fallback
+        return {
+            ...fallback, name: place.displayName.text,
+            address: place.formattedAddress || null,
+            googleMapsUrl: place.googleMapsUri || null,
+            attributions: Array.isArray(place.attributions) ? place.attributions : []
+        }
+    } catch {
+        // Keep the saved entry manageable even if Google cannot return its data.
+        return fallback
+    }
+}
+
 const statuses = ['wishlist', 'visited']
 
 export function validateSavedRequest(input) {
@@ -38,39 +72,6 @@ export function createSavedHandler({ supabaseUrl, publicKey, apiKey, fetcher = f
         status, headers: { 'Cache-Control': 'no-store' },
     })
 
-    async function details(row, language) {
-        const fallback = {
-            id: row.place_id, status: row.status, name: null,
-            address: null, googleMapsUrl: null, attributions: [],
-            userRating: row.user_rating ?? null,
-            userCategory: row.user_category || '',
-            userPriceLevel: row.user_price_level || ''
-        }
-        if (!apiKey) return fallback
-        try {
-            const url = new URL(`https://places.googleapis.com/v1/places/${encodeURIComponent(row.place_id)}`)
-            url.searchParams.set('languageCode', language)
-            const response = await fetcher(url, {
-                headers: {
-                    'X-Goog-Api-Key': apiKey,
-                    'X-Goog-FieldMask': 'id,displayName,formattedAddress,googleMapsUri,attributions',
-                },
-                signal: AbortSignal.timeout(8000),
-            })
-            if (!response.ok) return fallback
-            const place = await response.json()
-            if (typeof place.displayName?.text !== 'string' || !place.displayName.text) return fallback
-            return {
-                ...fallback, name: place.displayName.text,
-                address: place.formattedAddress || null,
-                googleMapsUrl: place.googleMapsUri || null,
-                attributions: Array.isArray(place.attributions) ? place.attributions : []
-            }
-        } catch {
-            // Keep the saved entry manageable even if Google cannot return its data.
-            return fallback
-        }
-    }
 
     return async (request, { user, authorization }) => {
         const input = validateSavedRequest(await request.json())
@@ -123,7 +124,7 @@ export function createSavedHandler({ supabaseUrl, publicKey, apiKey, fetcher = f
             if (input.action !== 'list') return json({ ok: true })
             const rows = await response.json()
             if (!Array.isArray(rows)) throw new Error('invalid_response')
-            const restaurants = await Promise.all(rows.slice(0, 5).map((row) => details(row, input.language)))
+            const restaurants = await Promise.all(rows.slice(0, 5).map((row) => loadRestaurantDetails(row, input.language, { apiKey, fetcher })))
             return json({ restaurants, hasMore: rows.length > 5 })
         } catch {
             return json({ error: 'service' }, 503)

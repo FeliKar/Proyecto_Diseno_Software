@@ -37,7 +37,7 @@ Se comprobó el registro sin confirmación y el acceso con contraseña o Google 
 
 El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: fotos y reseñas, y listas compartidas.
+Próximas implementaciones planeadas: fotos, reseñas y su resumen.
 
 
 
@@ -198,6 +198,9 @@ la consulta de datos actuales y las pruebas correspondientes.
 Se utilizó ChatGPT como apoyo para los controles de valoración, la integración
 con la base de datos, las reglas de recomendación y las pruebas.
 
+Se utilizó ChatGPT como apoyo para compartir listas, comprobar sus permisos,
+reutilizar la consulta de detalles y preparar las pruebas.
+
 
 
 
@@ -331,3 +334,49 @@ actualización de notas, combinación de preferencias y fallos de acceso.
 Queda ejecutar `supabase/personal-ratings.test.sql` y completar
 `docs/pruebas-valoraciones.md` con el proyecto real.
 
+
+
+## Compartir listas
+
+Cada lista tiene un enlace de solo lectura que su propietario puede generar
+o revocar. Los enlaces usan un UUID aleatorio y se guardan en `shared_lists`.
+La tabla tiene RLS y solo permite a cada cuenta administrar sus propios enlaces.
+Generar un enlace existente lo conserva; dejar de compartir lo elimina.
+Al compartir de nuevo se obtiene otro identificador.
+
+La interfaz añade `?list=IDENTIFICADOR` a la dirección de la aplicación.
+Quien recibe el enlace puede abrirlo sin cuenta y pulsar «Ver lista».
+La vista refleja el contenido actual y muestra hasta cinco locales por página,
+con nombres y direcciones obtenidos de Google. Los enlaces de cada local
+permiten abrirlo o compartirlo desde Google Maps.
+
+La función `sharing` exige sesión y usa los permisos de la cuenta para crear
+o revocar enlaces. La función pública `shared-list` busca primero el enlace
+activo en el servidor y consulta únicamente la cuenta y el tipo de lista
+asociados. Utiliza una clave de servidor de Supabase ya disponible en el
+entorno de Edge Functions; nunca se incorpora al frontend. La respuesta pública
+incluye solo identificador de local, nombre, dirección, enlace a Maps y
+atribuciones. No devuelve usuario, correo, historial ni valoraciones personales.
+
+Cada consulta válida a una página compartida consume una unidad de la cuota
+existente de la cuenta propietaria, compartida con sus búsquedas y consultas
+de listas: diez por minuto y cien por día UTC. Puede consultar hasta cinco
+detalles de Google. Crear o revocar enlaces no consulta Google. Un enlace
+inválido o revocado no consulta restaurantes ni consume esta cuota.
+
+Revocar impide nuevas consultas; no puede retirar información que otra persona
+ya haya visto o copiado. El receptor puede reenviar el enlace mientras esté
+activo. Las vistas no usan caché HTTP.
+
+Configuración:
+
+1. Ejecutar `supabase/migrations/202611220003_shared_lists.sql`.
+2. Ejecutar `supabase/migrations/202611220004_shared_list_read_access.sql`.
+3. Desplegar `sharing`, `shared-list` y `saved-restaurants`.
+4. Publicar los cambios del frontend mediante Vercel.
+
+No se requieren nuevas variables, claves de Google ni dependencias. Para enviar
+un enlace a otra persona se debe generarlo desde la dirección pública de Vercel;
+un enlace de localhost solo funciona en el equipo donde se ejecuta la aplicación.
+
+Las pruebas automáticas cubren permisos, lectura pública limitada, revocación, protección de campos privados, errores y cuotas. Se ejecutó la prueba SQL de permisos y se completaron las pruebas manuales de listas compartidas, incluyendo acceso sin sesión, separación de datos privados, paginación y revocación de enlaces. También se corrigieron los permisos de lectura del backend.

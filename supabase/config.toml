@@ -14,3 +14,13 @@ entrypoint = "./functions/saved-restaurants/index.ts"
 # The function checks the session and uses the caller's database permissions.
 verify_jwt = false
 entrypoint = "./functions/search-history/index.ts"
+
+[functions.sharing]
+# Link management requires a session verified inside the function.
+verify_jwt = false
+entrypoint = "./functions/sharing/index.ts"
+
+[functions.shared-list]
+# Public read-only access requires a valid active share token.
+verify_jwt = false
+entrypoint = "./functions/shared-list/index.ts"

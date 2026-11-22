@@ -176,5 +176,23 @@
         "help": "El tipo de comida y presupuesto son opcionales y reflejan tu experiencia. Los usamos junto con tu nota para recomendarte.",
         "save": "Guardar valoración",
         "remove": "Quitar valoración"
+    },
+    "sharing": {
+        "help": "Quien tenga el enlace podrá ver esta lista, sin tus notas personales. Puedes dejar de compartirla cuando quieras.",
+        "create": "Generar o ver enlace",
+        "revoke": "Dejar de compartir",
+        "link": "Enlace de la lista",
+        "copy": "Copiar enlace",
+        "copied": "Enlace copiado.",
+        "manualCopy": "Selecciona el enlace y cópialo manualmente.",
+        "revoked": "La lista dejó de compartirse. El enlace anterior ya no permite consultarla.",
+        "loading": "Cargando…",
+        "service": "No pudimos completar la solicitud. Inténtalo nuevamente.",
+        "signin": "Inicia sesión para administrar tus enlaces.",
+        "notFound": "El enlace no es válido o la lista dejó de compartirse.",
+        "rateLimit": "Se alcanzó el límite de consultas de esta lista. Inténtalo más tarde.",
+        "title": "Lista compartida",
+        "readOnly": "Puedes consultar los restaurantes. Esta vista es de solo lectura.",
+        "open": "Ver lista"
     }
 }

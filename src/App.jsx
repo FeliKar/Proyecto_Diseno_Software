@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthPanel from './components/AuthPanel'
 import RestaurantWorkspace from './components/RestaurantWorkspace'
+import SharedListPage from './components/SharedListPage'
 
+const sharedToken = new URLSearchParams(window.location.search).get('list')
 const realSearchEnabled = import.meta.env.VITE_REAL_SEARCH === 'true'
 
 const restaurants = [
@@ -86,6 +88,8 @@ export default function App() {
     setCategory('')
     setPriceLevel('')
   }
+
+  if (sharedToken !== null) return <SharedListPage token={sharedToken} />
 
   return (
     <>
