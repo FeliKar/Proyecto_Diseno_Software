@@ -4,7 +4,7 @@ import LocationPicker from './LocationPicker'
 import RestaurantMap from './RestaurantMap'
 import SaveRestaurantButtons from './SaveRestaurantButtons'
 import { getLocation, safeLink, searchRestaurants } from '../lib/restaurant-search.mjs'
-import { getSearchOptions } from '../lib/search-session'
+import { getHostedOptions, getSearchOptions } from '../lib/search-session'
 
 export default function RestaurantSearch({ userId, onSaved }) {
     const { t, i18n } = useTranslation()
@@ -16,10 +16,15 @@ export default function RestaurantSearch({ userId, onSaved }) {
     const [location, setLocation] = useState(null)
     const [showMap, setShowMap] = useState(false)
     const busy = useRef(false)
+    const hosted = import.meta.env.VITE_USE_HOSTED_BACKEND === 'true'
+    const [recommendation, setRecommendation] = useState(null)
+    const [historyWarning, setHistoryWarning] = useState(false)
 
     function resetResults() {
         setRestaurants(null)
         setError('')
+        setRecommendation(null)
+        setHistoryWarning(false)
     }
 
     function clearFilters() {
@@ -28,14 +33,16 @@ export default function RestaurantSearch({ userId, onSaved }) {
         resetResults()
     }
 
-    async function handleSearch(event, useDevice = false) {
+    async function handleSearch(event, useDevice = false, mode = 'search') {
         event.preventDefault()
         if (busy.current) return
         busy.current = true
         setLoading(true)
         resetResults()
         try {
-            const options = await getSearchOptions()
+            const options = hosted
+                ? await getHostedOptions('restaurants', userId)
+                : await getSearchOptions()
 
             // Conserva el punto elegido al cambiar los filtros.
             const point = useDevice || !location
@@ -50,13 +57,16 @@ export default function RestaurantSearch({ userId, onSaved }) {
 
                     category,
                     priceLevel,
+                    mode,
                     language: i18n.resolvedLanguage?.startsWith('en') ? 'en' : 'es',
                 },
                 fetch,
                 options,
             )
 
-            setRestaurants(results)
+            setRestaurants(results.restaurants)
+            setRecommendation(results.recommendation || null)
+            setHistoryWarning(results.historySaved === false)
         } catch (failure) {
             const knownErrors = ['unsupported', 'denied', 'location', 'timeout', 'imprecise', 'signin', 'rateLimit']
             setError(knownErrors.includes(failure.message) ? failure.message : 'service')
@@ -121,6 +131,13 @@ export default function RestaurantSearch({ userId, onSaved }) {
                         <button type="button" className="clear-filters" onClick={clearFilters}>{t('clearFilters')}</button>
                         <button type="submit" className="auth-submit">{t(location ? 'locationPicker.search' : 'nearby.submit')}</button>
                     </div>
+                    {hosted && <div>
+                        <p>{t('recommendations.help')}</p>
+                        <button type="button" className="auth-submit"
+                            onClick={(event) => handleSearch(event, false, 'recommend')}>
+                            {t('recommendations.submit')}
+                        </button>
+                    </div>}
                 </fieldset>
             </form>
 
@@ -130,6 +147,19 @@ export default function RestaurantSearch({ userId, onSaved }) {
                 )}
             </p>
             {error && <p role="alert" className="auth-error">{t(`nearby.errors.${error}`)}</p>}
+            {historyWarning && <p role="status">{t('history.saveFailed')}</p>}
+            {recommendation && <p role="status">
+                {!recommendation.hasHistory
+                    ? t('recommendations.noHistory')
+                    : !recommendation.category && !recommendation.priceLevel
+                        ? t('recommendations.noPreference')
+                        : t('recommendations.basedOn', {
+                            category: recommendation.category
+                                ? t(`categories.${recommendation.category}`) : t('allCategories'),
+                            price: recommendation.priceLevel
+                                ? t(`priceLevels.${recommendation.priceLevel}`) : t('allPrices'),
+                        })}
+            </p>}
             <p>{t('nearby.limit')}</p>
 
             {restaurants !== null && <p>{t('nearby.source')}</p>}

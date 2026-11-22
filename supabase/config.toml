@@ -9,3 +9,8 @@ entrypoint = "./functions/restaurants/index.ts"
 # The function verifies the session before accessing user data.
 verify_jwt = false
 entrypoint = "./functions/saved-restaurants/index.ts"
+
+[functions.search-history]
+# The function checks the session and uses the caller's database permissions.
+verify_jwt = false
+entrypoint = "./functions/search-history/index.ts"

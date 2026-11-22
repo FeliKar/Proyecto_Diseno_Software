@@ -40,7 +40,7 @@ export async function searchRestaurants(
                         : {}),
                 },
                 body: JSON.stringify(filters),
-                signal: AbortSignal.timeout(25000),
+                signal: AbortSignal.timeout(35000),
             },
         )
 
@@ -66,7 +66,7 @@ export async function searchRestaurants(
             throw new Error('service')
         }
 
-        return data.restaurants
+        return data
     } catch (error) {
         if (['signin', 'rateLimit', 'timeout'].includes(error.message)) {
             throw error

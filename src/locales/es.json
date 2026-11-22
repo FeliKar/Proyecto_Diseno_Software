@@ -145,5 +145,24 @@
         "refresh": "Actualizar",
         "previous": "Anterior",
         "next": "Siguiente"
+    },
+    "history": {
+        "title": "Preferencias de recomendaciones",
+        "description": "Usamos los filtros de tus búsquedas anteriores para recomendarte restaurantes. Puedes borrar ese historial para empezar de nuevo.",
+        "clear": "Borrar preferencias de búsqueda",
+        "confirm": "Se borrará tu historial de búsquedas. No se puede deshacer. Tus listas de restaurantes se conservarán.",
+        "cancel": "Cancelar",
+        "loading": "Borrando preferencias…",
+        "signin": "Inicia sesión para borrar tus preferencias.",
+        "service": "No pudimos borrar tus preferencias. Inténtalo nuevamente.",
+        "saveFailed": "Encontramos resultados, pero no pudimos guardar esta búsqueda en tu historial.",
+        "cleared": "Se borraron tus preferencias de búsqueda. Solicita nuevas recomendaciones para ver opciones sin personalización."
+    },
+    "recommendations": {
+        "submit": "Recomendar según mi historial",
+        "help": "Usa tu ubicación seleccionada y tus preferencias del historial, en lugar de los filtros del formulario.",
+        "noHistory": "Aún no tienes historial. Mostramos opciones cercanas sin personalización.",
+        "noPreference": "Tus búsquedas recientes no tienen filtros específicos. Mostramos opciones cercanas.",
+        "basedOn": "Según tus últimas 20 búsquedas: {{category}} · {{price}}. Los resultados se ordenan por cercanía."
     }
 }

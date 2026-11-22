@@ -19,7 +19,7 @@ test('sends filters to the backend and accepts empty results', async () => {
         assert.deepEqual(JSON.parse(options.body), filters)
         return Response.json({ restaurants: [] })
     })
-    assert.deepEqual(results, [])
+    assert.deepEqual(results, { restaurants: [] })
 })
 
 test('handles provider failures, timeouts and unexpected responses', async () => {

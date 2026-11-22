@@ -37,7 +37,7 @@ Se comprobó el registro sin confirmación y el acceso con contraseña o Google 
 
 El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: fotos y reseñas, listas compartidas, historial y recomendaciones.
+Próximas implementaciones planeadas: fotos y reseñas, listas compartidas y recomendaciones que incorporen valoraciones personales.
 
 
 
@@ -196,6 +196,7 @@ Se utilizó ChatGPT como apoyo para implementar las listas, sus permisos,
 la consulta de datos actuales y las pruebas correspondientes.
 
 
+
 ## Listas personales
 
 La tabla `saved_restaurants` guarda el identificador de Google, el usuario,
@@ -228,3 +229,57 @@ Si falla Google, se conserva la entrada para poder moverla o quitarla.
 Cerrar sesión o cambiar de cuenta descarta las listas mostradas en pantalla.
 
 Las pruebas automáticas usan respuestas simuladas. También se ejecutó la prueba SQL de permisos y se completaron las pruebas manuales de listas con el proyecto real, incluyendo la separación de datos entre usuarios
+
+
+## Historial y recomendaciones por búsquedas
+
+El backend registra los filtros de las búsquedas que terminan correctamente,
+incluso si no hay resultados. No guarda coordenadas ni datos de Google en
+`search_history`. Cada cuenta puede consultar o borrar su propio historial.
+El historial se utiliza internamente para las recomendaciones y no se muestra
+como una lista en la interfaz. En «Preferencias de recomendaciones» se puede
+borrar para empezar de nuevo, previa confirmación. Las listas de restaurantes
+se conservan. Las entradas anteriores a las últimas 20 permanecen almacenadas
+hasta borrar el historial, aunque no intervienen en el cálculo.
+
+El botón de recomendaciones toma las últimas 20 búsquedas y calcula en el
+backend el tipo de comida y presupuesto más frecuentes, por separado. Los
+filtros vacíos no cuentan como preferencia. En caso de empate se usa el valor
+más reciente. Se conserva la ubicación elegida, el radio de tres kilómetros
+y el máximo de cinco restaurantes ordenados por cercanía. El formulario
+mantiene sus filtros para búsquedas manuales; las recomendaciones indican
+cuáles se utilizaron realmente.
+
+Sin historial o sin preferencias específicas se muestran opciones cercanas y
+se explica la falta de personalización. Un resultado vacío no amplía el radio
+ni cambia de ciudad. Pedir recomendaciones no agrega búsquedas al historial,
+para evitar que el algoritmo refuerce sus propias elecciones.
+
+Si falla el guardado del historial se conservan los resultados y se muestra
+un aviso. Si falla su lectura, la recomendación informa un error. Las búsquedas
+y recomendaciones comparten la cuota existente; consultar o borrar historial
+no llama a Google.
+
+Esta etapa utiliza el historial de búsquedas. Falta incorporar las valoraciones
+personales al algoritmo para completar ese requisito de la pauta.
+
+Configuración:
+
+1. Ejecutar `supabase/migrations/202611220001_search_history.sql`.
+2. Desplegar `restaurants` y `search-history`.
+3. Usar `VITE_USE_HOSTED_BACKEND=true`, con las variables existentes.
+
+```bash
+npx supabase functions deploy restaurants --project-ref TU_PROJECT_REF --use-api
+npx supabase functions deploy search-history --project-ref TU_PROJECT_REF --use-api
+```
+
+No se agregan dependencias, claves ni variables de entorno. El servidor Deno
+local sigue ofreciendo búsquedas básicas sin persistencia de historial.
+
+Las pruebas con respuestas simuladas cubren preferencias, autenticación,
+identidad al acceder a la base de datos y fallos del proveedor o del historial.
+Se ejecutó la prueba SQL de permisos y se comprobaron las recomendaciones
+y el historial con el proyecto real. Tras simplificar la interfaz, falta
+revalidar el borrado de preferencias, sus errores y los textos en ambos idiomas
+según `docs/pruebas-historial.md`.

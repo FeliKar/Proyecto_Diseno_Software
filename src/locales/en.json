@@ -145,5 +145,24 @@
     "refresh": "Refresh",
     "previous": "Previous",
     "next": "Next"
+  },
+  "history": {
+    "title": "Recommendation preferences",
+    "description": "We use filters from your previous searches to recommend restaurants. You can clear this history to start again.",
+    "clear": "Clear search preferences",
+    "confirm": "Your search history will be deleted. This cannot be undone. Your restaurant lists will be kept.",
+    "cancel": "Cancel",
+    "loading": "Clearing preferences…",
+    "signin": "Sign in to clear your preferences.",
+    "service": "We could not clear your preferences. Please try again.",
+    "saveFailed": "We found results, but could not save this search to your history.",
+    "cleared": "Your search preferences were cleared. Request new recommendations to see options without personalization."
+  },
+  "recommendations": {
+    "submit": "Recommend using my history",
+    "help": "Uses your selected location and preferences from your history instead of the form filters.",
+    "noHistory": "You have no history yet. Showing nearby options without personalization.",
+    "noPreference": "Your recent searches have no specific filters. Showing nearby options.",
+    "basedOn": "Based on your last 20 searches: {{category}} · {{price}}. Results are ordered by distance."
   }
 }

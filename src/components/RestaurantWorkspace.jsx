@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import RestaurantSearch from './RestaurantSearch'
 import SavedRestaurants from './SavedRestaurants'
+import SearchHistory from './SearchHistory'
 
 export default function RestaurantWorkspace() {
     const { t } = useTranslation()
@@ -26,5 +27,7 @@ export default function RestaurantWorkspace() {
                 ? <SavedRestaurants key={`${userId}:${revision}`} userId={userId} />
                 : <p>{t('lists.signin')}</p>}
         </section>
+        {userId && import.meta.env.VITE_USE_HOSTED_BACKEND === 'true' &&
+            <SearchHistory key={userId} userId={userId} />}
     </>
 }
