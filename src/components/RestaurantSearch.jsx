@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LocationPicker from './LocationPicker'
 import RestaurantMap from './RestaurantMap'
+import RestaurantDetails from './RestaurantDetails'
 import SaveRestaurantButtons from './SaveRestaurantButtons'
 import { getLocation, safeLink, searchRestaurants } from '../lib/restaurant-search.mjs'
 import { getHostedOptions, getSearchOptions } from '../lib/search-session'
@@ -195,6 +196,7 @@ export default function RestaurantSearch({ userId, onSaved }) {
                                     </a>
                                 </p>
                             )}
+                            {userId && hosted && <RestaurantDetails placeId={restaurant.id} userId={userId} />}
                             {userId && <SaveRestaurantButtons userId={userId}
                                 placeId={restaurant.id} onSaved={onSaved} />}
                             {restaurant.attributions?.map((attribution, index) => (

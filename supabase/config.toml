@@ -24,3 +24,8 @@ entrypoint = "./functions/sharing/index.ts"
 # Public read-only access requires a valid active share token.
 verify_jwt = false
 entrypoint = "./functions/shared-list/index.ts"
+
+[functions.restaurant-details]
+# Details require an authenticated session and share the existing usage quota.
+verify_jwt = false
+entrypoint = "./functions/restaurant-details/index.ts"

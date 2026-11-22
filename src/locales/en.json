@@ -95,7 +95,7 @@
       "service": "We could not retrieve restaurants. Please try again later.",
       "imprecise": "Your browser location is too imprecise. Choose where to search on the map.",
       "signin": "Sign in under My account to search for restaurants.",
-      "rateLimit": "Query limit reached: 10 per minute and 100 per day (UTC), shared by searches and lists. Please wait before trying again."
+      "rateLimit": "The query limit for searches, lists and details was reached. Please try again later."
     },
     "rating": "Google rating: {{value}} / 5",
     "ratingUnknown": "Rating unavailable",
@@ -194,5 +194,37 @@
     "title": "Shared list",
     "readOnly": "You can view the restaurants. This page is read-only.",
     "open": "View list"
+  },
+  "placeDetails": {
+    "open": "View photos and reviews",
+    "close": "Close details",
+    "refresh": "Refresh details",
+    "loading": "Loading details…",
+    "photos": "Restaurant photos",
+    "photoAlt": "Photo of {{name}} published on Google Maps",
+    "sourcePhoto": "View photo on Google Maps",
+    "nextPhoto": "Another photo",
+    "noPhoto": "A photo is not available right now.",
+    "ratings": "Google rating",
+    "summary": "Review summary",
+    "noSummary": "Google does not offer a summary for this restaurant right now.",
+    "allReviews": "View reviews on Google Maps",
+    "report": "Report a problem",
+    "reviews": "Reviews highlighted by Google",
+    "sample": "Google provides up to five reviews selected by relevance. This sample does not show how ratings change over time.",
+    "noReviews": "No reviews are available.",
+    "reviewScore": "{{value}} out of 5",
+    "noText": "This review has no comment.",
+    "original": "View original text",
+    "sourceReview": "View review on Google Maps",
+    "visited": "Visit: {{date}}",
+    "signin": "Sign in to view photos and reviews.",
+    "rateLimit": "The query limit was reached. Please try again later.",
+    "notFound": "This restaurant is no longer available on Google.",
+    "timeout": "The request took too long. Please try again.",
+    "service": "We could not load the details. Please try again.",
+    "aboutSummary": "About this summary",
+    "reportSummary": "To request content removal, use the report link.",
+    "sampleRatings": "In this sample: {{high}} scores of 4–5, {{middle}} of 3, and {{low}} of 1–2."
   }
 }

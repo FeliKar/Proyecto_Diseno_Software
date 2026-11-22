@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { getHostedOptions } from '../lib/search-session'
 import { savedRequest } from '../lib/saved-restaurants.mjs'
 import RatingForm from './RatingForm'
+import RestaurantDetails from './RestaurantDetails'
 import ShareListControls from './ShareListControls'
 import { safeLink } from '../lib/restaurant-search.mjs'
 
@@ -104,6 +105,7 @@ export default function SavedRestaurants({ userId }) {
                                 {t('nearby.maps')}
                             </a>
                         </p>}
+                        <RestaurantDetails placeId={restaurant.id} userId={userId} />
                         {status === 'visited' && <RatingForm
                             key={`${restaurant.id}:${restaurant.userRating}:${restaurant.userCategory}:${restaurant.userPriceLevel}`}
                             restaurant={restaurant} disabled={loading}

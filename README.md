@@ -37,7 +37,7 @@ Se comprobó el registro sin confirmación y el acceso con contraseña o Google 
 
 El backend está desplegado en Supabase Edge Functions y conectado a Vercel. Se comprobó en producción que la búsqueda exige iniciar sesión, devuelve como máximo cinco restaurantes, conserva las coordenadas al cambiar los filtros y muestra los textos en inglés. Tras cerrar sesión, una nueva búsqueda solicita autenticación.
 
-Próximas implementaciones planeadas: fotos, reseñas y su resumen.
+Pendientes de cierre: validación en producción, retoques de interfaz y documentación, y repaso técnico.
 
 
 
@@ -200,6 +200,10 @@ con la base de datos, las reglas de recomendación y las pruebas.
 
 Se utilizó ChatGPT como apoyo para compartir listas, comprobar sus permisos,
 reutilizar la consulta de detalles y preparar las pruebas.
+
+Se utilizó ChatGPT como apoyo para conectar las fotos y reseñas de Google,
+mostrar las atribuciones, preparar el recuento de la muestra y sus pruebas.
+El resumen mostrado pertenece al proveedor y se identifica como tal.
 
 
 
@@ -380,3 +384,61 @@ un enlace a otra persona se debe generarlo desde la dirección pública de Verce
 un enlace de localhost solo funciona en el equipo donde se ejecuta la aplicación.
 
 Las pruebas automáticas cubren permisos, lectura pública limitada, revocación, protección de campos privados, errores y cuotas. Se ejecutó la prueba SQL de permisos y se completaron las pruebas manuales de listas compartidas, incluyendo acceso sin sesión, separación de datos privados, paginación y revocación de enlaces. También se corrigieron los permisos de lectura del backend.
+
+## Fotos, reseñas y resumen
+
+Los resultados de búsqueda y las listas personales ofrecen «Ver fotos y reseñas».
+La función `restaurant-details` exige una sesión válida y aplica la cuota de
+consultas existente antes de llamar a Google Places. La carga es explícita:
+no se consultan detalles adicionales para todas las tarjetas automáticamente.
+Los enlaces compartidos mantienen su vista pública de solo lectura.
+
+Se solicita la calificación global, el número de opiniones, hasta cinco reseñas
+seleccionadas por relevancia por Google y `reviewSummary`. El resumen lo genera
+Google, puede faltar y se muestra completo junto con su divulgación original
+de Gemini y sus enlaces de información, fuente y reporte. No requiere otra
+clave de IA. El backend calcula únicamente el recuento de notas de la muestra:
+4–5, 3 y 1–2. No debe interpretarse como distribución de todas las opiniones
+ni como evolución temporal de las calificaciones.
+
+Las reseñas incluyen atribución del autor, perfil, avatar y enlaces cuando
+Google los proporciona. Si el texto difiere del original, este puede consultarse
+sin traducirlo con otra API. Los textos de interfaz siguen en archivos de idioma.
+
+Cada consulta recupera referencias actuales de fotos y puede obtener una imagen
+de hasta 900 píxeles de ancho. «Otra foto» recorre hasta tres fotos disponibles,
+volviendo a pedir detalles actuales. La clave de Google permanece en el backend;
+al navegador solo llega la dirección temporal de la imagen y sus atribuciones.
+Google no proporciona en estos metadatos una clasificación fiable de comida
+frente a edificio: puede mostrarse cualquiera. No se añaden clasificadores ni
+se afirma que la imagen sea de un plato.
+
+No se guardan fotos, reseñas, referencias de imágenes o resúmenes en Supabase
+ni en almacenamiento local. Los datos se conservan en memoria mientras están
+abiertos los detalles; cerrarlos descarta la respuesta. Un fallo de imagen no
+oculta las reseñas disponibles. Se manejan locales retirados, datos ausentes,
+cuotas, tiempos de espera y errores del proveedor.
+
+Cada apertura, actualización o cambio de foto consume una unidad de la cuota
+existente de la cuenta. Puede realizar una consulta Place Details y otra
+Place Photos. Los campos `reviews` y `reviewSummary` utilizan un nivel de
+facturación de Google superior al de datos básicos; no se presupone que estas
+consultas sean gratuitas. El límite de la aplicación controla solicitudes,
+no equivale a un límite monetario del proyecto de Google.
+
+Configuración: desplegar `restaurant-details`. No se requieren migraciones,
+dependencias ni nuevas variables o claves. La misma clave privada existente
+debe tener acceso a Places API (New).
+
+```bash
+npx supabase functions deploy restaurant-details --project-ref TU_PROJECT_REF --use-api
+```
+
+Fuentes técnicas:
+
+- [Place Details](https://developers.google.com/maps/documentation/places/web-service/place-details)
+- [Place Photos](https://developers.google.com/maps/documentation/places/web-service/place-photos)
+- [Resúmenes de reseñas](https://developers.google.com/maps/documentation/places/web-service/review-summaries/)
+- [Atribuciones](https://developers.google.com/maps/documentation/places/web-service/policies)
+
+Las pruebas automáticas cubren sesión, cuota, datos opcionales, atribuciones y errores del proveedor. También se completaron las pruebas manuales de fotos, reseñas y resúmenes con la función desplegada. Queda comprobar la versión publicada en Vercel tras este commit.

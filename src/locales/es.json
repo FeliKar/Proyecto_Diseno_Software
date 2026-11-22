@@ -95,7 +95,7 @@
             "service": "No pudimos consultar los restaurantes. Intenta nuevamente más tarde.",
             "imprecise": "La ubicación del navegador es demasiado imprecisa. Elige dónde buscar en el mapa.",
             "signin": "Inicia sesión en Mi cuenta para buscar restaurantes.",
-            "rateLimit": "Llegaste al límite de consultas: 10 por minuto y 100 al día (UTC), compartido entre búsquedas y listas. Espera antes de volver a intentar."
+            "rateLimit": "Se alcanzó el límite de consultas de búsquedas, listas y detalles. Inténtalo más tarde."
         },
         "rating": "Calificación de Google: {{value}} / 5",
         "ratingUnknown": "Calificación no disponible",
@@ -194,5 +194,37 @@
         "title": "Lista compartida",
         "readOnly": "Puedes consultar los restaurantes. Esta vista es de solo lectura.",
         "open": "Ver lista"
+    },
+    "placeDetails": {
+        "open": "Ver fotos y reseñas",
+        "close": "Cerrar detalles",
+        "refresh": "Actualizar detalles",
+        "loading": "Cargando detalles…",
+        "photos": "Fotos del local",
+        "photoAlt": "Foto de {{name}} publicada en Google Maps",
+        "sourcePhoto": "Ver foto en Google Maps",
+        "nextPhoto": "Otra foto",
+        "noPhoto": "No hay una foto disponible en este momento.",
+        "ratings": "Calificación en Google",
+        "summary": "Resumen de reseñas",
+        "noSummary": "Google no ofrece un resumen para este local en este momento.",
+        "allReviews": "Ver reseñas en Google Maps",
+        "report": "Informar un problema",
+        "reviews": "Reseñas destacadas por Google",
+        "sample": "Google entrega hasta cinco reseñas seleccionadas por relevancia. Esta muestra no muestra la evolución de las notas en el tiempo.",
+        "noReviews": "No hay reseñas disponibles.",
+        "reviewScore": "{{value}} de 5",
+        "noText": "Esta reseña no tiene comentario.",
+        "original": "Ver texto original",
+        "sourceReview": "Ver reseña en Google Maps",
+        "visited": "Visita: {{date}}",
+        "signin": "Inicia sesión para consultar fotos y reseñas.",
+        "rateLimit": "Se alcanzó el límite de consultas. Inténtalo más tarde.",
+        "notFound": "Este local ya no está disponible en Google.",
+        "timeout": "La consulta tardó demasiado. Inténtalo nuevamente.",
+        "service": "No pudimos cargar los detalles. Inténtalo nuevamente.",
+        "aboutSummary": "Acerca de este resumen",
+        "reportSummary": "Para solicitar la retirada de contenido, usa el enlace «Informar un problema».",
+        "sampleRatings": "En esta muestra: {{high}} notas de 4–5, {{middle}} de 3 y {{low}} de 1–2."
     }
 }
