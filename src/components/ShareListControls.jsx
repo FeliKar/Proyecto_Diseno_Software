@@ -45,7 +45,8 @@ export default function ShareListControls({ userId, status }) {
         }
     }
 
-    return <div>
+    return <details className="sharing-controls">
+        <summary>{t('sharing.manage')}</summary>
         <p>{t('sharing.help')}</p>
         <div className="filters">
             <button type="button" className="clear-filters" disabled={loading}
@@ -62,5 +63,5 @@ export default function ShareListControls({ userId, status }) {
         {loading && <p role="status">{t('sharing.loading')}</p>}
         {notice && <p role="status">{t(`sharing.${notice}`)}</p>}
         {error && <p role="alert" className="auth-error">{t(`sharing.${error}`)}</p>}
-    </div>
+    </details>
 }

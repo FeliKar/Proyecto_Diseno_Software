@@ -6,46 +6,16 @@
   "allCategories": "All cuisines",
   "allPrices": "All price levels",
   "clearFilters": "Clear filters",
-  "detailsLabel": "Restaurant details",
-  "addressLabel": "Sample address",
-  "hoursLabel": "Sample opening hours",
   "categories": {
     "vegetarian": "Vegetarian",
     "italian": "Italian",
     "seafood": "Fish and seafood"
   },
-  "noResults": "No restaurants match these filters.",
-  "eyebrow": "Your next meal starts here",
-  "title": "Discover places worth coming back to.",
-  "description": "Find restaurants near you and discover new options for your next outing.",
-  "demoNotice": "Demo version: all restaurants and their information are fictional.",
-  "restaurantsTitle": "Ideas for your next outing",
-  "restaurantsDescription": "Filter by cuisine and price level.",
   "priceLabel": "Price level",
   "priceLevels": {
     "inexpensive": "Budget-friendly · $",
     "moderate": "Mid-range · $$",
     "expensive": "Higher-priced · $$$"
-  },
-  "restaurants": {
-    "garden": {
-      "name": "Jardín de Mesa",
-      "description": "Vegetarian dishes and salads.",
-      "address": "Calle de Ejemplo 101",
-      "hours": "Monday to Saturday, 12:00–20:00."
-    },
-    "oven": {
-      "name": "Horno de Barrio",
-      "description": "Pizza and pasta.",
-      "address": "Calle de Ejemplo 202",
-      "hours": "Tuesday to Sunday, 13:00–23:00."
-    },
-    "coast": {
-      "name": "Costa y Limón",
-      "description": "Fish and seafood.",
-      "address": "Calle de Ejemplo 303",
-      "hours": "Wednesday to Sunday, 12:00–18:00."
-    }
   },
   "auth": {
     "title": "My account",
@@ -62,7 +32,7 @@
     "loading": "Checking session…",
     "working": "Processing…",
     "signedIn": "Signed in as {{email}}.",
-    "notConfigured": "User access is not configured yet. You can explore the sample restaurants.",
+    "notConfigured": "Sign-in is not available right now.",
     "errors": {
       "invalidCredentials": "Unable to sign in. Check your email and password.",
       "emailNotConfirmed": "This account has a pending confirmation. Check its status with the project administrator.",
@@ -73,20 +43,19 @@
       "generic": "Unable to complete the request. Try again; if the problem persists, check the service configuration.",
       "passwordMismatch": "Passwords do not match.",
       "accountExists": "An account already exists with that email. Try signing in."
-    }
+    },
+    "searchPrompt": "Sign in to find and save restaurants."
   },
   "nearby": {
     "title": "Restaurants near you",
-    "description": "Find up to five options within three kilometres. Filters apply when you press Search.",
+    "description": "Up to five restaurants within three kilometres.",
     "submit": "Search near me",
-    "loading": "Getting your location and searching for restaurants…",
+    "loading": "Finding restaurants…",
     "initial": "Search using your browser location or choose a point on the map.",
-    "empty": "No matches among the restaurants checked. Try different filters.",
+    "empty": "No options match those filters. Try different ones.",
     "priceUnknown": "Price unavailable",
     "addressUnknown": "Address unavailable",
     "maps": "View on Google Maps",
-    "source": "Data from Google Maps",
-    "limit": "The search filters up to twenty nearby candidates and displays at most five. It may not include every restaurant in the area.",
     "errors": {
       "unsupported": "Your browser does not support location access.",
       "denied": "Allow location access in your browser and search again.",
@@ -97,39 +66,41 @@
       "signin": "Sign in under My account to search for restaurants.",
       "rateLimit": "The query limit for searches, lists and details was reached. Please try again later."
     },
-    "rating": "Google rating: {{value}} / 5",
+    "rating": "Google: {{value}} / 5",
     "ratingUnknown": "Rating unavailable",
-    "ratingCount": "Google ratings: {{total}}",
+    "ratingCount": "{{total}} reviews",
     "ratingCountUnknown": "Rating count unavailable"
   },
   "locationPicker": {
     "open": "Choose location on map",
     "close": "Close map",
     "device": "Search near me again",
-    "selected": "Search point: {{latitude}}, {{longitude}}.",
+    "selected": "Location selected. You can change it on the map.",
     "search": "Search this location",
     "ready": "The search will use your chosen point. You can adjust the filters.",
-    "help": "Zoom and move the map to the area you want. You can also click a point. The cross marks the centre you will select; it is not your detected location.",
+    "help": "Move the map or click a point. We will use the centre marked with a cross.",
     "confirm": "Use map centre",
     "loading": "Loading map…",
-    "unavailable": "We could not load the map. Check your connection and Maps JavaScript API configuration, then reload the page.",
-    "missing": "Map selection is not configured yet.",
+    "unavailable": "We could not load the map. Check your connection and reload.",
+    "missing": "The map is not available right now.",
     "label": "Map to choose the search location"
   },
   "restaurantMap": {
     "title": "Restaurants on the map",
-    "help": "Numbers match the cards. Moving this map does not change the search location.",
+    "help": "Numbers match the restaurant cards.",
     "loading": "Loading map results…",
     "unavailable": "We could not display the map. You can use the cards and their Google Maps links.",
     "missing": "The results map is not configured yet.",
     "noLocations": "Coordinates are unavailable for these results.",
-    "partial": "Some restaurants have no coordinates and only appear in the cards."
+    "partial": "Some restaurants have no coordinates and only appear in the cards.",
+    "open": "View results map",
+    "close": "Close results map"
   },
   "lists": {
     "title": "My lists",
     "wishlist": "Want to visit",
     "visited": "Visited",
-    "help": "Choose a list to view it. You can save restaurants from the search results.",
+    "help": "Save restaurants from search results and organize them here.",
     "signin": "Sign in to save restaurants and view your lists.",
     "working": "Working…",
     "saved": "Saved to “{{list}}”.",
@@ -137,7 +108,7 @@
     "rateLimit": "Query limit reached. Wait before opening the list again.",
     "empty": "There are no restaurants on this list page.",
     "unknown": "Saved restaurant {{number}}",
-    "detailsUnavailable": "We could not retrieve its current details. You can retry, move it or remove it from the list.",
+    "detailsUnavailable": "Current details are unavailable. Try again or remove the entry.",
     "move": "Move to “{{list}}”",
     "remove": "Remove",
     "moved": "Restaurant moved to the other list.",
@@ -145,65 +116,65 @@
     "refresh": "Refresh",
     "previous": "Previous",
     "next": "Next",
-    "ratingSaved": "Rating updated. Request new recommendations to apply the change."
+    "ratingSaved": "Rating saved. It will apply to your next recommendation."
   },
   "history": {
-    "title": "Recommendation preferences",
-    "description": "We use your searches and ratings to recommend restaurants. Here you can clear your search history; your ratings are kept.",
+    "title": "My preferences",
+    "description": "Clear your searches to refresh recommendations. Your lists and ratings are kept.",
     "clear": "Clear search history",
     "confirm": "Your search history will be deleted. This cannot be undone. Your lists and ratings will be kept.",
     "cancel": "Cancel",
-    "loading": "Clearing preferences…",
+    "loading": "Clearing searches…",
     "signin": "Sign in to clear your preferences.",
     "service": "We could not clear your preferences. Please try again.",
     "saveFailed": "We found results, but could not save this search to your history.",
-    "cleared": "Your search history was cleared. New recommendations will still consider your ratings."
+    "cleared": "Searches cleared. Your ratings will still inform recommendations."
   },
   "recommendations": {
     "submit": "Recommend for me",
-    "help": "Uses your selected location, searches and ratings instead of the form filters.",
-    "noHistory": "You have no searches or ratings yet. Showing nearby options without personalization.",
-    "noPreference": "There are not enough preferences to apply personalized filters. Showing nearby options.",
-    "basedOn": "Based on your searches and ratings: {{category}} · {{price}}. Results are ordered by distance."
+    "help": "Uses your searches and ratings at the selected location.",
+    "noHistory": "We do not have your preferences yet. Here are nearby options.",
+    "noPreference": "For now, showing nearby options without personalized filters.",
+    "basedOn": "For you: {{category}} · {{price}}."
   },
   "ratings": {
-    "title": "My rating",
+    "title": "Your rating",
     "score": "Score from 1 to 5",
-    "choose": "Choose a score",
     "unspecified": "Not specified",
-    "current": "Your score: {{value}} out of 5",
-    "unrated": "You have not rated this restaurant yet.",
-    "help": "Cuisine and budget are optional and reflect your experience. We use them with your score to recommend restaurants.",
+    "current": "Your saved rating: {{value}} / 5",
+    "unrated": "You have not left a rating yet.",
+    "help": "Specify cuisine and budget to use this rating in your recommendations.",
     "save": "Save rating",
-    "remove": "Remove rating"
+    "remove": "Remove rating",
+    "preferences": "Optional preferences",
+    "option": "{{value}} out of 5 stars"
   },
   "sharing": {
-    "help": "Anyone with the link can view this list, without your personal ratings. You can stop sharing at any time.",
-    "create": "Create or view link",
+    "help": "Anyone with the link can view this list, without your ratings. You can revoke it at any time.",
+    "create": "Get link",
     "revoke": "Stop sharing",
     "link": "List link",
     "copy": "Copy link",
     "copied": "Link copied.",
     "manualCopy": "Select the link and copy it manually.",
-    "revoked": "The list is no longer shared. The previous link no longer provides access.",
+    "revoked": "Link revoked. Your list is kept.",
     "loading": "Loading…",
     "service": "We could not complete the request. Please try again.",
     "signin": "Sign in to manage your links.",
     "notFound": "The link is invalid or the list is no longer shared.",
     "rateLimit": "The query limit for this list was reached. Please try again later.",
     "title": "Shared list",
-    "readOnly": "You can view the restaurants. This page is read-only.",
-    "open": "View list"
+    "readOnly": "A read-only list. No account required.",
+    "open": "View list",
+    "manage": "Share this list"
   },
   "placeDetails": {
-    "open": "View photos and reviews",
-    "close": "Close details",
     "refresh": "Refresh details",
     "loading": "Loading details…",
     "photos": "Restaurant photos",
     "photoAlt": "Photo of {{name}} published on Google Maps",
     "sourcePhoto": "View photo on Google Maps",
-    "nextPhoto": "Another photo",
+    "nextPhoto": "Next photo",
     "noPhoto": "A photo is not available right now.",
     "ratings": "Google rating",
     "summary": "Review summary",
@@ -211,7 +182,7 @@
     "allReviews": "View reviews on Google Maps",
     "report": "Report a problem",
     "reviews": "Reviews highlighted by Google",
-    "sample": "Google provides up to five reviews selected by relevance. This sample does not show how ratings change over time.",
+    "sample": "Up to five reviews selected by Google. This sample does not represent all reviews or changes over time.",
     "noReviews": "No reviews are available.",
     "reviewScore": "{{value}} out of 5",
     "noText": "This review has no comment.",
@@ -225,6 +196,19 @@
     "service": "We could not load the details. Please try again.",
     "aboutSummary": "About this summary",
     "reportSummary": "To request content removal, use the report link.",
-    "sampleRatings": "In this sample: {{high}} scores of 4–5, {{middle}} of 3, and {{low}} of 1–2."
+    "sampleRatings": "In this sample: {{high}} scores of 4–5, {{middle}} of 3, and {{low}} of 1–2.",
+    "carousel": "carousel",
+    "previousPhoto": "Previous photo",
+    "photoPosition": "Photo {{current}} of {{total}}"
+  },
+  "navigation": "Main navigation",
+  "restaurantPage": {
+    "open": "View details",
+    "openNamed": "View details for {{name}}",
+    "back": "Back",
+    "title": "Restaurant",
+    "unavailable": "Return to the results or open a list to view this restaurant.",
+    "myRestaurant": "In my lists",
+    "googleDetails": "Photos and reviews"
   }
 }

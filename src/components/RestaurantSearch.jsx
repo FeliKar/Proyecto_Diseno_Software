@@ -2,41 +2,49 @@ import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import LocationPicker from './LocationPicker'
 import RestaurantMap from './RestaurantMap'
-import RestaurantDetails from './RestaurantDetails'
+import RestaurantPage from './RestaurantPage'
+import RestaurantCard from './RestaurantCard'
 import SaveRestaurantButtons from './SaveRestaurantButtons'
-import { getLocation, safeLink, searchRestaurants } from '../lib/restaurant-search.mjs'
+import { getLocation, searchRestaurants } from '../lib/restaurant-search.mjs'
 import { getHostedOptions, getSearchOptions } from '../lib/search-session'
 
-export default function RestaurantSearch({ userId, onSaved }) {
+export default function RestaurantSearch({ userId, onSaved, active, placeId, search, setSearch }) {
     const { t, i18n } = useTranslation()
-    const [category, setCategory] = useState('')
-    const [priceLevel, setPriceLevel] = useState('')
+    const { category, priceLevel, location } = search
     const [restaurants, setRestaurants] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [location, setLocation] = useState(null)
     const [showMap, setShowMap] = useState(false)
+    const [showResultsMap, setShowResultsMap] = useState(false)
     const busy = useRef(false)
     const hosted = import.meta.env.VITE_USE_HOSTED_BACKEND === 'true'
     const [recommendation, setRecommendation] = useState(null)
     const [historyWarning, setHistoryWarning] = useState(false)
 
+    function updateSearch(values) {
+        setSearch((current) => ({ ...current, ...values }))
+    }
+
     function resetResults() {
         setRestaurants(null)
+        setShowResultsMap(false)
         setError('')
         setRecommendation(null)
         setHistoryWarning(false)
     }
 
     function clearFilters() {
-        setCategory('')
-        setPriceLevel('')
+        updateSearch({ category: '', priceLevel: '' })
         resetResults()
     }
 
     async function handleSearch(event, useDevice = false, mode = 'search') {
         event.preventDefault()
         if (busy.current) return
+        if (hosted && !userId) {
+            window.location.hash = 'account'
+            return
+        }
         busy.current = true
         setLoading(true)
         resetResults()
@@ -50,7 +58,7 @@ export default function RestaurantSearch({ userId, onSaved }) {
                 ? await getLocation()
                 : location
 
-            setLocation(point)
+            updateSearch({ location: point })
 
             const results = await searchRestaurants(
                 {
@@ -77,10 +85,18 @@ export default function RestaurantSearch({ userId, onSaved }) {
         }
     }
 
+    if (placeId) {
+        const restaurant = restaurants?.find((item) => item.id === placeId)
+        return <RestaurantPage restaurant={restaurant} userId={userId} backHref="#restaurants">
+            {restaurant && userId && <SaveRestaurantButtons key={`${placeId}:${userId}`}
+                userId={userId} placeId={placeId} onSaved={onSaved} />}
+        </RestaurantPage>
+    }
+
     return (
         <section id="restaurants" className="restaurants-section" aria-labelledby="restaurants-title">
             <div className="section-heading">
-                <h2 id="restaurants-title">{t('nearby.title')}</h2>
+                <h1 id="restaurants-title" className="screen-title" tabIndex={-1}>{t('nearby.title')}</h1>
                 <p>{t('nearby.description')}</p>
             </div>
 
@@ -96,15 +112,10 @@ export default function RestaurantSearch({ userId, onSaved }) {
                             {t('locationPicker.device')}
                         </button>}
                     </div>
-                    {location && <p role="status">
-                        {t('locationPicker.selected', {
-                            latitude: location.latitude.toFixed(5),
-                            longitude: location.longitude.toFixed(5),
-                        })}
-                    </p>}
-                    {showMap && <LocationPicker initialLocation={location}
+                    {location && <p role="status">{t('locationPicker.selected')}</p>}
+                    {showMap && active && <LocationPicker initialLocation={location}
                         onSelect={(point) => {
-                            setLocation(point)
+                            updateSearch({ location: point })
                             setShowMap(false)
                             resetResults()
                         }} />}
@@ -112,7 +123,7 @@ export default function RestaurantSearch({ userId, onSaved }) {
                         <div className="filter-field">
                             <label htmlFor="category-filter">{t('categoryLabel')}</label>
                             <select id="category-filter" value={category}
-                                onChange={(event) => { setCategory(event.target.value); resetResults() }}>
+                                onChange={(event) => { updateSearch({ category: event.target.value }); resetResults() }}>
                                 <option value="">{t('allCategories')}</option>
                                 {['vegetarian', 'italian', 'seafood'].map((value) => (
                                     <option key={value} value={value}>{t(`categories.${value}`)}</option>
@@ -122,7 +133,7 @@ export default function RestaurantSearch({ userId, onSaved }) {
                         <div className="filter-field">
                             <label htmlFor="price-filter">{t('priceLabel')}</label>
                             <select id="price-filter" value={priceLevel}
-                                onChange={(event) => { setPriceLevel(event.target.value); resetResults() }}>
+                                onChange={(event) => { updateSearch({ priceLevel: event.target.value }); resetResults() }}>
                                 <option value="">{t('allPrices')}</option>
                                 {['inexpensive', 'moderate', 'expensive'].map((value) => (
                                     <option key={value} value={value}>{t(`priceLevels.${value}`)}</option>
@@ -161,56 +172,19 @@ export default function RestaurantSearch({ userId, onSaved }) {
                                 ? t(`priceLevels.${recommendation.priceLevel}`) : t('allPrices'),
                         })}
             </p>}
-            <p>{t('nearby.limit')}</p>
 
-            {restaurants !== null && <p>{t('nearby.source')}</p>}
-            {restaurants?.length > 0 && <RestaurantMap restaurants={restaurants} />}
+            {restaurants !== null && <p className="maps-attribution" translate="no">Google Maps</p>}
+            {restaurants?.length > 0 && <div className="results-map-toggle">
+                <button type="button" className="clear-filters" aria-expanded={showResultsMap}
+                    onClick={() => setShowResultsMap((value) => !value)}>
+                    {t(showResultsMap ? 'restaurantMap.close' : 'restaurantMap.open')}
+                </button>
+                {showResultsMap && active && <RestaurantMap restaurants={restaurants} />}
+            </div>}
             <div className="restaurant-grid" aria-busy={loading}>
-                {restaurants?.map((restaurant, index) => (
-                    <article className="restaurant-card" key={restaurant.id}>
-                        <div className="restaurant-content">
-                            <h3>{index + 1}. {restaurant.name}</h3>
-                            <p>{restaurant.rating != null
-                                ? t('nearby.rating', {
-                                    value: new Intl.NumberFormat(i18n.resolvedLanguage, {
-                                        minimumFractionDigits: 1, maximumFractionDigits: 1,
-                                    }).format(restaurant.rating)
-                                })
-                                : t('nearby.ratingUnknown')}</p>
-                            <p>{restaurant.ratingCount != null
-                                ? t('nearby.ratingCount', {
-                                    total: new Intl.NumberFormat(i18n.resolvedLanguage)
-                                        .format(restaurant.ratingCount)
-                                })
-                                : t('nearby.ratingCountUnknown')}</p>
-                            <p>{restaurant.address || t('nearby.addressUnknown')}</p>
-                            <div className="price">
-                                <span>{t('priceLabel')}</span>
-                                <strong>{restaurant.priceLevel
-                                    ? t(`priceLevels.${restaurant.priceLevel}`) : t('nearby.priceUnknown')}</strong>
-                            </div>
-                            {safeLink(restaurant.googleMapsUrl) && (
-                                <p className="restaurant-map-link">
-                                    <a href={safeLink(restaurant.googleMapsUrl)} target="_blank" rel="noopener noreferrer">
-                                        {t('nearby.maps')}
-                                    </a>
-                                </p>
-                            )}
-                            {userId && hosted && <RestaurantDetails placeId={restaurant.id} userId={userId} />}
-                            {userId && <SaveRestaurantButtons userId={userId}
-                                placeId={restaurant.id} onSaved={onSaved} />}
-                            {restaurant.attributions?.map((attribution, index) => (
-                                <p key={index}>
-                                    {safeLink(attribution.providerUri)
-                                        ? <a href={safeLink(attribution.providerUri)} target="_blank" rel="noopener noreferrer">
-                                            {attribution.provider || attribution.providerUri}
-                                        </a>
-                                        : attribution.provider}
-                                </p>
-                            ))}
-                        </div>
-                    </article>
-                ))}
+                {restaurants?.map((restaurant, index) => <RestaurantCard
+                    key={restaurant.id} restaurant={restaurant} number={index + 1}
+                    href={`#restaurants/${restaurant.id}`} />)}
             </div>
         </section>
     )

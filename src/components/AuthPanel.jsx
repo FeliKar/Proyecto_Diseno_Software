@@ -137,7 +137,7 @@ export default function AuthPanel() {
             window.history.replaceState(
                 null,
                 '',
-                window.location.pathname,
+                `${window.location.pathname}#account`,
             )
         } catch (requestError) {
             setError(authErrorKey(requestError))
@@ -155,7 +155,7 @@ export default function AuthPanel() {
             aria-labelledby="account-title"
             aria-busy={loading || busy}
         >
-            <h2 id="account-title">{t('auth.title')}</h2>
+            <h1 id="account-title" className="screen-title" tabIndex={-1}>{t('auth.title')}</h1>
 
             {!supabase ? (
                 <p>{t('auth.notConfigured')}</p>

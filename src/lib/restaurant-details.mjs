@@ -16,7 +16,9 @@ export async function requestDetails(input, options, fetcher = fetch) {
         const data = await response.json()
         if (!data || typeof data.name !== 'string' || !Array.isArray(data.reviews) ||
             !Array.isArray(data.attributions) || !Number.isInteger(data.photoCount) ||
-            data.photoCount < 0 || data.photoCount > 3) throw new Error('service')
+            data.photoCount < 0 || data.photoCount > 5 ||
+            (data.photos !== undefined && (!Array.isArray(data.photos) || data.photos.length > 5 ||
+                data.photos.some((photo) => !photo || typeof photo.uri !== 'string' || !Array.isArray(photo.authors))))) throw new Error('service')
         return data
     } catch (error) {
         if (['signin', 'rateLimit', 'notFound', 'timeout'].includes(error.message)) throw error

@@ -1,10 +1,10 @@
 export function validateDetails(input) {
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('invalid_request')
-    const { placeId, language = 'es', photoIndex = 0 } = input
+    const { placeId, language = 'es', photoIndex = 0, gallery = false } = input
     if (typeof placeId !== 'string' || !/^[A-Za-z0-9_-]{1,255}$/.test(placeId) ||
         !['es', 'en'].includes(language) || !Number.isInteger(photoIndex) ||
-        photoIndex < 0 || photoIndex > 2) throw new Error('invalid_request')
-    return { placeId, language, photoIndex }
+        photoIndex < 0 || photoIndex > 4 || typeof gallery !== 'boolean') throw new Error('invalid_request')
+    return { placeId, language, photoIndex, gallery }
 }
 
 function text(value) {
@@ -68,7 +68,7 @@ export function createDetailsHandler({ apiKey, fetcher = fetch }) {
         status, headers: { 'Cache-Control': 'no-store' },
     })
     return async (request) => {
-        const { placeId, language, photoIndex } = validateDetails(await request.json())
+        const { placeId, language, photoIndex, gallery } = validateDetails(await request.json())
         if (!apiKey) return json({ error: 'service' }, 503)
         try {
             const url = new URL(`https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}`)
@@ -93,11 +93,9 @@ export function createDetailsHandler({ apiKey, fetcher = fetch }) {
                 typeof photo?.name === 'string' &&
                 photo.name.startsWith(`places/${placeId}/photos/`) &&
                 /^[A-Za-z0-9_-]+$/.test(photo.name.slice(`places/${placeId}/photos/`.length)))
-                .slice(0, 3)
-            let photo = null
-            const selectedIndex = photoIndex < photos.length ? photoIndex : 0
-            const selected = photos[selectedIndex]
-            if (selected) {
+                .slice(0, gallery ? 5 : 3)
+            const loadPhoto = async (selected) => {
+                if (!selected) return null
                 try {
                     const photoUrl = new URL(`https://places.googleapis.com/v1/${selected.name}/media`)
                     photoUrl.searchParams.set('maxWidthPx', '900')
@@ -111,7 +109,7 @@ export function createDetailsHandler({ apiKey, fetcher = fetch }) {
                         const host = uri ? new URL(uri).hostname : ''
                         if (uri && !uri.includes(apiKey) &&
                             (host === 'googleusercontent.com' || host.endsWith('.googleusercontent.com'))) {
-                            photo = {
+                            return {
                                 uri, authors: authors(selected.authorAttributions),
                                 mapsUrl: https(selected.googleMapsUri), reportUrl: https(selected.flagContentUri)
                             }
@@ -120,7 +118,18 @@ export function createDetailsHandler({ apiKey, fetcher = fetch }) {
                 } catch {
                     // A failed photo must not hide available reviews and summary.
                 }
+                return null
             }
+            const selectedIndex = photoIndex < photos.length ? photoIndex : 0
+            // Existing clients request one photo; the carousel requests the gallery.
+            if (gallery) {
+                const loaded = (await Promise.all(photos.map(loadPhoto))).filter(Boolean)
+                return json({
+                    ...selectDetails(place), photos: loaded,
+                    photo: loaded[0] || null, photoIndex: 0, photoCount: loaded.length
+                })
+            }
+            const photo = await loadPhoto(photos[selectedIndex])
             return json({ ...selectDetails(place), photo, photoIndex: selectedIndex, photoCount: photos.length })
         } catch (error) {
             return json({ error: 'service' }, error.name === 'TimeoutError' ? 504 : 502)

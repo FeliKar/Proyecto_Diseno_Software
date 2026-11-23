@@ -23,10 +23,10 @@ const place = {
 
 Deno.test('details validation rejects invalid identifiers, language and photo indices', () => {
     for (const body of [null, [], {}, { placeId: '../secret' }, { placeId: 'id', language: 'xx' },
-        { placeId: 'id', photoIndex: -1 }, { placeId: 'id', photoIndex: 3 }, { placeId: 'id', photoIndex: 0.5 }]) {
+        { placeId: 'id', photoIndex: -1 }, { placeId: 'id', photoIndex: 5 }, { placeId: 'id', gallery: 'yes' }, { placeId: 'id', photoIndex: 0.5 }]) {
         assert.throws(() => validateDetails(body))
     }
-    assert.deepEqual(validateDetails({ ...input, apiKey: 'injected', user_id: 'victim' }), { ...input, photoIndex: 0 })
+    assert.deepEqual(validateDetails({ ...input, apiKey: 'injected', user_id: 'victim' }), { ...input, photoIndex: 0, gallery: false })
 })
 
 Deno.test('details preserve provider summary disclosure and authors and count only the supplied sample', () => {
@@ -153,4 +153,32 @@ Deno.test('details wrapper requires a real session and quota before consulting G
     req.headers.set('Authorization', 'Bearer session')
     assert.equal((await app(req)).status, 429)
     assert.equal(calls, 0)
+})
+
+Deno.test('gallery resolves at most five photos and preserves successful photos when another fails', async () => {
+    const calls = []
+    const handler = createDetailsHandler({
+        apiKey: 'private-key', fetcher: (url) => {
+            calls.push(url.pathname)
+            if (!url.pathname.endsWith('/media')) return Promise.resolve(Response.json({
+                ...place,
+                photos: Array.from({ length: 7 }, (_, i) => ({
+                    name: `places/ChIJ_1/photos/photo_${i}`, authorAttributions: [{ displayName: `Author ${i}` }],
+                    googleMapsUri: `https://maps.google.com/photo/${i}`,
+                })),
+            }))
+            if (url.pathname.includes('photo_1/')) return Promise.resolve(new Response(null, { status: 500 }))
+            return Promise.resolve(Response.json({ photoUri: `https://lh3.googleusercontent.com/${url.pathname.split('/').at(-2)}` }))
+        }
+    })
+    const data = await (await handler(request({ ...input, gallery: true }))).json()
+    assert.equal(calls.length, 6)
+    assert.equal(calls.some((path) => path.includes('photo_5')), false)
+    assert.equal(data.photos.length, 4)
+    assert.equal(data.photoCount, 4)
+    assert.equal(data.photos[0].authors[0].name, 'Author 0')
+    assert.equal(data.photos[1].authors[0].name, 'Author 2')
+    assert.equal(data.photos[1].mapsUrl, 'https://maps.google.com/photo/2')
+    assert.equal(data.reviews.length, 5)
+    assert.equal(JSON.stringify(data).includes('private-key'), false)
 })

@@ -85,31 +85,16 @@ no se debe asumir que el cambio de configuración las haya confirmado.
 El secreto OAuth se configura en Supabase, no en `.env.local`.
 Este cliente OAuth es independiente de las claves de API de Maps/Places.
 
-## 4. Ejecutar y comprobar
-
-```sh
-npm install
-npm run lint
-npm test
-npm run build
-npm run dev -- --port 5173 --strictPort
-```
-
-Completar la lista de pruebas de `docs/pruebas-autenticacion.md`.
-No considerar la integración terminada únicamente porque la compilación pase.
-
-## 5. Configuración en Vercel
+## 4. Configuración en Vercel
 
 La aplicación está publicada en:
 https://proyectodisenosoftware.vercel.app
 
-En Settings → Environment Variables se configuraron para Production:
+En Settings → Environment Variables se configuran para Production las variables
+públicas indicadas en `.env.example`.
 
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
-
-Después de guardar las variables se realizó un Redeploy para
-incorporarlas a la compilación.
+Si se modifican las variables, hay que generar un nuevo despliegue para
+incorporarlas a la compilación. Las comprobaciones están en [pruebas](pruebas.md).
 
 Las URLs autorizadas en Supabase y Google permiten utilizar tanto la versión publicada como localhost durante el desarrollo. Los valores de las credenciales no se incluyen en esta documentación.
 

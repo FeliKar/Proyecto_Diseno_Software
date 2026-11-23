@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { getHostedOptions } from '../lib/search-session'
 import { savedRequest } from '../lib/saved-restaurants.mjs'
 import RatingForm from './RatingForm'
-import RestaurantDetails from './RestaurantDetails'
+import RestaurantPage from './RestaurantPage'
+import RestaurantCard from './RestaurantCard'
 import ShareListControls from './ShareListControls'
-import { safeLink } from '../lib/restaurant-search.mjs'
 
-export default function SavedRestaurants({ userId }) {
+export default function SavedRestaurants({ userId, placeId }) {
     const { t, i18n } = useTranslation()
     const busy = useRef(false)
     const [loading, setLoading] = useState(false)
@@ -58,6 +58,7 @@ export default function SavedRestaurants({ userId }) {
                 restaurants: current.restaurants.filter((item) => item.id !== restaurant.id)
             }))
             setNotice(action === 'remove' ? 'removed' : 'moved')
+            window.location.hash = 'saved-restaurants'
         })
     }
 
@@ -77,6 +78,29 @@ export default function SavedRestaurants({ userId }) {
         })
     }
 
+    if (placeId) {
+        const restaurant = page?.restaurants.find((item) => item.id === placeId)
+        return <RestaurantPage restaurant={restaurant} userId={userId} backHref="#saved-restaurants">
+            {restaurant && <>
+                {loading && <p role="status">{t('lists.working')}</p>}
+                {error && <p role="alert" className="auth-error">{t(`lists.${error}`)}</p>}
+                {notice && <p role="status">{t(`lists.${notice}`)}</p>}
+                {status === 'visited' && <RatingForm
+                    key={`${restaurant.id}:${restaurant.userRating}:${restaurant.userCategory}:${restaurant.userPriceLevel}`}
+                    restaurant={restaurant} disabled={loading}
+                    onSave={(values) => rate(restaurant, values)} />}
+                <div className="filters">
+                    <button type="button" className="clear-filters" disabled={loading}
+                        onClick={() => change(restaurant, 'save')}>
+                        {t('lists.move', { list: t(`lists.${status === 'wishlist' ? 'visited' : 'wishlist'}`) })}
+                    </button>
+                    <button type="button" className="clear-filters" disabled={loading}
+                        onClick={() => change(restaurant, 'remove')}>{t('lists.remove')}</button>
+                </div>
+            </>}
+        </RestaurantPage>
+    }
+
     return <>
         <p>{t('lists.help')}</p>
         <div className="filters">
@@ -93,39 +117,12 @@ export default function SavedRestaurants({ userId }) {
             <h3>{t(`lists.${status}`)}</h3>
             <ShareListControls key={`${userId}:${status}`} userId={userId} status={status} />
             {!page.restaurants.length && <p role="status">{t('lists.empty')}</p>}
-            {page.restaurants.length > 0 && <p>{t('nearby.source')}</p>}
+            {page.restaurants.length > 0 && <p className="maps-attribution" translate="no">Google Maps</p>}
             <div className="restaurant-grid" aria-busy={loading}>
-                {page.restaurants.map((restaurant, index) => <article className="restaurant-card" key={restaurant.id}>
-                    <div className="restaurant-content">
-                        <h3>{restaurant.name || t('lists.unknown', { number: offset + index + 1 })}</h3>
-                        {!restaurant.name && <p>{t('lists.detailsUnavailable')}</p>}
-                        {restaurant.address && <p>{restaurant.address}</p>}
-                        {safeLink(restaurant.googleMapsUrl) && <p>
-                            <a href={safeLink(restaurant.googleMapsUrl)} target="_blank" rel="noopener noreferrer">
-                                {t('nearby.maps')}
-                            </a>
-                        </p>}
-                        <RestaurantDetails placeId={restaurant.id} userId={userId} />
-                        {status === 'visited' && <RatingForm
-                            key={`${restaurant.id}:${restaurant.userRating}:${restaurant.userCategory}:${restaurant.userPriceLevel}`}
-                            restaurant={restaurant} disabled={loading}
-                            onSave={(values) => rate(restaurant, values)} />}
-                        <div className="filters">
-                            <button type="button" className="clear-filters" disabled={loading}
-                                onClick={() => change(restaurant, 'save')}>
-                                {t('lists.move', { list: t(`lists.${status === 'wishlist' ? 'visited' : 'wishlist'}`) })}
-                            </button>
-                            <button type="button" className="clear-filters" disabled={loading}
-                                onClick={() => change(restaurant, 'remove')}>{t('lists.remove')}</button>
-                        </div>
-                        {restaurant.attributions?.map((item, index) => <p key={index}>
-                            {safeLink(item.providerUri)
-                                ? <a href={safeLink(item.providerUri)} target="_blank" rel="noopener noreferrer">
-                                    {item.provider || item.providerUri}</a>
-                                : item.provider}
-                        </p>)}
-                    </div>
-                </article>)}
+                {page.restaurants.map((restaurant, index) => <RestaurantCard
+                    key={restaurant.id} restaurant={restaurant}
+                    number={restaurant.name ? undefined : offset + index + 1}
+                    href={`#saved-restaurants/${restaurant.id}`} />)}
             </div>
         </>}
         {(page || error) && <div className="filters saved-pagination">

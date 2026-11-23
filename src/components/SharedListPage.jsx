@@ -39,7 +39,7 @@ export default function SharedListPage({ token }) {
 
     return <>
         <header className="site-header">
-            <div className="container header-content">
+            <div className="container header-content shared-header">
                 <a className="brand" href={window.location.pathname}>{t('appName')}</a>
                 <label className="language-control">
                     <span>{t('language')}</span>
@@ -53,7 +53,7 @@ export default function SharedListPage({ token }) {
         </header>
         <main className="container">
             <section className="restaurants-section" aria-labelledby="shared-title">
-                <h1 id="shared-title">{t('sharing.title')}</h1>
+                <h1 id="shared-title" className="screen-title">{t('sharing.title')}</h1>
                 <p>{t('sharing.readOnly')}</p>
                 <button type="button" className="clear-filters" disabled={loading}
                     onClick={() => open(offset)}>{t(page ? 'lists.refresh' : 'sharing.open')}</button>
@@ -62,7 +62,7 @@ export default function SharedListPage({ token }) {
                 {page && <>
                     <h2>{t(`lists.${page.status}`)}</h2>
                     {!page.restaurants.length && <p>{t('lists.empty')}</p>}
-                    {page.restaurants.length > 0 && <p>{t('nearby.source')}</p>}
+                    {page.restaurants.length > 0 && <p className="maps-attribution" translate="no">Google Maps</p>}
                     <div className="restaurant-grid" aria-busy={loading}>
                         {page.restaurants.map((restaurant, index) => <article className="restaurant-card" key={restaurant.id}>
                             <div className="restaurant-content">
