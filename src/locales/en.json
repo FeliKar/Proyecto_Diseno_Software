@@ -69,13 +69,14 @@
     "rating": "Google: {{value}} / 5",
     "ratingUnknown": "Rating unavailable",
     "ratingCount": "{{total}} reviews",
-    "ratingCountUnknown": "Rating count unavailable"
+    "ratingCountUnknown": "Rating count unavailable",
+    "noPhoto": "Photo unavailable"
   },
   "locationPicker": {
     "open": "Choose location on map",
     "close": "Close map",
-    "device": "Search near me again",
-    "selected": "Location selected. You can change it on the map.",
+    "device": "Search near me",
+    "selected": "Location ready. Change the point or search here.",
     "search": "Search this location",
     "ready": "The search will use your chosen point. You can adjust the filters.",
     "help": "Move the map or click a point. We will use the centre marked with a cross.",
@@ -100,7 +101,7 @@
     "title": "My lists",
     "wishlist": "Want to visit",
     "visited": "Visited",
-    "help": "Save restaurants from search results and organize them here.",
+    "help": "Choose a list to see your restaurants.",
     "signin": "Sign in to save restaurants and view your lists.",
     "working": "Working…",
     "saved": "Saved to “{{list}}”.",
@@ -203,12 +204,31 @@
   },
   "navigation": "Main navigation",
   "restaurantPage": {
-    "open": "View details",
-    "openNamed": "View details for {{name}}",
+    "open": "View restaurant",
+    "openNamed": "View restaurant {{name}}",
     "back": "Back",
     "title": "Restaurant",
     "unavailable": "Return to the results or open a list to view this restaurant.",
     "myRestaurant": "In my lists",
     "googleDetails": "Photos and reviews"
+  },
+  "usability": {
+    "location": "Where to search",
+    "changeLocation": "Change point on the map",
+    "filters": "What you're looking for",
+    "search": "Find restaurants",
+    "results": "Nearby results",
+    "recommended": "For you",
+    "backToLists": "Back to my lists",
+    "backToResults": "Back to results",
+    "explore": "Explore restaurants",
+    "saveActions": {
+      "wishlist": "Save to visit",
+      "visited": "Mark as visited"
+    },
+    "emptyLists": {
+      "wishlist": "You haven't saved any restaurants to visit yet.",
+      "visited": "You haven't marked any restaurants as visited yet."
+    }
   }
 }

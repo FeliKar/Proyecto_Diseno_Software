@@ -33,7 +33,7 @@ export default function SaveRestaurantButtons({ userId, placeId, onSaved }) {
         <div className="filters">
             {['wishlist', 'visited'].map((status) => <button key={status} type="button"
                 className="clear-filters" disabled={saving} onClick={() => save(status)}>
-                {t(`lists.${status}`)}
+                {t(`usability.saveActions.${status}`)}
             </button>)}
         </div>
         {saving && <p role="status">{t('lists.working')}</p>}

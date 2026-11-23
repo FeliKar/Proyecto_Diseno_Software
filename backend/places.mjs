@@ -1,4 +1,4 @@
-// Comparte la búsqueda entre el servidor local y la función de Supabase.
+// The local server and the Supabase function share the same search implementation.
 export {
     createHandler,
     selectRestaurants,

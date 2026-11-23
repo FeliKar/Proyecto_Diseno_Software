@@ -1,161 +1,212 @@
 # Mesa Cerca
 
-Proyecto individual de Diseño de Software: descubre restaurantes cercanos,
-guarda tus lugares y recibe recomendaciones según tus búsquedas y valoraciones.
+Individual Software Design project for discovering nearby restaurants, saving places,
+and receiving recommendations based on searches and personal ratings.
 
-[Aplicación publicada](https://proyectodisenosoftware.vercel.app)
+[Live application](https://proyectodisenosoftware.vercel.app)
 
-## Funcionalidades
+## Features
 
-- Acceso con Google o correo y contraseña mediante Supabase Auth.
-- Interfaz en español e inglés con tres pantallas: Explorar, Mis listas y Mi cuenta.
-  Navegación inferior en móvil y superior en escritorio.
-- Ubicación del navegador o punto elegido en Google Maps.
-- Filtros por tipo de comida y presupuesto; hasta cinco resultados dentro de tres kilómetros.
-- Listas personales «Quiero visitar» y «Ya visité», con notas de 1 a 5.
-- Recomendaciones basadas en búsquedas anteriores y valoraciones personales.
-- Enlaces de listas de solo lectura, con opción de revocarlos.
-- Tarjetas resumidas y ficha individual con fotos, reseñas y calificaciones de Google cuando están disponibles.
+- Google or email/password sign-in through Supabase Auth.
+- Spanish and English interface with Explore, My lists and My account screens.
+  Navigation appears at the bottom on mobile and at the top on desktop.
+- Browser location or a point selected on Google Maps.
+- Cuisine and budget filters, with up to five results within three kilometres.
+- Personal Want to visit and Visited lists, with ratings from 1 to 5.
+- Recommendations based on previous searches and personal ratings.
+- Read-only list links that the owner can revoke.
+- Compact restaurant cards and individual pages with Google photos, reviews and ratings when available.
 
-## Tecnologías y organización
+## Technology and organization
 
-React y CSS forman la interfaz; Vite ejecuta y compila el proyecto.
-i18next gestiona las traducciones. Supabase proporciona autenticación,
-PostgreSQL y funciones de backend con Deno. Google Maps y Places aportan
-mapas y datos de restaurantes. El frontend está desplegado en Vercel.
+React and CSS provide the interface; Vite runs and builds the project.
+i18next manages translations. Supabase provides authentication, PostgreSQL
+and Deno backend functions. Google Maps and Places provide maps and restaurant
+data. The frontend is deployed on Vercel.
 
-| Carpeta | Responsabilidad |
+| Directory | Responsibility |
 |---|---|
-| `src/components` | Interfaz, formularios y mapas |
-| `src/lib` | Peticiones, sesión y validaciones del navegador |
-| `src/locales` | Textos en español e inglés |
-| `supabase/functions` | Autenticación de peticiones, permisos y consultas externas |
-| `supabase/migrations` | Tablas, políticas RLS, permisos y cuota |
-| `backend` | Servidor local básico y pruebas del backend |
-| `tests` | Pruebas de los módulos de la interfaz |
-| `docs` | Configuración de acceso y registro de pruebas |
+| `src/components` | Interface, forms and maps |
+| `src/lib` | Browser requests, sessions and validation |
+| `src/locales` | Spanish and English interface text |
+| `supabase/functions` | Request authentication, permissions and external queries |
+| `supabase/migrations` | Tables, RLS policies, grants and usage quota |
+| `backend` | Basic local server and backend tests |
+| `tests` | Frontend module tests |
+| `docs` | Authentication setup and test records |
+| `public` | Favicon and decorative background |
 
-## Ejecución local
+Source comments and documentation use English. Comments describe decisions in
+third-person sentences. Spanish translations remain in `src/locales/es.json`,
+and the language selector retains the native language name. Mesa Cerca is the
+application's name in both languages.
 
-Requisitos: Node.js con npm; Deno para validar y probar el backend.
+## Local development
+
+Node.js and npm are required; Deno is required for backend checks and tests.
+Dependencies are installed with:
 
 ```bash
 npm install
 ```
 
-Copiar `.env.example` como `.env.local` y completar:
+The root `.env.local` is copied from `.env.example` and completed with:
 
 ```dotenv
-VITE_SUPABASE_URL=https://TU_PROYECTO.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=TU_CLAVE_PUBLICA
+VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLIC_KEY
 VITE_USE_HOSTED_BACKEND=true
-VITE_GOOGLE_MAPS_API_KEY=TU_CLAVE_WEB
-VITE_GOOGLE_MAPS_MAP_ID=TU_MAP_ID
+VITE_GOOGLE_MAPS_API_KEY=YOUR_BROWSER_KEY
+VITE_GOOGLE_MAPS_MAP_ID=YOUR_MAP_ID
 ```
+
+The frontend starts on the authorized local port with:
 
 ```bash
 npm run dev -- --port 5173 --strictPort
 ```
 
-La interfaz local usa las funciones desplegadas. Reiniciar Vite al cambiar
-variables. La versión final utiliza datos reales; el antiguo modo ficticio
-se retiró y `VITE_REAL_SEARCH` ya no se usa.
+The local interface uses the deployed functions. Vite requires a restart after
+an environment-variable change. The final version uses live data; the old mock
+mode has been removed and `VITE_REAL_SEARCH` is no longer used.
 
-Las variables `VITE_` son públicas. La clave web de Maps se restringe por sitios
-permitidos y por API. La clave privada de Places se configura únicamente en
-Supabase, nunca en el frontend. Los archivos `.env.local` están ignorados por Git.
+Variables with the `VITE_` prefix are public. The Maps browser key is restricted
+by website and API. The private Places key is configured only on the backend.
+Local `.env.local` files remain outside version control.
 
-La configuración de correo, Google y redirecciones está en
-[autenticación](docs/autenticacion.md).
+Email, Google and redirect settings are documented in
+[authentication setup](docs/authentication.md).
 
-## Configurar un backend nuevo
+## New backend setup
 
-1. Crear un proyecto Supabase y configurar Auth.
-2. Ejecutar los archivos de `supabase/migrations` en orden de nombre en SQL Editor.
-   Esto incluye la migración de permisos de lectura `202611220004_shared_list_read_access.sql`.
-3. Crear `backend/.env.local` desde `backend/.env.example`, con la clave privada
-   `GOOGLE_PLACES_API_KEY` habilitada para Places API (New).
-4. Configurar ese secreto y desplegar las funciones:
+1. A Supabase project is created and Auth is configured.
+2. Files in `supabase/migrations` are executed in filename order in SQL Editor.
+   This includes the read-grant migration `202611220004_shared_list_read_access.sql`.
+3. `backend/.env.local` is copied from `backend/.env.example` and receives a private
+   `GOOGLE_PLACES_API_KEY` with Places API (New) enabled.
+4. The secret is configured and the functions are deployed with:
 
 ```bash
 npx supabase login
-npx supabase secrets set --env-file backend/.env.local --project-ref TU_PROJECT_REF
-npx supabase functions deploy restaurants --project-ref TU_PROJECT_REF --use-api
-npx supabase functions deploy saved-restaurants --project-ref TU_PROJECT_REF --use-api
-npx supabase functions deploy search-history --project-ref TU_PROJECT_REF --use-api
-npx supabase functions deploy sharing --project-ref TU_PROJECT_REF --use-api
-npx supabase functions deploy shared-list --project-ref TU_PROJECT_REF --use-api
-npx supabase functions deploy restaurant-details --project-ref TU_PROJECT_REF --use-api
+npx supabase secrets set --env-file backend/.env.local --project-ref YOUR_PROJECT_REF
+npx supabase functions deploy restaurants --project-ref YOUR_PROJECT_REF --use-api
+npx supabase functions deploy saved-restaurants --project-ref YOUR_PROJECT_REF --use-api
+npx supabase functions deploy search-history --project-ref YOUR_PROJECT_REF --use-api
+npx supabase functions deploy sharing --project-ref YOUR_PROJECT_REF --use-api
+npx supabase functions deploy shared-list --project-ref YOUR_PROJECT_REF --use-api
+npx supabase functions deploy restaurant-details --project-ref YOUR_PROJECT_REF --use-api
 ```
 
-Las claves de servidor de Supabase las proporciona el entorno de Edge Functions.
-En Vercel se configuran las mismas variables públicas de la interfaz y se despliega
-desde GitHub. Los orígenes permitidos están en `supabase/functions/_shared/access.ts`;
-al usar otro dominio hay que ajustar también Supabase Auth, OAuth y la clave web de Maps.
+The Edge Functions environment supplies the Supabase server keys.
+Vercel receives the public variables from `.env.example` for Production and deploys
+from GitHub. Variable changes require a new deployment to reach the build.
+Allowed origins are defined in `supabase/functions/_shared/access.ts`; a different
+domain also requires changes in Supabase Auth, Google OAuth and the Maps browser key.
 
-El comando `npm run backend` conserva un servidor local para búsquedas básicas
-con `VITE_USE_HOSTED_BACKEND=false`. Las funcionalidades personales utilizan
-Supabase; ese servidor no sustituye al backend desplegado.
+The `npm run backend` command retains a basic local search server for
+`VITE_USE_HOSTED_BACKEND=false`. Personal features use Supabase; this local server
+does not replace the deployed backend.
 
-## Navegación
+## Navigation
 
-Los enlaces `#restaurants`, `#saved-restaurants` y `#account` seleccionan las
-tres pantallas sin recargar la aplicación ni perder el idioma. Atrás y Adelante
-del navegador recorren esas secciones. La búsqueda se mantiene montada y oculta
-al navegar, conservando filtros, ubicación y resultados. Los mapas se montan
-solo cuando están visibles para evitar inicializarlos con tamaño cero.
+The `#restaurants`, `#saved-restaurants` and `#account` links select the three
+screens without reloading the application or losing the selected language.
+Browser Back and Forward navigate between these sections. Search remains mounted
+and hidden when another screen is open, preserving filters, location and results.
+Maps mount only while visible to avoid initialization at zero size.
 
-Al iniciar sesión con contraseña se conservan los filtros y el punto elegido,
-pero se descartan los resultados de invitado. El acceso con Google abandona
-y recarga la aplicación: conserva la sesión de acceso, pero puede reiniciar
-los filtros y la ubicación elegida. Al cerrar sesión o cambiar de cuenta se limpian los
-filtros y resultados de la cuenta anterior. El login y las preferencias están
-en Mi cuenta. Compartir listas y las preferencias opcionales de las notas se
-abren solo cuando se necesitan. El mapa de resultados también se abre a petición.
-Las estrellas usan botones de opción nativos, con etiquetas y validación de nota.
+Password sign-in preserves filters and the selected point while discarding guest
+results. Google sign-in leaves and reloads the application: the session persists,
+but filters and the selected point may reset. Logout and account changes clear
+the previous account's filters and results. Sign-in and preferences live in My
+account. Sharing controls, optional rating preferences and the result map open
+on request. Personal stars use native radio inputs with labels and required-score
+validation.
 
-## Cómo funcionan las recomendaciones
+The search form separates location and filters, emphasizes Search and gives
+Recommend a secondary style. Return links name their destination and save buttons
+describe their actions. Empty lists link to Explore, and a signed-in account offers
+an action to continue exploring.
 
-El backend considera las últimas 20 búsquedas y hasta 20 locales calificados de
-«Ya visité», ordenados por fecha de creación de su entrada. Cada filtro de búsqueda
-aporta un punto. Cada nota personal aporta `nota - 3` a la comida y presupuesto
-indicados por el usuario: 5 suma dos, 4 suma uno, 3 es neutral, 2 resta uno y 1 resta dos.
+### Restaurant pages
 
-Se eligen por separado los filtros con mayor puntuación positiva. Un empate favorece
-la búsqueda más reciente; sin búsquedas empatadas, se conserva el orden de los locales
-calificados. Sin preferencias positivas se muestran opciones cercanas y se informa.
-No se cambia la ubicación ni se amplía el radio si no hay resultados.
+Cards show essential information. A restaurant name or View restaurant link opens
+its page with address, price, Google Maps access, photos and reviews. Saving,
+moving, removing and rating happen on that page, depending on its source section.
+Returning preserves results, filters and list pagination without repeating the query.
+The gallery and reviews load when the page opens; a language change requires
+Refresh details to request provider content in the selected language.
 
-Pedir recomendaciones no alimenta el historial. Borrar búsquedas conserva las listas
-y notas. Quitar una nota elimina su aporte; mover el local a «Quiero visitar» lo excluye
-mientras permanezca allí. Es un algoritmo de reglas, no un modelo de aprendizaje automático.
+Restaurant pages depend on results loaded in the current session. Reloading a
+page or opening its URL directly requires another search or reopening the list.
+List-sharing links provide the persistent public read-only view.
 
-## Datos, permisos y límites
+Google ratings appear as five stars with a numeric score. The gallery contains
+up to five photos with arrows and touch scrolling. Credits remain visible and
+photos link to their original Google Maps content. Opening or refreshing a gallery
+consumes one application quota unit, but can make one details request and up to
+five photo requests to Google. Scrolling through loaded photos makes no further
+backend requests. Google images and content are not stored in the database or
+persistent browser storage.
 
-- Las funciones privadas verifican la sesión en el servidor. Las políticas RLS
-  restringen historial, listas, notas y enlaces a su propietario.
-- La consulta pública de listas exige un enlace activo aleatorio. No devuelve
-  correo, historial ni notas personales. Revocar impide nuevas consultas; no retira
-  información que otra persona ya haya visto. Un enlace local solo funciona en ese equipo.
-- La cuota compartida es de diez consultas por minuto y cien por día UTC por cuenta.
-  Incluye búsquedas, páginas de listas, detalles y consultas de sus enlaces compartidos.
-  Guardar notas o listas y administrar enlaces no consulta Google.
-- Una consulta puede hacer varias llamadas a Google. La cuota de la aplicación
-  no es un límite monetario; reseñas, resúmenes y fotos tienen facturación del proveedor.
-- La búsqueda consulta hasta veinte candidatos y filtra por precio antes de devolver
-  cinco. Puede omitir otros locales; los precios ausentes se excluyen al filtrar por precio.
-- El navegador puede entregar una ubicación errónea: se rechaza incertidumbre superior
-  a un kilómetro y se permite elegir el punto en el mapa. Eso no garantiza precisión absoluta.
-- Se almacenan identificadores de lugares y datos propios del usuario. Los nombres,
-  direcciones, fotos, reseñas y resúmenes de Google se consultan al solicitarlos.
-- Google entrega hasta cinco reseñas por relevancia. El recuento de sus notas describe
-  esa muestra, no una evolución temporal ni todas las opiniones. El resumen pertenece
-  a Google/Gemini y se muestra con su divulgación y enlaces.
-- Las fotos pueden mostrar comida o el local. Fotos, reseñas y resumen pueden faltar.
-- El registro por contraseña no verifica la propiedad del correo y no ofrece recuperación.
-  Google y Supabase gestionan las credenciales; las notas propias no se envían a Google Maps.
+### Explore card photos
 
-## Validación
+Each result includes a thumbnail when Google provides one. Nearby Search supplies
+photo references, and the backend requests one image for each of the final five
+results. Building cards does not request reviews. Missing or failed images leave
+the restaurant visible with a Photo unavailable message. Credits and source access
+remain available; a photo is not guaranteed to show food.
+
+A search can make up to five additional Google photo requests while still counting
+as one application quota unit. `place-photos.mjs` shares backend photo retrieval;
+`PlacePhoto.jsx` shares photo rendering between cards and the gallery.
+
+## Recommendation rules
+
+The backend considers the latest 20 searches and up to 20 rated Visited entries,
+ordered by the saved entry's creation date. Each search filter contributes one
+point. Each personal rating contributes `rating - 3` to the cuisine and budget
+selected by the user: 5 adds two points, 4 adds one, 3 is neutral, 2 subtracts one
+and 1 subtracts two.
+
+Cuisine and price are selected separately from the highest positive scores.
+Ties favour the most recent search; when no tied search exists, saved-entry order
+is preserved. Without positive preferences, nearby options appear with a notice.
+The location and search radius remain unchanged when no restaurants match.
+
+Recommendation requests do not add searches to history. Clearing searches preserves
+lists and ratings. Removing a rating removes its contribution. Moving a place to
+Want to visit excludes its rating while it remains there. This is a rule-based
+algorithm rather than a machine-learning model.
+
+## Data, permissions and limits
+
+- Private functions verify the session on the server. RLS policies restrict history,
+  saved restaurants, personal ratings and share-link management to their owner.
+- Public list queries require a random active share token. They do not return email,
+  history or personal ratings. Revocation prevents new queries; previously viewed
+  information cannot be withdrawn. A localhost link works only on its own device.
+- The shared application quota allows ten queries per minute and one hundred per
+  UTC day per account. Searches, list pages, details and public views of that
+  account's shared lists use this quota. List and rating writes and share-link
+  management do not query Google.
+- One application query can make multiple Google requests. The application quota
+  is not a monetary cap; reviews, summaries and photos use the provider's billing.
+- Searches examine up to twenty nearby candidates and filter by price before
+  returning five. Other restaurants may be omitted; missing prices are excluded
+  when a price filter is active.
+- Browser location can be wrong. Uncertainty above one kilometre is rejected and
+  the map allows manual point selection. This does not guarantee absolute accuracy.
+- The database stores place identifiers and user-created data. Google names,
+  addresses, photos, reviews and summaries are requested when needed.
+- Google supplies up to five reviews by relevance. The rating counts describe that
+  sample, not a historical trend or every review. Google/Gemini supplies review
+  summaries, which include the provider disclosure and required links.
+- Photos may show food or the building. Photos, reviews and summaries can be missing.
+- Password signup does not verify email ownership and offers no password recovery.
+  Google and Supabase manage credentials. Personal ratings are not sent to Google Maps.
+
+## Validation
 
 ```bash
 npm run lint
@@ -165,18 +216,18 @@ npm run test:backend
 npm run build
 ```
 
-Las pruebas automáticas utilizan respuestas simuladas. Las pruebas SQL de permisos
-están en `supabase/*.test.sql`; requieren dos cuentas y revierten sus cambios.
-El [registro consolidado](docs/pruebas.md) distingue lo comprobado antes de los
-retoques de las comprobaciones finales pendientes en el navegador y Vercel.
+Automated tests use simulated responses. SQL permission tests live in
+`supabase/*.test.sql`; account-specific tests require existing accounts and roll
+back their data changes. The [test record](docs/testing.md) separates previously
+completed checks from the final browser and Vercel checks.
 
-## Fuentes y apoyo de IA
+## Sources and AI assistance
 
-Se utilizó ChatGPT como apoyo para proponer y revisar código de interfaz y backend,
-explicar Supabase y Google Places, preparar traducciones, documentación y pruebas,
-y simplificar la presentación. La configuración de servicios, incorporación del código,
-despliegue y pruebas manuales se realizaron durante el desarrollo. Los resúmenes de
-reseñas los proporciona Google/Gemini y se identifican en la interfaz.
+ChatGPT provided support for proposing and reviewing frontend and backend code,
+explaining Supabase and Google Places, preparing translations, documentation and
+tests, and simplifying the presentation. Service configuration, code integration,
+deployment and manual checks took place during development. Google/Gemini supplies
+review summaries, which are identified in the interface.
 
 - [React](https://react.dev/learn)
 - [Supabase Auth](https://supabase.com/docs/guides/auth)
@@ -184,25 +235,5 @@ reseñas los proporciona Google/Gemini y se identifican en la interfaz.
 - [Google Maps JavaScript](https://developers.google.com/maps/documentation/javascript)
 - [Place Details](https://developers.google.com/maps/documentation/places/web-service/place-details)
 - [Place Photos](https://developers.google.com/maps/documentation/places/web-service/place-photos)
-- [Resúmenes de reseñas](https://developers.google.com/maps/documentation/places/web-service/review-summaries/)
-- [Atribuciones de Google Places](https://developers.google.com/maps/documentation/places/web-service/policies)
-
-### Fichas de restaurantes
-
-Las tarjetas muestran lo esencial. El nombre y «Ver detalles» abren una ficha
-con dirección, precio, acceso a Google Maps, fotos y opiniones. Guardar, mover,
-quitar y valorar se realizan desde esa ficha, según la sección de origen.
-Volver conserva los resultados, filtros y página de la lista sin repetir su consulta.
-Las fotos y reseñas se solicitan al abrir la ficha; cambiar el idioma requiere
-pulsar «Actualizar detalles» para obtener nuevamente el contenido del proveedor.
-La ficha depende de los resultados cargados en la sesión: al recargar o abrir su
-URL directamente hay que volver a buscar o abrir la lista. Para compartir se usan
-los enlaces de listas, que conservan su vista pública de solo lectura.
-
-Las calificaciones de Google se muestran con cinco estrellas y su valor numérico.
-La ficha incluye un carrusel de hasta cinco fotos, con flechas y deslizamiento táctil.
-Se conservan los créditos y cada foto enlaza al original en Google Maps.
-Abrir o actualizar la galería consume una unidad de la cuota de la aplicación,
-pero puede generar una consulta de detalles y hasta cinco consultas de fotos a Google.
-Recorrer las fotos ya cargadas no repite peticiones al backend. No se guardan imágenes
-ni datos de Google en la base de datos o almacenamiento persistente del navegador.
+- [Review summaries](https://developers.google.com/maps/documentation/places/web-service/review-summaries/)
+- [Google Places attribution](https://developers.google.com/maps/documentation/places/web-service/policies)

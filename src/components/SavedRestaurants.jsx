@@ -103,7 +103,7 @@ export default function SavedRestaurants({ userId, placeId }) {
 
     return <>
         <p>{t('lists.help')}</p>
-        <div className="filters">
+        <div className="filters list-switcher" role="group" aria-label={t('lists.title')}>
             {['wishlist', 'visited'].map((value) => <button key={value} type="button"
                 className="clear-filters" disabled={loading}
                 aria-pressed={page !== null && status === value} onClick={() => openList(value)}>
@@ -116,7 +116,11 @@ export default function SavedRestaurants({ userId, placeId }) {
         {page && <>
             <h3>{t(`lists.${status}`)}</h3>
             <ShareListControls key={`${userId}:${status}`} userId={userId} status={status} />
-            {!page.restaurants.length && <p role="status">{t('lists.empty')}</p>}
+            {!page.restaurants.length && <div className="empty-list">
+                <p role="status">{t(offset === 0 && !page.hasMore
+                    ? `usability.emptyLists.${status}` : 'lists.empty')}</p>
+                <a className="action-link clear-filters" href="#restaurants">{t('usability.explore')}</a>
+            </div>}
             {page.restaurants.length > 0 && <p className="maps-attribution" translate="no">Google Maps</p>}
             <div className="restaurant-grid" aria-busy={loading}>
                 {page.restaurants.map((restaurant, index) => <RestaurantCard

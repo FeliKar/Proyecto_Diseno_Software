@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js'
 const url = import.meta.env.VITE_SUPABASE_URL
 const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
-// Read callback information before the SDK consumes the URL fragment.
+// The callback error is captured before the SDK consumes the URL fragment.
 const callback = new URLSearchParams(window.location.hash.slice(1))
 const query = new URLSearchParams(window.location.search)
 
@@ -19,7 +19,7 @@ try {
         client = createClient(url, key)
     }
 } catch {
-    // A configuration mistake must not prevent browsing the restaurant demo.
+    // The interface remains available when the Supabase configuration is invalid.
 }
 
 export const supabase = client

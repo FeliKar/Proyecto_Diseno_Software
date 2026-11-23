@@ -1,4 +1,4 @@
--- Requires two existing accounts. All test changes are rolled back.
+-- The tests require two existing accounts and roll back all test changes.
 begin;
 
 do $$

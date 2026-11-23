@@ -1,3 +1,5 @@
+import { authors, https, loadPhoto, selectPhotos } from './place-photos.mjs'
+
 export function validateDetails(input) {
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw new Error('invalid_request')
     const { placeId, language = 'es', photoIndex = 0, gallery = false } = input
@@ -9,22 +11,6 @@ export function validateDetails(input) {
 
 function text(value) {
     return typeof value === 'string' ? value : ''
-}
-
-function https(value) {
-    try {
-        const url = new URL(value)
-        return url.protocol === 'https:' && !url.username && !url.password ? url.href : null
-    } catch {
-        return null
-    }
-}
-
-function authors(values) {
-    return (Array.isArray(values) ? values : []).map((author) => ({
-        name: text(author?.displayName), uri: https(author?.uri),
-        avatar: https(author?.photoUri),
-    })).filter((author) => author.name || author.avatar || author.uri)
 }
 
 export function selectDetails(place) {
@@ -42,7 +28,7 @@ export function selectDetails(place) {
                 ? `${review.visitDate.year}-${String(review.visitDate.month).padStart(2, '0')}` : null,
         }))
     const summary = place.reviewSummary
-    // Show Google's summary only with its disclosure and review source link.
+    // The summary is displayed only when its disclosure, source and reporting link are available.
     const reviewSummary = text(summary?.text?.text) && text(summary?.disclosureText?.text) && https(summary?.reviewsUri) && https(summary?.flagContentUri)
         ? {
             text: summary.text.text, disclosure: summary.disclosureText.text,
@@ -89,47 +75,17 @@ export function createDetailsHandler({ apiKey, fetcher = fetch }) {
             if (!place || typeof place !== 'object' || Array.isArray(place) || !text(place.displayName?.text)) {
                 throw new Error('invalid_response')
             }
-            const photos = (Array.isArray(place.photos) ? place.photos : []).filter((photo) =>
-                typeof photo?.name === 'string' &&
-                photo.name.startsWith(`places/${placeId}/photos/`) &&
-                /^[A-Za-z0-9_-]+$/.test(photo.name.slice(`places/${placeId}/photos/`.length)))
-                .slice(0, gallery ? 5 : 3)
-            const loadPhoto = async (selected) => {
-                if (!selected) return null
-                try {
-                    const photoUrl = new URL(`https://places.googleapis.com/v1/${selected.name}/media`)
-                    photoUrl.searchParams.set('maxWidthPx', '900')
-                    photoUrl.searchParams.set('skipHttpRedirect', 'true')
-                    const photoResponse = await fetcher(photoUrl, {
-                        headers: { 'X-Goog-Api-Key': apiKey }, signal: AbortSignal.timeout(8000),
-                    })
-                    if (photoResponse.ok) {
-                        const media = await photoResponse.json()
-                        const uri = https(media.photoUri)
-                        const host = uri ? new URL(uri).hostname : ''
-                        if (uri && !uri.includes(apiKey) &&
-                            (host === 'googleusercontent.com' || host.endsWith('.googleusercontent.com'))) {
-                            return {
-                                uri, authors: authors(selected.authorAttributions),
-                                mapsUrl: https(selected.googleMapsUri), reportUrl: https(selected.flagContentUri)
-                            }
-                        }
-                    }
-                } catch {
-                    // A failed photo must not hide available reviews and summary.
-                }
-                return null
-            }
+            const photos = selectPhotos(place.photos, placeId, gallery ? 5 : 3)
             const selectedIndex = photoIndex < photos.length ? photoIndex : 0
             // Existing clients request one photo; the carousel requests the gallery.
             if (gallery) {
-                const loaded = (await Promise.all(photos.map(loadPhoto))).filter(Boolean)
+                const loaded = (await Promise.all(photos.map((photo) => loadPhoto(photo, { apiKey, fetcher })))).filter(Boolean)
                 return json({
                     ...selectDetails(place), photos: loaded,
                     photo: loaded[0] || null, photoIndex: 0, photoCount: loaded.length
                 })
             }
-            const photo = await loadPhoto(photos[selectedIndex])
+            const photo = await loadPhoto(photos[selectedIndex], { apiKey, fetcher })
             return json({ ...selectDetails(place), photo, photoIndex: selectedIndex, photoCount: photos.length })
         } catch (error) {
             return json({ error: 'service' }, error.name === 'TimeoutError' ? 504 : 502)

@@ -1,11 +1,15 @@
 import { useTranslation } from 'react-i18next'
 import StarRating from './StarRating'
+import PlacePhoto from './PlacePhoto'
 import { safeLink } from '../lib/restaurant-search.mjs'
 
-export default function RestaurantCard({ restaurant, href, number }) {
+export default function RestaurantCard({ restaurant, href, number, showPhoto = false }) {
     const { t } = useTranslation()
     const name = restaurant.name || t('lists.unknown', { number })
     return <article className="restaurant-card compact-card">
+        {showPhoto && <figure className="card-photo">
+            <PlacePhoto key={restaurant.photo?.uri || 'unavailable'} photo={restaurant.photo} name={name} compact />
+        </figure>}
         <div className="restaurant-content">
             <h3><a href={href}>{number ? `${number}. ` : ''}{name}</a></h3>
             <p className="card-facts">

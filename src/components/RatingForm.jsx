@@ -8,6 +8,7 @@ export default function RatingForm({ restaurant, disabled, onSave }) {
     const [priceLevel, setPriceLevel] = useState(restaurant.userPriceLevel || '')
     const prefix = `rating-${restaurant.id}`
 
+    // Native required radio inputs provide keyboard access and prevent empty submissions.
     function submit(event) {
         event.preventDefault()
         onSave({ rating: Number(rating), category, priceLevel })

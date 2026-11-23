@@ -1,4 +1,4 @@
--- Run in SQL Editor with at least two existing test accounts.
+-- The tests run in SQL Editor with at least two existing test accounts.
 -- All changes are rolled back; no Google requests are made.
 begin;
 

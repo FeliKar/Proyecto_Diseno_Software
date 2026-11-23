@@ -20,6 +20,7 @@ export function preferredFilters(rows, ratings = []) {
             if (value) scores.set(value, (scores.get(value) || 0) + weight)
         }
         for (const row of rows) add(row[searchField], 1)
+        // A personal rating contributes its value minus three; a neutral rating adds zero.
         for (const row of ratings) add(row[ratingField], row.user_rating - 3)
         return [...scores].filter(([, score]) => score > 0)
             .sort((a, b) => b[1] - a[1])[0]?.[0] || ''
@@ -126,7 +127,7 @@ export function createPersonalSearchHandler({ placesHandler, store }) {
                 await store.save(context, filters)
                 historySaved = true
             } catch {
-                // Keep valid search results even if saving history fails.
+                // Valid search results remain available when their history entry cannot be saved.
                 historySaved = false
             }
         }

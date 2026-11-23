@@ -34,7 +34,7 @@ export function createSharingHandler({ supabaseUrl, publicKey, fetcher = fetch }
             if (!response.ok) throw new Error('sharing_unavailable')
             return Response.json({ ok: true })
         }
-        // Keep the existing link if the same list is shared again.
+        // Sharing the same list again preserves its active link.
         url.searchParams.set('on_conflict', 'user_id,status')
         const created = await fetcher(url, {
             method: 'POST',
@@ -119,7 +119,7 @@ export function createSharedListHandler({ supabaseUrl, serverKey, apiKey,
             if (!Array.isArray(rows)) throw new Error('invalid_response')
             const restaurants = await Promise.all(rows.slice(0, 5).map(async (row) => {
                 const place = await loadRestaurantDetails(row, input.language, { apiKey, fetcher })
-                // Explicit public fields: no owner, token, history or personal ratings.
+                // The public response includes only restaurant fields and excludes private account data.
                 return {
                     id: place.id, name: place.name, address: place.address,
                     googleMapsUrl: place.googleMapsUrl, attributions: place.attributions

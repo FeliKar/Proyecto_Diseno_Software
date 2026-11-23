@@ -51,7 +51,7 @@ export default function RestaurantDetails({ placeId, userId }) {
 
     const started = useRef(false)
     useEffect(() => {
-        // StrictMode repeats effects; opening a page should make just one request.
+        // The ref prevents the StrictMode effect replay from sending a duplicate request.
         if (started.current) return
         started.current = true
         load()

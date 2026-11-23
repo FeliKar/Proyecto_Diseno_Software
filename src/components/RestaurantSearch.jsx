@@ -53,7 +53,7 @@ export default function RestaurantSearch({ userId, onSaved, active, placeId, sea
                 ? await getHostedOptions('restaurants', userId)
                 : await getSearchOptions()
 
-            // Conserva el punto elegido al cambiar los filtros.
+            // The search keeps the selected point when the filters change.
             const point = useDevice || !location
                 ? await getLocation()
                 : location
@@ -102,23 +102,26 @@ export default function RestaurantSearch({ userId, onSaved, active, placeId, sea
 
             <form onSubmit={(event) => handleSearch(event)} className="restaurant-search">
                 <fieldset disabled={loading}>
-                    <div className="filters">
-                        <button type="button" className="clear-filters"
-                            onClick={() => setShowMap(!showMap)}>
-                            {t(showMap ? 'locationPicker.close' : 'locationPicker.open')}
-                        </button>
-                        {location && <button type="button" className="clear-filters"
-                            onClick={(event) => handleSearch(event, true)}>
-                            {t('locationPicker.device')}
-                        </button>}
+                    <div className="search-location">
+                        <h2 className="control-heading">{t('usability.location')}</h2>
+                        <div className="filters location-actions">
+                            <button type="button" className="clear-filters" aria-expanded={showMap}
+                                aria-controls={showMap && active ? 'search-location-map' : undefined} onClick={() => setShowMap(!showMap)}>
+                                {t(showMap ? 'locationPicker.close' : location ? 'usability.changeLocation' : 'locationPicker.open')}
+                            </button>
+                            {location && <button type="button" className="clear-filters"
+                                onClick={(event) => handleSearch(event, true)}>{t('locationPicker.device')}</button>}
+                        </div>
+                        <p className="search-hint">{t(location ? 'locationPicker.selected' : 'nearby.initial')}</p>
+                        {showMap && active && <div id="search-location-map">
+                            <LocationPicker initialLocation={location} onSelect={(point) => {
+                                updateSearch({ location: point })
+                                setShowMap(false)
+                                resetResults()
+                            }} />
+                        </div>}
                     </div>
-                    {location && <p role="status">{t('locationPicker.selected')}</p>}
-                    {showMap && active && <LocationPicker initialLocation={location}
-                        onSelect={(point) => {
-                            updateSearch({ location: point })
-                            setShowMap(false)
-                            resetResults()
-                        }} />}
+                    <h2 className="control-heading">{t('usability.filters')}</h2>
                     <div className="filters">
                         <div className="filter-field">
                             <label htmlFor="category-filter">{t('categoryLabel')}</label>
@@ -140,24 +143,25 @@ export default function RestaurantSearch({ userId, onSaved, active, placeId, sea
                                 ))}
                             </select>
                         </div>
-                        <button type="button" className="clear-filters" onClick={clearFilters}>{t('clearFilters')}</button>
-                        <button type="submit" className="auth-submit">{t(location ? 'locationPicker.search' : 'nearby.submit')}</button>
                     </div>
-                    {hosted && <div>
-                        <p>{t('recommendations.help')}</p>
-                        <button type="button" className="auth-submit"
+                    {(category || priceLevel) && <button type="button" className="auth-link reset-search"
+                        onClick={clearFilters}>{t('clearFilters')}</button>}
+                    <div className="search-actions">
+                        <button type="submit" className="auth-submit">
+                            {t(loading ? 'nearby.loading' : 'usability.search')}
+                        </button>
+                        {hosted && <button type="button" className="clear-filters"
                             onClick={(event) => handleSearch(event, false, 'recommend')}>
                             {t('recommendations.submit')}
-                        </button>
-                    </div>}
+                        </button>}
+                    </div>
+                    {hosted && <p className="search-hint recommendation-hint">{t('recommendations.help')}</p>}
                 </fieldset>
             </form>
 
-            <p role="status">
-                {loading ? t('nearby.loading') : !error && (
-                    restaurants === null ? t(location ? 'locationPicker.ready' : 'nearby.initial') : restaurants.length === 0 ? t('nearby.empty') : ''
-                )}
-            </p>
+            {loading && <p role="status">{t('nearby.loading')}</p>}
+            {!loading && !error && restaurants?.length === 0 &&
+                <p role="status">{t('nearby.empty')}</p>}
             {error && <p role="alert" className="auth-error">{t(`nearby.errors.${error}`)}</p>}
             {historyWarning && <p role="status">{t('history.saveFailed')}</p>}
             {recommendation && <p role="status">
@@ -173,6 +177,7 @@ export default function RestaurantSearch({ userId, onSaved, active, placeId, sea
                         })}
             </p>}
 
+            {restaurants?.length > 0 && <h2 className="results-title">{t(recommendation ? 'usability.recommended' : 'usability.results')}</h2>}
             {restaurants !== null && <p className="maps-attribution" translate="no">Google Maps</p>}
             {restaurants?.length > 0 && <div className="results-map-toggle">
                 <button type="button" className="clear-filters" aria-expanded={showResultsMap}
@@ -183,7 +188,7 @@ export default function RestaurantSearch({ userId, onSaved, active, placeId, sea
             </div>}
             <div className="restaurant-grid" aria-busy={loading}>
                 {restaurants?.map((restaurant, index) => <RestaurantCard
-                    key={restaurant.id} restaurant={restaurant} number={index + 1}
+                    key={restaurant.id} restaurant={restaurant} number={index + 1} showPhoto
                     href={`#restaurants/${restaurant.id}`} />)}
             </div>
         </section>

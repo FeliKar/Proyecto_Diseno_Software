@@ -69,13 +69,14 @@
         "rating": "Google: {{value}} / 5",
         "ratingUnknown": "Calificación no disponible",
         "ratingCount": "{{total}} opiniones",
-        "ratingCountUnknown": "Cantidad de valoraciones no disponible"
+        "ratingCountUnknown": "Cantidad de valoraciones no disponible",
+        "noPhoto": "Foto no disponible"
     },
     "locationPicker": {
         "open": "Elegir ubicación en el mapa",
         "close": "Cerrar mapa",
-        "device": "Volver a buscar cerca de mí",
-        "selected": "Ubicación elegida. Puedes cambiarla en el mapa.",
+        "device": "Buscar cerca de mí",
+        "selected": "Ubicación lista. Puedes cambiar el punto o buscar aquí.",
         "search": "Buscar en esta ubicación",
         "ready": "La búsqueda usará el punto elegido. Puedes ajustar los filtros.",
         "help": "Mueve el mapa o pulsa un punto. Usaremos el centro marcado con la cruz.",
@@ -100,7 +101,7 @@
         "title": "Mis listas",
         "wishlist": "Quiero visitar",
         "visited": "Ya visité",
-        "help": "Guarda locales desde la búsqueda y organízalos aquí.",
+        "help": "Elige una lista para ver tus restaurantes.",
         "signin": "Inicia sesión para guardar restaurantes y consultar tus listas.",
         "working": "Procesando…",
         "saved": "Guardado en «{{list}}».",
@@ -203,12 +204,31 @@
     },
     "navigation": "Navegación principal",
     "restaurantPage": {
-        "open": "Ver detalles",
-        "openNamed": "Ver detalles de {{name}}",
+        "open": "Ver restaurante",
+        "openNamed": "Ver restaurante {{name}}",
         "back": "Volver",
         "title": "Restaurante",
         "unavailable": "Vuelve a los resultados o abre una lista para consultar este restaurante.",
         "myRestaurant": "En mis listas",
         "googleDetails": "Fotos y opiniones"
+    },
+    "usability": {
+        "location": "Dónde buscar",
+        "changeLocation": "Cambiar punto en el mapa",
+        "filters": "Qué buscas",
+        "search": "Buscar restaurantes",
+        "results": "Resultados cercanos",
+        "recommended": "Para ti",
+        "backToLists": "Volver a mis listas",
+        "backToResults": "Volver a los resultados",
+        "explore": "Explorar restaurantes",
+        "saveActions": {
+            "wishlist": "Guardar para visitar",
+            "visited": "Marcar como visitado"
+        },
+        "emptyLists": {
+            "wishlist": "Aún no tienes restaurantes por visitar.",
+            "visited": "Aún no has marcado restaurantes como visitados."
+        }
     }
 }

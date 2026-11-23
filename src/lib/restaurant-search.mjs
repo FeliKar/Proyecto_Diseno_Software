@@ -3,7 +3,7 @@ export function getLocation(geolocation = globalThis.navigator?.geolocation) {
     return new Promise((resolve, reject) => {
         geolocation.getCurrentPosition(
             ({ coords }) => {
-                // Product choice: uncertainty above 1 km is too large for a 3 km search.
+                // The search rejects uncertainty above 1 km because its radius is only 3 km.
                 if (!Number.isFinite(coords.accuracy) || coords.accuracy > 1000) {
                     reject(new Error('imprecise'))
                     return
@@ -78,6 +78,7 @@ export async function searchRestaurants(
     }
 }
 
+// External links accept HTTPS URLs so provider data cannot introduce script links.
 export function safeLink(value) {
     try {
         const url = new URL(value)

@@ -14,6 +14,14 @@
 body {
   margin: 0;
   min-width: 320px;
+  min-height: 100vh;
+  background-color: #faf9f6;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, #e4ecddbb, transparent 65%),
+    radial-gradient(ellipse at 100% 5%, #f2e3cfaa, transparent 65%),
+    url('/background-pattern.svg');
+  background-size: 100% 680px, 100% 680px, 480px 480px;
+  background-repeat: no-repeat, no-repeat, repeat;
 }
 
 a {
@@ -300,10 +308,6 @@ h1 {
 .restaurant-content h3,
 .restaurant-content p {
   overflow-wrap: anywhere;
-}
-
-.restaurant-map-link {
-  margin-top: 16px;
 }
 
 .location-picker {
@@ -628,7 +632,7 @@ button:disabled {
   grid-template-columns: 1fr auto;
 }
 
-/* Compact results; complete information lives on the restaurant page. */
+/* Result cards show essential information and link to the complete restaurant page. */
 .compact-card h3 a {
   color: inherit;
   text-decoration: none;
@@ -693,7 +697,7 @@ button:disabled {
   max-width: 480px;
 }
 
-/* Read-only ratings, separate from the editable personal stars. */
+/* Google ratings remain visually separate from editable personal ratings. */
 .star-rating {
   display: inline-flex;
   align-items: center;
@@ -794,4 +798,139 @@ button:disabled {
 
 .carousel-viewport::-webkit-scrollbar {
   display: none;
+}
+
+/* Each Explore card displays one complete thumbnail. */
+.card-photo {
+  margin: 0;
+}
+
+.card-photo .carousel-image {
+  height: 190px;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+}
+
+.card-photo .carousel-image>p {
+  padding: 16px;
+  text-align: center;
+}
+
+.card-photo .photo-credit {
+  min-height: 0;
+  margin: 0;
+  padding: 8px 12px;
+}
+
+.card-photo .photo-credit:empty {
+  display: none;
+}
+
+.card-photo .review-author img {
+  width: 20px;
+  height: 20px;
+}
+
+/* The layout separates location, filters and the main search action. */
+.restaurant-search {
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #dce1d8;
+  border-radius: 16px;
+  background: white;
+}
+
+.control-heading {
+  font-size: 1.05rem;
+  margin: 0 0 12px;
+}
+
+.search-location {
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e7eae4;
+}
+
+.location-actions {
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.search-hint {
+  color: #536157;
+  font-size: 0.9rem;
+  margin: 8px 0 0;
+}
+
+.search-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.search-actions>button {
+  flex: 1 1 190px;
+}
+
+.reset-search {
+  display: block;
+  margin: -12px 0 12px;
+  padding-left: 0;
+}
+
+.recommendation-hint {
+  margin-top: 12px;
+}
+
+.results-title {
+  font-size: 1.35rem;
+  margin-top: 28px;
+}
+
+.list-switcher {
+  gap: 8px;
+}
+
+.list-switcher>button {
+  flex: 1 1 140px;
+}
+
+.list-switcher button[aria-pressed="true"] {
+  background: #28533a;
+  color: white;
+}
+
+.empty-list {
+  padding: 24px 16px;
+  margin-block: 16px;
+  background: #eef2e9;
+  border-radius: 12px;
+}
+
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.detail-link {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  padding-block: 10px;
+  border-top: 1px solid #e7eae4;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .restaurant-search {
+    padding: 16px;
+  }
+
+  .location-actions>button {
+    flex: 1 1 100%;
+  }
 }

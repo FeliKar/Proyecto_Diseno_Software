@@ -20,7 +20,7 @@ export default function RestaurantWorkspace({ view, placeId }) {
         if (!supabase) return
         const { data } = supabase.auth.onAuthStateChange((_event, session) => {
             const nextUser = session?.user.id || null
-            // Preserve the chosen location on first login, clear it on logout/account changes.
+            // The selected point survives the first login and clears on logout or an account change.
             if (previousUser.current && previousUser.current !== nextUser) setSearch(initialSearch)
             previousUser.current = nextUser
             setUserId(nextUser)
@@ -29,6 +29,7 @@ export default function RestaurantWorkspace({ view, placeId }) {
         return () => data.subscription.unsubscribe()
     }, [])
 
+    // The hidden sections stay mounted so navigation preserves their loaded state.
     return <>
         <div hidden={view !== 'explore'}>
             {!placeId && sessionReady && !userId && import.meta.env.VITE_USE_HOSTED_BACKEND === 'true' && <p className="signin-prompt">

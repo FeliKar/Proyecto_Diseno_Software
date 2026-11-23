@@ -27,7 +27,7 @@ export async function loadRestaurantDetails(row, language, { apiKey, fetcher = f
             attributions: Array.isArray(place.attributions) ? place.attributions : []
         }
     } catch {
-        // Keep the saved entry manageable even if Google cannot return its data.
+        // The saved entry remains manageable when its provider data is unavailable.
         return fallback
     }
 }
@@ -76,7 +76,7 @@ export function createSavedHandler({ supabaseUrl, publicKey, apiKey, fetcher = f
     return async (request, { user, authorization }) => {
         const input = validateSavedRequest(await request.json())
         const url = new URL(`${supabaseUrl}/rest/v1/saved_restaurants`)
-        // Use the caller's session so the database also enforces row ownership.
+        // The caller's session allows the database to enforce row ownership.
         const headers = {
             apikey: publicKey, Authorization: authorization,
             'Content-Type': 'application/json'

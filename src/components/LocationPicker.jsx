@@ -16,7 +16,7 @@ export default function LocationPicker({ initialLocation, onSelect }) {
         window.addEventListener('mesa-cerca-map-error', authError)
         loadGoogleMaps().then((maps) => {
             if (!active) return
-            // An overview of central Chile, not an inferred user location.
+            // The default center shows central Chile without inferring the user's location.
             const center = initialLocation
                 ? { lat: initialLocation.latitude, lng: initialLocation.longitude }
                 : { lat: -33.2, lng: -71 }

@@ -171,14 +171,17 @@ export default function AuthPanel() {
                                 })}
                             </p>
 
-                            <button
-                                className="clear-filters"
-                                type="button"
-                                disabled={busy}
-                                onClick={logout}
-                            >
-                                {t('auth.signout')}
-                            </button>
+                            <div className="auth-actions">
+                                <a className="auth-submit action-link" href="#restaurants">{t('usability.explore')}</a>
+                                <button
+                                    className="clear-filters"
+                                    type="button"
+                                    disabled={busy}
+                                    onClick={logout}
+                                >
+                                    {t('auth.signout')}
+                                </button>
+                            </div>
                         </div>
                     ) : (
                         <>

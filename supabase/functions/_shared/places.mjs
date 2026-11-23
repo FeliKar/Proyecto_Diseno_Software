@@ -1,3 +1,5 @@
+import { loadPhoto, selectPhotos } from './place-photos.mjs'
+
 const cuisineTypes = {
     vegetarian: 'vegetarian_restaurant',
     italian: 'italian_restaurant',
@@ -33,6 +35,7 @@ export function validateSearch(input) {
     return { latitude, longitude, category, priceLevel, language }
 }
 
+// Price filtering precedes the limit so valid matches are retained among the five results.
 export function selectRestaurants(places, filters) {
     return places
         .filter((place) => {
@@ -73,7 +76,7 @@ export function createHandler({ apiKey, fetcher = fetch }) {
         const path = new URL(request.url).pathname
         const origin = request.headers.get('Origin')
 
-        // Local-only server. Public deployment needs authentication and rate limits.
+        // The local-only handler relies on the public wrapper for production authentication and quotas.
         if (origin && origin !== 'http://localhost:5173') {
             return json({ error: 'origin_not_allowed' }, 403)
         }
@@ -102,7 +105,7 @@ export function createHandler({ apiKey, fetcher = fetch }) {
                         'places.id', 'places.displayName', 'places.formattedAddress',
                         'places.priceLevel', 'places.googleMapsUri',
                         'places.businessStatus', 'places.attributions',
-                        'places.rating', 'places.userRatingCount', 'places.location',
+                        'places.rating', 'places.userRatingCount', 'places.location', 'places.photos',
                     ].join(','),
                 },
                 body: JSON.stringify({
@@ -127,7 +130,14 @@ export function createHandler({ apiKey, fetcher = fetch }) {
             if (data.places !== undefined && !Array.isArray(data.places)) {
                 throw new Error('invalid_response')
             }
-            const restaurants = selectRestaurants(data.places || [], filters)
+            const places = data.places || []
+            const selected = selectRestaurants(places, filters)
+            // The handler loads one photo per visible result after filtering and applying the five-result limit.
+            const restaurants = await Promise.all(selected.map(async (restaurant) => {
+                const place = places.find((item) => item.id === restaurant.id)
+                const photo = selectPhotos(place.photos, restaurant.id, 1)[0]
+                return { ...restaurant, photo: await loadPhoto(photo, { apiKey, fetcher, maxWidth: 600 }) }
+            }))
             return json({ restaurants, radiusMeters: 3000 })
         } catch (error) {
             const timeout = error.name === 'TimeoutError'

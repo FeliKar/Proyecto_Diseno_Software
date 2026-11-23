@@ -1,31 +1,6 @@
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { safeLink } from '../lib/restaurant-search.mjs'
-
-function Photo({ photo, name }) {
-    const { t } = useTranslation()
-    const [failed, setFailed] = useState(false)
-    const source = safeLink(photo.mapsUrl)
-    const image = !failed && safeLink(photo.uri)
-        ? <img src={safeLink(photo.uri)} alt={t('placeDetails.photoAlt', { name })}
-            referrerPolicy="no-referrer" onError={() => setFailed(true)} />
-        : <p>{t('placeDetails.noPhoto')}</p>
-    return <>
-        <div className="carousel-image">
-            {source ? <a href={source} target="_blank" rel="noopener noreferrer"
-                aria-label={t('placeDetails.sourcePhoto')}>{image}</a> : image}
-        </div>
-        <figcaption className="photo-credit">
-            {photo.authors.map((author, index) => <span className="review-author" key={index}>
-                {safeLink(author.avatar) && <img src={safeLink(author.avatar)} alt="" width="24" height="24"
-                    referrerPolicy="no-referrer" />}
-                {safeLink(author.uri)
-                    ? <a href={safeLink(author.uri)} target="_blank" rel="noopener noreferrer">{author.name || author.uri}</a>
-                    : author.name}
-            </span>)}
-        </figcaption>
-    </>
-}
+import PlacePhoto from './PlacePhoto'
 
 export default function PhotoCarousel({ photos, name }) {
     const { t } = useTranslation()
@@ -56,7 +31,7 @@ export default function PhotoCarousel({ photos, name }) {
             }}>
             {photos.map((photo, index) => <figure className="carousel-slide" key={`${index}:${photo.uri}`}
                 role="group" aria-label={t('placeDetails.photoPosition', { current: index + 1, total: photos.length })}>
-                <Photo photo={photo} name={name} />
+                <PlacePhoto photo={photo} name={name} />
             </figure>)}
         </div>
         {photos.length > 1 && <div className="carousel-controls">

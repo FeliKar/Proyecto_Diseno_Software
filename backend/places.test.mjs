@@ -48,7 +48,7 @@ Deno.test('sends the filters and keeps the key out of the response', async () =>
             assert.deepEqual(body.includedTypes, ['italian_restaurant'])
             assert.equal(body.languageCode, 'en')
             const fields = options.headers['X-Goog-FieldMask'].split(',')
-            for (const field of ['places.rating', 'places.userRatingCount', 'places.location']) {
+            for (const field of ['places.rating', 'places.userRatingCount', 'places.location', 'places.photos']) {
                 assert.ok(fields.includes(field))
             }
             assert.equal(options.headers['X-Goog-Api-Key'], 'test-secret')
@@ -100,5 +100,62 @@ Deno.test('keeps valid ratings and coordinates and handles missing or invalid da
         assert.equal(result.rating, null)
         assert.equal(result.ratingCount, null)
         assert.equal(result.location, null)
+    }
+})
+
+Deno.test('search loads photos only for the final five restaurants and preserves their order and credits', async () => {
+    const photoCalls = []
+    const handler = createHandler({
+        apiKey: 'private-key', fetcher: (url, options) => {
+            if (typeof url === 'string') return Promise.resolve(Response.json({
+                places: Array.from({ length: 8 }, (_, index) => ({
+                    id: `id_${index}`, displayName: { text: `Restaurant ${index}` },
+                    priceLevel: index === 0 ? 'PRICE_LEVEL_EXPENSIVE' : 'PRICE_LEVEL_MODERATE',
+                    photos: [{
+                        name: `places/id_${index}/photos/image`,
+                        authorAttributions: [{ displayName: `Author ${index}`, uri: 'https://maps.google.com/author' }],
+                        googleMapsUri: `https://maps.google.com/photo/${index}`
+                    }],
+                })),
+            }))
+            photoCalls.push(url.pathname)
+            assert.equal(options.headers['X-Goog-Api-Key'], 'private-key')
+            assert.equal(url.searchParams.get('maxWidthPx'), '600')
+            assert.equal(url.searchParams.get('skipHttpRedirect'), 'true')
+            return Promise.resolve(Response.json({ photoUri: `https://lh3.googleusercontent.com/${url.pathname.split('/')[3]}` }))
+        }
+    })
+    const response = await handler(request({ ...input, priceLevel: 'moderate' }))
+    const data = await response.json()
+    assert.equal(photoCalls.length, 5)
+    assert.deepEqual(data.restaurants.map((item) => item.id), ['id_1', 'id_2', 'id_3', 'id_4', 'id_5'])
+    assert.equal(data.restaurants[0].photo.authors[0].name, 'Author 1')
+    assert.equal(data.restaurants[0].photo.mapsUrl, 'https://maps.google.com/photo/1')
+    assert.equal(JSON.stringify(data).includes('private-key'), false)
+    assert.equal(JSON.stringify(data).includes('/photos/image'), false)
+})
+
+Deno.test('missing, foreign, unsafe and failed photos never discard restaurants', async () => {
+    for (const mode of ['missing', 'foreign', 'unsafe', 'failed']) {
+        let photoCalls = 0
+        const handler = createHandler({
+            apiKey: 'private-key', fetcher: (url) => {
+                if (typeof url === 'string') return Promise.resolve(Response.json({
+                    places: [{
+                        id: 'id', displayName: { text: 'Restaurant' },
+                        photos: mode === 'missing' ? [] : [{ name: `places/${mode === 'foreign' ? 'other' : 'id'}/photos/image` }],
+                    }]
+                }))
+                photoCalls++
+                if (mode === 'failed') throw new Error('photo unavailable')
+                return Promise.resolve(Response.json({ photoUri: 'https://evil.test/image' }))
+            }
+        })
+        const response = await handler(request())
+        assert.equal(response.status, 200)
+        const data = await response.json()
+        assert.equal(data.restaurants.length, 1)
+        assert.equal(data.restaurants[0].photo, null)
+        assert.equal(photoCalls, ['missing', 'foreign'].includes(mode) ? 0 : 1)
     }
 })

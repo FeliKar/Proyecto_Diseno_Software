@@ -1,4 +1,4 @@
--- Requires two existing accounts. Existing data is restored by rollback.
+-- The tests require two existing accounts; rollback restores their data.
 begin;
 
 do $$
@@ -15,7 +15,7 @@ begin
 end;
 $$;
 
--- Temporarily free both list slots; rollback restores any existing links.
+-- The test temporarily frees both list slots; rollback restores existing links.
 delete from public.shared_lists
 where user_id in (current_setting('test.user_a')::uuid, current_setting('test.user_b')::uuid);
 insert into public.shared_lists(user_id, status)

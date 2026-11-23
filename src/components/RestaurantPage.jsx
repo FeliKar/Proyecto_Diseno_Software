@@ -5,9 +5,9 @@ import StarRating from './StarRating'
 
 export default function RestaurantPage({ restaurant, userId, backHref, children }) {
     const { t, i18n } = useTranslation()
-    // shortcut: details use loaded results; fetch by ID if independent links are needed.
+    // shortcut: details use loaded results; independent links would require fetching by ID.
     return <section className="restaurant-page restaurants-section" aria-labelledby="restaurant-detail-title">
-        <a className="restaurant-back" href={backHref}>← {t('restaurantPage.back')}</a>
+        <a className="restaurant-back" href={backHref}>← {t(backHref === '#saved-restaurants' ? 'usability.backToLists' : 'usability.backToResults')}</a>
         <h1 id="restaurant-detail-title" className="screen-title" tabIndex={-1}>
             {restaurant?.name || t('restaurantPage.title')}
         </h1>

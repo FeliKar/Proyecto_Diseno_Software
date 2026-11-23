@@ -1,5 +1,5 @@
--- Prueba los límites sin consultar Google.
--- ROLLBACK restaura los contadores al terminar.
+-- The tests check usage limits without calling Google.
+-- ROLLBACK restores the counters after the tests.
 begin;
 
 do $$
@@ -12,7 +12,7 @@ begin
     limit 1;
 
     if test_user is null then
-        raise exception 'Debe existir un usuario para ejecutar la prueba';
+        raise exception 'An existing user is required to run the test';
     end if;
 
     delete from public.restaurant_search_limits
@@ -22,12 +22,12 @@ begin
         allowed := public.consume_restaurant_search(test_user);
 
         if not allowed then
-            raise exception 'La búsqueda % fue rechazada antes de tiempo', attempt;
+            raise exception 'Search % was rejected before reaching the limit', attempt;
         end if;
     end loop;
 
     if public.consume_restaurant_search(test_user) then
-        raise exception 'La búsqueda número 11 debería rechazarse';
+        raise exception 'The eleventh search should be rejected';
     end if;
 
     update public.restaurant_search_limits
@@ -36,7 +36,7 @@ begin
     where user_id = test_user;
 
     if public.consume_restaurant_search(test_user) then
-        raise exception 'El límite diario no se está aplicando';
+        raise exception 'The daily limit is not being enforced';
     end if;
 
     update public.restaurant_search_limits
@@ -44,7 +44,7 @@ begin
     where user_id = test_user;
 
     if not public.consume_restaurant_search(test_user) then
-        raise exception 'Los contadores no se reiniciaron correctamente';
+        raise exception 'The counters did not reset correctly';
     end if;
 
     if has_function_privilege(
@@ -56,10 +56,10 @@ begin
         'public.consume_restaurant_search(uuid)',
         'EXECUTE'
     ) then
-        raise exception 'La función no debe ser ejecutable desde el frontend';
+        raise exception 'The function must not be executable by frontend roles';
     end if;
 
-    raise notice 'Pruebas de límites aprobadas';
+    raise notice 'Usage limit tests passed';
 end;
 $$;
 

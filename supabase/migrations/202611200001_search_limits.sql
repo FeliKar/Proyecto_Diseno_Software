@@ -13,7 +13,7 @@ alter table public.restaurant_search_limits enable row level security;
 revoke all on public.restaurant_search_limits
 from public, anon, authenticated;
 
--- Actualiza el contador de forma atómica, incluso con solicitudes simultáneas.
+-- The counter updates atomically so concurrent requests cannot bypass the limit.
 create or replace function public.consume_restaurant_search(p_user_id uuid)
 returns boolean
 language plpgsql

@@ -26,7 +26,7 @@ export function createPublicHandler({
             return json('origin_not_allowed', 403)
         }
 
-        // El navegador comprueba los permisos antes de enviar la búsqueda.
+        // The browser checks cross-origin permissions before sending the request.
         if (request.method === 'OPTIONS') {
             return new Response(null, { status: 204, headers })
         }
@@ -42,6 +42,7 @@ export function createPublicHandler({
         }
 
         try {
+            // The server verifies the token before trusting the account identity.
             const user = await verifyUser(authorization)
 
             if (!user?.id || user.is_anonymous) {
@@ -75,7 +76,7 @@ export function createPublicHandler({
                 return json('rate_limit', 429)
             }
 
-            // Reutiliza la búsqueda existente después de validar el acceso.
+            // The handler runs the requested operation after access and quota validation.
             const response = await placesHandler(
                 new Request('http://internal/api/restaurants', {
                     method: 'POST',
@@ -93,7 +94,7 @@ export function createPublicHandler({
                 },
             })
         } catch {
-            // Si falla la autenticación o el contador, no se consulta Google.
+            // An authentication or quota failure stops processing before the provider is called.
             return json('service_unavailable', 503)
         }
     }

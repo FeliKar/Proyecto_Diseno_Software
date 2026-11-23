@@ -42,7 +42,7 @@ export async function consumeQuota(userId: string) {
             headers: {
                 apikey: serverKey,
 
-                // Las claves antiguas service_role también utilizan este encabezado.
+                // Legacy service_role keys also use this header.
                 ...(serverKey?.startsWith('eyJ')
                     ? { Authorization: `Bearer ${serverKey}` }
                     : {}),
