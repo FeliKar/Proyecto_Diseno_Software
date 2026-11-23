@@ -33,11 +33,11 @@ A box is marked only after the current version has been checked.
 - [x] Spanish and English, keyboard focus, stars and forms at 320 px and on desktop without horizontal overflow.
 - [x] An offline request displays a retryable error without losing previously saved data.
 
-- [ ] Explore searches and recommendations show one photo per card with credits,
+- [x] Explore searches and recommendations show one photo per card with credits,
   original-content access, complete mobile images and Photo unavailable where needed.
   The restaurant page carousel still works.
 
-- [ ] The grouped location and filters, Search and Recommend, filter reset, both
+- [x] The grouped location and filters, Search and Recommend, filter reset, both
   save actions, contextual return links and Explore action from My account work.
   Empty lists and the active list are checked in both languages.
 

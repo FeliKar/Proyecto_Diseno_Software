@@ -5,6 +5,7 @@ and receiving recommendations based on searches and personal ratings.
 
 [Live application](https://proyectodisenosoftware.vercel.app)
 
+
 ## Features
 
 - Google or email/password sign-in through Supabase Auth.
@@ -36,15 +37,10 @@ data. The frontend is deployed on Vercel.
 | `docs` | Authentication setup and test records |
 | `public` | Favicon and decorative background |
 
-Source comments and documentation use English. Comments describe decisions in
-third-person sentences. Spanish translations remain in `src/locales/es.json`,
-and the language selector retains the native language name. Mesa Cerca is the
-application's name in both languages.
-
 ## Local development
 
-Node.js and npm are required; Deno is required for backend checks and tests.
-Dependencies are installed with:
+Node.js 22.12 or later and npm are required. Deno is required for backend
+checks and tests. Dependencies are installed with:
 
 ```bash
 npm install
@@ -66,9 +62,8 @@ The frontend starts on the authorized local port with:
 npm run dev -- --port 5173 --strictPort
 ```
 
-The local interface uses the deployed functions. Vite requires a restart after
-an environment-variable change. The final version uses live data; the old mock
-mode has been removed and `VITE_REAL_SEARCH` is no longer used.
+The local interface uses the deployed backend and live restaurant data.
+Vite requires a restart after environment-variable changes.
 
 Variables with the `VITE_` prefix are public. The Maps browser key is restricted
 by website and API. The private Places key is configured only on the backend.
